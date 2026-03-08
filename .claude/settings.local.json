@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd C:\\\\Users\\\\33828\\\\Desktop\\\\毕设\\\\梦医智联\\\\code\\\\medical-diagnosis:*)"
+    ]
+  }
+}

@@ -1,0 +1,563 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block css %}
+<style>
+    .med-card {
+        background: rgba(255,255,255,0.98);
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,75,112,0.1);
+        border: 1px solid rgba(58,159,212,0.1);
+    }
+    .upload-section {
+        border: 2px dashed #3a9fd4;
+        background: rgba(58,159,212,0.05);
+        min-height: 380px;
+    }
+    .result-table {
+        --bs-table-bg: rgba(242,249,255,0.8);
+        --bs-table-striped-bg: rgba(232,244,255,0.6);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .status-badge {
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        background: linear-gradient(45deg, #3a9fd4, #6c5ce7);
+        color: white;
+        min-width: 80px;
+        display: inline-block;
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .status-badge:hover {
+        transform: translateY(-2px);
+    }
+    .instruction-box {
+        background: rgba(242,249,255,0.9);
+        border-left: 4px solid #3a9fd4;
+        padding: 1.2rem;
+        border-radius: 8px;
+    }
+    .gradient-btn {
+        background: linear-gradient(45deg, #3a9fd4, #6c5ce7);
+        color: white!important;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(58, 159, 212, 0.4);
+    }
+    .gradient-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    .bg-purple { background-color: #6f42c1; }
+    .bg-pink { background-color: #e83e8c; }
+    .bg-orange { background-color: #fd7e14; }
+
+    /* Loading 动画 */
+    .loading-overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.9);
+        z-index: 10;
+        border-radius: 15px;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .loading-overlay.show {
+        display: flex;
+    }
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3a9fd4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+        color: #3a9fd4;
+        font-weight: 500;
+        text-align: center;
+    }
+    .loading-text small {
+        display: block;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+
+    /* 结果动画 */
+    .result-animate {
+        animation: fadeInUp 0.5s ease;
+    }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* 置信度颜色 */
+    .confidence-high { color: #28a745; }
+    .confidence-medium { color: #ffc107; }
+    .confidence-low { color: #dc3545; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4 justify-content-center">
+        <!-- 上传区域 -->
+        <div class="col-lg-6">
+            <div class="med-card p-3 h-100 position-relative">
+                <!-- Loading 遮罩层 -->
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <div class="loading-text">
+                        AI 正在进行原型特征比对与推理中...
+                        <small>请稍候，SFEPT 模型正在分析您的皮肤病图像</small>
+                    </div>
+                </div>
+
+                <h4 class="mb-4 text-primary">
+                    <i class="bi bi-microscope me-2"></i>
+                    皮肤病智能辅助诊断系统
+                </h4>
+
+                <div class="upload-section d-flex flex-column align-items-center justify-content-center p-4">
+                    <img id="previewImage" src="{% static '/img/skin_demo.png' %}"
+                         class="img-fluid rounded-3 mb-4"
+                         alt="皮肤病图像预览"
+                         style="max-height: 280px">
+
+                    <div class="w-100">
+                        <input type="file" id="fileInput"
+                               class="form-control visually-hidden"
+                               accept="image/*"
+                               onchange="previewFile()">
+                        <label for="fileInput" class="btn gradient-btn w-100 mb-3" id="uploadLabel">
+                            <i class="bi bi-image me-2"></i>
+                            选择皮肤病图像
+                        </label>
+                        <button type="button"
+                                id="predictBtn"
+                                onclick="startPrediction()"
+                                class="btn btn-light w-100 border"
+                                disabled>
+                            <i class="bi bi-cpu me-2"></i>
+                            开始 AI 诊断
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 算法说明 -->
+                <div class="mt-3 p-3 bg-light rounded">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        本系统基于 <strong>SFEPT</strong> (Semantic Feature Enhanced Prototypical Transformer) 算法，
+                        结合 Swin Transformer 特征提取、Bias Diminishing 原型修正和 BERT 语义增强技术，
+                        实现小样本皮肤病图像的精准分类。
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果区域 -->
+        <div class="col-lg-6">
+            <div class="med-card p-3 h-100">
+                <h4 class="mb-4 text-primary">
+                    <i class="bi bi-clipboard2-pulse me-2"></i>
+                    AI 诊断报告
+                </h4>
+
+                <div class="result-table-wrapper">
+                    <table class="table result-table">
+                        <tbody>
+                            <tr>
+                                <th scope="row" style="width: 120px">图像编号</th>
+                                <td id="caseName" class="text-muted">等待上传</td>
+                            </tr>
+                            <tr>
+                                <th>置信度</th>
+                                <td>
+                                    <span class="status-badge" id="confidence">--%</span>
+                                    <small id="confidenceHint" class="ms-2 text-muted"></small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>诊断结果</th>
+                                <td>
+                                    <div class="d-flex align-items-center" id="classification">
+                                        <span class="badge bg-secondary me-2">--</span>
+                                        <span class="fw-bold">等待分析</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>临床建议</th>
+                                <td id="diagnosisTips" class="text-secondary">
+                                    请上传皮肤病图像进行 AI 智能诊断
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Top 预测结果 -->
+                <div id="topPredictions" class="mt-3" style="display: none;">
+                    <h6 class="text-primary mb-2">
+                        <i class="bi bi-bar-chart me-1"></i>
+                        Top 5 预测结果
+                    </h6>
+                    <div id="predictionsList" class="list-group list-group-flush"></div>
+                </div>
+
+                <!-- 皮肤病分类说明 -->
+                <div class="instruction-box mt-4">
+                    <h6 class="text-primary mb-3">
+                        <i class="bi bi-diagram-3 me-2"></i>
+                        支持诊断的皮肤病类型
+                    </h6>
+                    <div class="row row-cols-1 row-cols-md-2 g-3">
+                        <div class="col">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-info me-2">常见</span>
+                                    <div class="d-flex flex-column">
+                                        <span>湿疹 Eczema</span>
+                                    </div>
+                                </li>
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-warning me-2">常见</span>
+                                    <div class="d-flex flex-column">
+                                        <span>银屑病 Psoriasis</span>
+                                    </div>
+                                </li>
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-danger me-2">常见</span>
+                                    <div class="d-flex flex-column">
+                                        <span>痤疮 Acne</span>
+                                    </div>
+                                </li>
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-purple me-2">色素</span>
+                                    <div class="d-flex flex-column">
+                                        <span>白癜风 Vitiligo</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-success me-2">过敏</span>
+                                    <div class="d-flex flex-column">
+                                        <span>荨麻疹 Urticaria</span>
+                                    </div>
+                                </li>
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-secondary me-2">炎症</span>
+                                    <div class="d-flex flex-column">
+                                        <span>皮炎 Dermatitis</span>
+                                    </div>
+                                </li>
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-pink me-2">警惕</span>
+                                    <div class="d-flex flex-column">
+                                        <span>黑色素瘤 Melanoma</span>
+                                    </div>
+                                </li>
+                                <li class="mb-2 d-flex align-items-center">
+                                    <span class="badge bg-orange me-2">正常</span>
+                                    <div class="d-flex flex-column">
+                                        <span>健康皮肤 Normal</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="text-muted small mt-3 mb-0">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        本系统仅供参考，不能替代专业医生的诊断。如有疑虑请及时就医。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// ============================================================================
+// 全局变量
+// ============================================================================
+let selectedFile = null;  // 当前选择的文件
+
+// ============================================================================
+// 文件预览功能
+// ============================================================================
+function previewFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const preview = document.getElementById('previewImage');
+    const predictBtn = document.getElementById('predictBtn');
+    const caseName = document.getElementById('caseName');
+
+    if (file) {
+        selectedFile = file;
+
+        // 显示预览
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            preview.src = reader.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+
+        // 更新文件名
+        caseName.textContent = file.name || '未命名图像';
+        caseName.classList.remove('text-muted');
+
+        // 启用预测按钮
+        predictBtn.disabled = false;
+        predictBtn.innerHTML = '<i class="bi bi-cpu me-2"></i>开始 AI 诊断';
+    }
+}
+
+// ============================================================================
+// 开始预测
+// ============================================================================
+function startPrediction() {
+    if (!selectedFile) {
+        alert('请先选择一张皮肤病图像！');
+        return;
+    }
+
+    // 显示 Loading 状态
+    showLoading(true);
+
+    // 禁用按钮
+    const predictBtn = document.getElementById('predictBtn');
+    const uploadLabel = document.getElementById('uploadLabel');
+    predictBtn.disabled = true;
+    uploadLabel.style.pointerEvents = 'none';
+
+    // 创建 FormData
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+    formData.append('return_all_scores', 'true');
+
+    // 发送请求到后端 API
+    fetch('/diagnose_skin/predict/', {
+        method: 'POST',
+        body: formData,
+        // 不设置 Content-Type，让浏览器自动设置 multipart/form-data
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 隐藏 Loading
+        showLoading(false);
+
+        if (data.status) {
+            // 渲染结果
+            renderResult(data);
+        } else {
+            // 显示错误信息
+            showError(data.message || '预测失败，请重试');
+        }
+    })
+    .catch(error => {
+        showLoading(false);
+        console.error('Prediction error:', error);
+        showError('网络请求失败: ' + error.message);
+    })
+    .finally(() => {
+        // 恢复按钮状态
+        predictBtn.disabled = false;
+        uploadLabel.style.pointerEvents = 'auto';
+    });
+}
+
+// ============================================================================
+// 渲染预测结果
+// ============================================================================
+function renderResult(data) {
+    // 置信度
+    const confidence = data.confidence || 0;
+    const confidencePercent = data.confidence_percent || `${(confidence * 100).toFixed(2)}%`;
+
+    const confidenceEl = document.getElementById('confidence');
+    const confidenceHint = document.getElementById('confidenceHint');
+
+    confidenceEl.textContent = confidencePercent;
+    confidenceEl.classList.add('result-animate');
+
+    // 根据置信度设置颜色
+    if (confidence >= 0.8) {
+        confidenceEl.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+        confidenceHint.textContent = '置信度较高';
+        confidenceHint.className = 'ms-2 confidence-high';
+    } else if (confidence >= 0.5) {
+        confidenceEl.style.background = 'linear-gradient(45deg, #ffc107, #fd7e14)';
+        confidenceHint.textContent = '置信度中等';
+        confidenceHint.className = 'ms-2 confidence-medium';
+    } else {
+        confidenceEl.style.background = 'linear-gradient(45deg, #dc3545, #e83e8c)';
+        confidenceHint.textContent = '置信度较低，建议复查';
+        confidenceHint.className = 'ms-2 confidence-low';
+    }
+
+    // 诊断结果
+    const classificationEl = document.getElementById('classification');
+    const className = data.predicted_class_name || '未知';
+    const classId = data.predicted_class || 0;
+
+    // 根据类别设置颜色
+    let badgeColor = 'bg-info';
+    if (className.includes('黑色素瘤') || className.includes('Melanoma')) {
+        badgeColor = 'bg-pink';
+    } else if (className.includes('癌') || className.includes('Carcinoma')) {
+        badgeColor = 'bg-danger';
+    } else if (className.includes('正常') || className.includes('Normal')) {
+        badgeColor = 'bg-success';
+    }
+
+    classificationEl.innerHTML = `
+        <span class="badge ${badgeColor} me-2 result-animate">${classId}</span>
+        <span class="fw-bold result-animate">${className}</span>
+    `;
+
+    // 临床建议
+    const tipsEl = document.getElementById('diagnosisTips');
+    tipsEl.textContent = data.tips || '暂无建议';
+    tipsEl.classList.remove('text-secondary');
+    tipsEl.classList.add('result-animate');
+
+    // Top 5 预测结果
+    if (data.top_predictions && data.top_predictions.length > 0) {
+        renderTopPredictions(data.top_predictions);
+    }
+}
+
+// ============================================================================
+// 渲染 Top 预测结果
+// ============================================================================
+function renderTopPredictions(predictions) {
+    const container = document.getElementById('topPredictions');
+    const list = document.getElementById('predictionsList');
+
+    list.innerHTML = '';
+
+    predictions.forEach((pred, index) => {
+        const confidencePercent = (pred.confidence * 100).toFixed(2);
+        const barWidth = pred.confidence * 100;
+
+        // 确定进度条颜色
+        let barColor = '#3a9fd4';
+        if (pred.confidence >= 0.8) barColor = '#28a745';
+        else if (pred.confidence >= 0.5) barColor = '#ffc107';
+        else barColor = '#dc3545';
+
+        const item = document.createElement('div');
+        item.className = 'list-group-item d-flex justify-content-between align-items-center';
+        item.innerHTML = `
+            <div class="flex-grow-1 me-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <small>${pred.class_name}</small>
+                    <small class="text-muted">${confidencePercent}%</small>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar" role="progressbar"
+                         style="width: ${barWidth}%; background-color: ${barColor};"
+                         aria-valuenow="${barWidth}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+        `;
+        list.appendChild(item);
+    });
+
+    container.style.display = 'block';
+}
+
+// ============================================================================
+// 显示/隐藏 Loading
+// ============================================================================
+function showLoading(show) {
+    const overlay = document.getElementById('loadingOverlay');
+    if (show) {
+        overlay.classList.add('show');
+    } else {
+        overlay.classList.remove('show');
+    }
+}
+
+// ============================================================================
+// 显示错误信息
+// ============================================================================
+function showError(message) {
+    const tipsEl = document.getElementById('diagnosisTips');
+    tipsEl.innerHTML = `<span class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>${message}</span>`;
+
+    // 重置其他字段
+    document.getElementById('confidence').textContent = '--%';
+    document.getElementById('confidence').style.background = 'linear-gradient(45deg, #3a9fd4, #6c5ce7)';
+    document.getElementById('confidenceHint').textContent = '';
+    document.getElementById('classification').innerHTML = `
+        <span class="badge bg-secondary me-2">--</span>
+        <span class="fw-bold">预测失败</span>
+    `;
+
+    // 隐藏 Top 预测
+    document.getElementById('topPredictions').style.display = 'none';
+}
+
+// ============================================================================
+// 模拟诊断（用于测试，当 API 不可用时）
+// ============================================================================
+function simulateAnalysis() {
+    // 显示 Loading
+    showLoading(true);
+
+    setTimeout(() => {
+        showLoading(false);
+
+        // 生成模拟数据
+        const mockData = {
+            status: true,
+            predicted_class: Math.floor(Math.random() * 8),
+            predicted_class_name: ['湿疹', '银屑病', '痤疮', '白癜风', '荨麻疹', '皮炎', '黑色素瘤', '正常皮肤'][Math.floor(Math.random() * 8)],
+            confidence: Math.random() * 0.4 + 0.6,
+            tips: '这是模拟诊断结果，实际使用时请确保后端服务正常运行。'
+        };
+        mockData.confidence_percent = (mockData.confidence * 100).toFixed(2) + '%';
+
+        renderResult(mockData);
+    }, 1500);
+}
+</script>
+{% endblock %}

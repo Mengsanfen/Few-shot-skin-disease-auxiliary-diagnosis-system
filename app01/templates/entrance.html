@@ -1,0 +1,256 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>皮肤病辅助诊断系统</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static '/img/doctor.png' %}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    
+    <!-- Main CSS File -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        /* 自定义科技感样式 */
+        :root {
+            --tech-blue: rgba(13, 208, 232, 0.84);
+            --tech-purple: #1c1e1e;
+            --gradient-bg: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px var(--tech-blue),
+                         0 0 20px var(--tech-blue),
+                         0 0 30px var(--tech-blue);
+            animation: neon-pulse 1.5s infinite alternate;
+        }
+
+        .btn-hover-effect {
+            background: #041933;
+            padding: 15px 40px;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .btn-hover-effect::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+            rgba(159, 43, 43, 0.85),
+                transparent
+            );
+            transition: left 0.6s;
+        }
+
+        .hover-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+
+
+        @keyframes neon-pulse {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+    
+</head>
+
+<body>
+
+<!-- 加载动画 -->
+<div id="loader">
+    <div class="loading-spinner"></div>
+</div>
+
+<!-- ======= Header ======= -->
+<header id="header" class="fixed-top d-flex align-items-center header-transparent">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div id="logo">
+            <h1><a href="#" class="text-gradient">SkinProto</a></h1>
+        </div>
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a class="nav-link scrollto active" href="#hero">主页</a></li>
+                <!-- ADDED AI问诊导航项 -->
+                <li><a class="nav-link scrollto" href="#ai-diagnosis">智能初诊</a></li>
+                <li><a class="nav-link scrollto" href="#features">皮肤病检测</a></li>
+                <li><a class="nav-link scrollto" href="#data">“医智”数据</a></li>
+                <li><a class="nav-link scrollto" href="#more-features">系统性能大盘</a></li>
+                <li><a class="nav-link scrollto" href="#pricing">“医智”小贴士</a></li>
+                <li><a class="nav-link scrollto" href="#team">开发团队</a></li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+    </div>
+</header>
+
+<!-- ======= Hero Section ======= -->
+<section id="hero">
+    <div class="hero-text" data-aos="zoom-out">
+        <h2 class="neon-text">SFEPT</h2>
+        <div class="typewriter-container">
+            <p class="typewriter">基于原型网络的小样本皮肤病辅助诊断系统</p>
+        </div>
+        <a href="/index" class="btn-hover-effect scrollto">进入智能诊断</a>
+    </div>
+    <div id="particles-js"></div>
+</section>
+
+    <!-- ======= 团队成员 ======= -->
+    <section id="team" class="section-bg">
+        <div class="container" data-aos="fade-up">
+            <div class="section-header">
+                <h3 class="section-title">科研团队</h3>
+                <span class="section-divider"></span>
+                <p class="section-description">基于原型网络的小样本皮肤病医学图像分类系统 —— SFEPT算法，守护皮肤健康</p>
+            </div>
+
+            <div class="row justify-content-center" style="margin-left: 0">
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" style=" ">
+                    <div class="member">
+                        <div class="pic"><img src="{% static 'img/head/wyx.jpg' %}" alt="">
+                        </div>
+                        <h4>王宇翔</h4>
+                        <span>Chief Executive Officer</span>
+                        <div class="social">
+                            <a href=""><i class="bi bi-wechat"></i></a>
+                            <a href=""><i class="bi bi-facebook"></i></a>
+                            <a href=""><i class="bi bi-tencent-qq"></i></a>
+                            <a href=""><i class="bi bi-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+
+        </div>
+    </section><!-- End Team Section -->
+
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 text-lg-start text-center">
+                <div class="copyright">
+                    &copy; Copyright <strong>SkinProto</strong>. All Rights Reserved
+                </div>
+                <div class="credits">
+                    Designed by <a href="https://github.com/SFmeng">延安大学：王宇翔</a><br>
+                    基于原型网络的小样本皮肤病辅助诊断系统
+                </div>
+            </div>
+            <img src="{% static '/img/ft-logo.png' %}" style="height: 64px; width:220px; margin-top: 3px;">
+            <div class="col-lg-5">
+                <nav class="footer-links text-lg-right text-center pt-2 pt-lg-0" style="margin-top: 20px">
+                    <a href="#" class="scrollto">主页</a>
+                    <a href="#" class="scrollto">关于</a>
+                    <a href="#">隐私政策</a>
+                    <a href="#">使用条款</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</footer><!-- End  Footer -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-chevron-up"></i></a>
+
+
+<!-- Vendor JS Files -->
+<script src="{% static 'vendor/aos/aos.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+
+<!-- 粒子特效库 -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<script>
+    // 页面加载动画
+    window.addEventListener('load', () => {
+        document.getElementById('loader').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+        }, 500);
+    });
+
+    // 粒子特效初始化
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80 },
+            color: { value: '#00a8ff' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.5 },
+            size: { value: 3 },
+            move: {
+                enable: true,
+                speed: 2,
+                direction: 'none',
+                random: false,
+                straight: false,
+                out_mode: 'out',
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'repulse' },
+                onclick: { enable: true, mode: 'push' }
+            }
+        }
+    });
+
+
+
+    // 导航栏交互效果
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('mouseover', () => {
+            link.style.transform = 'scale(1.1)';
+        });
+        link.addEventListener('mouseout', () => {
+            link.style.transform = 'scale(1)';
+        });
+    });
+    
+</script>
+
+
+<!-- Template Main JS File -->
+<script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>
