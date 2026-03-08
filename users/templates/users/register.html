@@ -1,0 +1,490 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+    /* 页面整体布局 */
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 40%, #0d47a1 100%);
+        min-height: 100vh;
+    }
+
+    #main {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 120px;
+        padding-bottom: 60px;
+    }
+
+    .inner-page {
+        width: 100%;
+    }
+
+    .custom-container {
+        display: flex;
+        justify-content: center;
+        padding: 0;
+    }
+
+    /* 背景动画粒子 */
+    .bg-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .bg-particles span {
+        position: absolute;
+        display: block;
+        background: rgba(108, 92, 231, 0.1);
+        animation: float-up 25s infinite linear;
+        bottom: -150px;
+        border-radius: 50%;
+    }
+
+    .bg-particles span:nth-child(1) { left: 10%; width: 70px; height: 70px; animation-delay: 0s; background: rgba(108, 92, 231, 0.08); }
+    .bg-particles span:nth-child(2) { left: 25%; width: 35px; height: 35px; animation-delay: 3s; animation-duration: 18s; }
+    .bg-particles span:nth-child(3) { left: 40%; width: 55px; height: 55px; animation-delay: 1s; background: rgba(45, 156, 211, 0.08); }
+    .bg-particles span:nth-child(4) { left: 55%; width: 30px; height: 30px; animation-delay: 5s; animation-duration: 22s; }
+    .bg-particles span:nth-child(5) { left: 70%; width: 65px; height: 65px; animation-delay: 2s; background: rgba(108, 92, 231, 0.06); }
+    .bg-particles span:nth-child(6) { left: 85%; width: 40px; height: 40px; animation-delay: 4s; animation-duration: 16s; }
+    .bg-particles span:nth-child(7) { left: 95%; width: 50px; height: 50px; animation-delay: 6s; background: rgba(45, 156, 211, 0.06); }
+
+    @keyframes float-up {
+        0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; }
+    }
+
+    /* 注册卡片 */
+    .register-card {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 480px;
+        padding: 0 20px;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow:
+            0 25px 50px rgba(0, 0, 0, 0.3),
+            0 0 100px rgba(108, 92, 231, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+    }
+
+    /* 卡片头部 */
+    .card-header-section {
+        background: linear-gradient(135deg, rgba(108, 92, 231, 0.3), rgba(45, 156, 211, 0.3));
+        padding: 35px 40px 28px;
+        text-align: center;
+        position: relative;
+    }
+
+    .card-header-section::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+    }
+
+    .logo-icon {
+        width: 75px;
+        height: 75px;
+        background: linear-gradient(135deg, #6c5ce7, #2d9cd3);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
+        position: relative;
+    }
+
+    .logo-icon i {
+        font-size: 2.2rem;
+        color: #fff;
+    }
+
+    .card-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+        position: relative;
+    }
+
+    .card-subtitle {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        position: relative;
+    }
+
+    /* 卡片主体 */
+    .card-body-section {
+        padding: 30px 40px 35px;
+    }
+
+    /* 消息提示 */
+    .alert-modern {
+        border-radius: 12px;
+        border: none;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-modern.alert-success {
+        background: rgba(46, 204, 113, 0.15);
+        color: #2ecc71;
+        border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .alert-modern.alert-danger {
+        background: rgba(231, 76, 60, 0.15);
+        color: #ff6b6b;
+        border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    /* 表单样式 */
+    .form-group-modern {
+        margin-bottom: 18px;
+        position: relative;
+    }
+
+    .form-group-modern label {
+        display: block;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.88rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 1rem;
+        transition: color 0.3s ease;
+    }
+
+    .form-control-modern {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #fff;
+        padding: 14px 18px 14px 48px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-modern::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .form-control-modern:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: #6c5ce7;
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2), 0 0 20px rgba(108, 92, 231, 0.15);
+    }
+
+    .form-control-modern:focus + i {
+        color: #6c5ce7;
+    }
+
+    /* 密码提示 */
+    .password-hint {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.8rem;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* 错误提示 */
+    .error-message {
+        color: #ff6b6b;
+        font-size: 0.82rem;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* 提交按钮 */
+    .btn-submit {
+        width: 100%;
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #6c5ce7, #2d9cd3);
+        border: none;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+    .btn-submit::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(108, 92, 231, 0.35);
+    }
+
+    .btn-submit:hover::before {
+        left: 100%;
+    }
+
+    /* 分隔线 */
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 22px 0;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    .divider span {
+        padding: 0 16px;
+        font-size: 0.88rem;
+    }
+
+    /* 底部链接 */
+    .card-footer-section {
+        text-align: center;
+        padding-top: 3px;
+    }
+
+    .footer-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #6c5ce7;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .footer-link:hover {
+        color: #fff;
+        background: rgba(108, 92, 231, 0.15);
+    }
+
+    /* 返回首页 */
+    .back-home-link {
+        position: fixed;
+        top: 100px;
+        left: 30px;
+        z-index: 100;
+    }
+
+    .back-home-link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 30px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .back-home-link a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: translateX(-5px);
+    }
+
+    /* 响应式 */
+    @media (max-width: 576px) {
+        .card-header-section {
+            padding: 28px 25px 22px;
+        }
+
+        .card-body-section {
+            padding: 22px 25px 28px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        .register-card {
+            padding: 0 15px;
+        }
+
+        .back-home-link {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- 背景粒子动画 -->
+<div class="bg-particles">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span>
+</div>
+
+<div class="register-card">
+    <div class="glass-card">
+        <!-- 头部 -->
+        <div class="card-header-section">
+            <div class="logo-icon">
+                <i class="bi bi-person-plus"></i>
+            </div>
+            <h2 class="card-title">创建新账号</h2>
+            <p class="card-subtitle">SFEPT 小样本皮肤病辅助诊断系统</p>
+        </div>
+
+        <!-- 表单主体 -->
+        <div class="card-body-section">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert-modern alert-{{ message.tags }}">
+                    <i class="bi bi-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'users:register' %}">
+                {% csrf_token %}
+
+                <!-- 用户名 -->
+                <div class="form-group-modern">
+                    <label for="id_username">用户名</label>
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control-modern" id="id_username" name="username"
+                               placeholder="请输入您的用户名" value="{{ form.username.value|default:'' }}" required>
+                        <i class="bi bi-person"></i>
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {% for error in form.username.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 密码 -->
+                <div class="form-group-modern">
+                    <label for="id_password">密码</label>
+                    <div class="input-wrapper">
+                        <input type="password" class="form-control-modern" id="id_password" name="password"
+                               placeholder="请设置您的密码" required>
+                        <i class="bi bi-lock"></i>
+                    </div>
+                    <div class="password-hint">
+                        <i class="bi bi-info-circle"></i>
+                        密码长度至少8位
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {% for error in form.password.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 确认密码 -->
+                <div class="form-group-modern">
+                    <label for="id_confirm_password">确认密码</label>
+                    <div class="input-wrapper">
+                        <input type="password" class="form-control-modern" id="id_confirm_password" name="confirm_password"
+                               placeholder="请再次输入密码" required>
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    {% if form.confirm_password.errors %}
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {% for error in form.confirm_password.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 非字段错误 -->
+                {% if form.non_field_errors %}
+                    <div class="error-message" style="margin-bottom: 12px;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- 提交按钮 -->
+                <button type="submit" class="btn-submit">
+                    <i class="bi bi-person-plus me-2"></i>立即注册
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>已有账号？</span>
+            </div>
+
+            <div class="card-footer-section">
+                <a href="{% url 'users:login' %}" class="footer-link">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    返回登录
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

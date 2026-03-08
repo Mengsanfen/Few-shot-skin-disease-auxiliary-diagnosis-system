@@ -87,22 +87,37 @@ body.scrolling .sticky-footer {
     <div class="container d-flex justify-content-between align-items-center">
 
         <div id="logo">
-            <h1><a href="#">SkinProto</a></h1>
+            <h1><a href="/">SkinProto</a></h1>
         </div>
 
         <nav id="navbar" class="navbar">
             <ul>
                 <li><a class="nav-link scrollto " href="/">主页</a></li>
                 <li><a class="nav-link scrollto" href="/agent/">智能初诊</a></li>
-                <li><a class="nav-link scrollto" href="/lungkonw/">算法架构解析</a></li>
+                <li><a class="nav-link scrollto" href="/cell/">皮肤病图像检测</a></li>
                 <li><a class="nav-link scrollto" href="/screen/">系统性能大盘</a></li>
-                <li><a class="nav-link scrollto" href="/ai-chat/">皮肤病理AI助手</a></li>
+                <li><a class="nav-link scrollto" href="/lungkonw/">算法架构解析</a></li>
                 <li><a class="nav-link scrollto" href="/health/">皮肤科普与恢复</a></li>
-            </ul>
+
+                </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
     </div>
 </header><!-- End Header -->
+
+<style>
+    /* 导航栏用户下拉菜单 */
+    .nav-user-dropdown:hover .user-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .user-dropdown-menu li a:hover {
+        background: rgba(45, 156, 211, 0.2);
+        color: #fff;
+    }
+</style>
 
 <main id="main">
 

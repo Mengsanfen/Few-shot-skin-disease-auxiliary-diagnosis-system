@@ -1,0 +1,386 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>用户详情 - SkinProto 管理后台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --tech-blue: #2d9cd3;
+            --tech-purple: #6c5ce7;
+            --tech-dark: #0a1628;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0d47a1 100%);
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-animation span {
+            position: absolute;
+            display: block;
+            width: 20px; height: 20px;
+            background: rgba(45, 156, 211, 0.08);
+            animation: move 25s infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+
+        .bg-animation span:nth-child(1) { left: 10%; width: 80px; height: 80px; }
+        .bg-animation span:nth-child(2) { left: 30%; width: 40px; height: 40px; animation-delay: 2s; }
+        .bg-animation span:nth-child(3) { left: 60%; width: 60px; height: 60px; animation-delay: 4s; }
+
+        @keyframes move {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            padding-top: 100px;
+            padding-bottom: 50px;
+        }
+
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: #fff !important;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: all 0.3s ease;
+            padding: 8px 15px !important;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover { color: #fff !important; background: rgba(255, 255, 255, 0.1); }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .detail-header {
+            background: linear-gradient(135deg, var(--tech-blue), var(--tech-purple));
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .avatar-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #fff;
+            margin: 0 auto 20px;
+        }
+
+        .detail-name {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .detail-username {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .detail-body { padding: 30px; }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: var(--tech-blue);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-item {
+            display: flex;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .info-item .label {
+            width: 120px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .info-item .value {
+            flex: 1;
+            color: #fff;
+        }
+
+        .badge-status {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-active {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .badge-inactive {
+            background: rgba(231, 76, 60, 0.2);
+            color: #ff6b6b;
+        }
+
+        .badge-admin {
+            background: rgba(108, 92, 231, 0.2);
+            color: var(--tech-purple);
+        }
+
+        .btn-action {
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, var(--tech-blue), var(--tech-purple));
+            border: none;
+            color: #fff;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(45, 156, 211, 0.3);
+            color: #fff;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .btn-back:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+
+        .btn-delete {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff6b6b;
+        }
+
+        .btn-delete:hover { background: rgba(231, 76, 60, 0.3); color: #ff6b6b; }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <span></span><span></span><span></span>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-heart-pulse me-2"></i>SkinProto Admin
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="/" class="nav-link"><i class="bi bi-house me-1"></i>首页</a>
+                <a href="{% url 'users:user_list' %}" class="nav-link"><i class="bi bi-people me-1"></i>用户管理</a>
+                <a href="{% url 'users:logout' %}" class="nav-link"><i class="bi bi-box-arrow-right me-1"></i>退出</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="detail-card">
+                        <div class="detail-header">
+                            {% if user_obj.avatar %}
+                                <img src="{{ user_obj.avatar.url }}" alt="{{ user_obj.username }}" class="avatar-large">
+                            {% else %}
+                                <div class="avatar-placeholder">
+                                    {{ user_obj.username|slice:":1"|upper }}
+                                </div>
+                            {% endif %}
+                            <h2 class="detail-name">
+                                {% if user_obj.real_name %}{{ user_obj.real_name }}{% else %}{{ user_obj.username }}{% endif %}
+                            </h2>
+                            <p class="detail-username">@{{ user_obj.username }}</p>
+                        </div>
+
+                        <div class="detail-body">
+                            <!-- 基本信息 -->
+                            <div class="info-section">
+                                <h5 class="section-title"><i class="bi bi-person me-2"></i>基本信息</h5>
+
+                                <div class="info-item">
+                                    <span class="label">用户名</span>
+                                    <span class="value">{{ user_obj.username }}</span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="label">真实姓名</span>
+                                    <span class="value">{{ user_obj.real_name|default:'未设置' }}</span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="label">手机号</span>
+                                    <span class="value">{{ user_obj.phone|default:'未设置' }}</span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="label">邮箱</span>
+                                    <span class="value">{{ user_obj.email|default:'未设置' }}</span>
+                                </div>
+                            </div>
+
+                            <!-- 账户状态 -->
+                            <div class="info-section">
+                                <h5 class="section-title"><i class="bi bi-shield me-2"></i>账户状态</h5>
+
+                                <div class="info-item">
+                                    <span class="label">账户状态</span>
+                                    <span class="value">
+                                        {% if user_obj.is_active %}
+                                            <span class="badge-status badge-active">活跃</span>
+                                        {% else %}
+                                            <span class="badge-status badge-inactive">已禁用</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="label">用户角色</span>
+                                    <span class="value">
+                                        {% if user_obj.is_superuser %}
+                                            <span class="badge-status badge-admin">超级管理员</span>
+                                        {% elif user_obj.is_staff %}
+                                            <span class="badge-status badge-admin">管理员</span>
+                                        {% else %}
+                                            <span class="badge-status" style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);">普通用户</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="label">注册时间</span>
+                                    <span class="value">{{ user_obj.date_joined|date:"Y-m-d H:i:s" }}</span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="label">最后登录</span>
+                                    <span class="value">
+                                        {% if user_obj.last_login %}
+                                            {{ user_obj.last_login|date:"Y-m-d H:i:s" }}
+                                        {% else %}
+                                            从未登录
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- 操作按钮 -->
+                            <div class="d-flex gap-3 flex-wrap">
+                                <a href="{% url 'users:user_edit' user_obj.id %}" class="btn btn-action btn-edit">
+                                    <i class="bi bi-pencil me-2"></i>编辑用户
+                                </a>
+                                <a href="{% url 'users:user_list' %}" class="btn btn-action btn-back">
+                                    <i class="bi bi-arrow-left me-2"></i>返回列表
+                                </a>
+                                {% if not user_obj.is_superuser and user_obj.id != request.user.id %}
+                                <button type="button" class="btn btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <i class="bi bi-trash me-2"></i>删除用户
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: rgba(10, 22, 40, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <h5 class="modal-title" style="color: #fff;">
+                        <i class="bi bi-exclamation-triangle text-danger me-2"></i>确认删除
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="color: rgba(255,255,255,0.7);">
+                    <p>确定要删除用户 <strong style="color: #fff;">{{ user_obj.username }}</strong> 吗？</p>
+                    <p class="text-danger small">此操作不可恢复！</p>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px;">取消</button>
+                    <form method="post" action="{% url 'users:user_delete' user_obj.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" style="border-radius: 10px;">
+                            <i class="bi bi-trash me-1"></i>确认删除
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

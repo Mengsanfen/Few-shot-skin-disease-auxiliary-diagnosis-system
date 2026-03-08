@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app01.apps.App01Config',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -74,8 +75,16 @@ WSGI_APPLICATION = 'DM-AI.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'medical_db',
+        'USER': 'root',
+        'PASSWORD': 'yx1208',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 
@@ -99,10 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -150,3 +155,19 @@ OBJECT_DETECTION = {
     "API_KEY": "OXBmYzRyMHl6bWYzYnh6ZDVzdDEwOnFnUkV6R1JVeklDM2NBYVFmemp2blhSNXpaMVJ0enZS",
     "URL": "https://api.va.landing.ai/v1/tools/agentic-object-detection",
 }
+
+# 自定义用户模型
+AUTH_USER_MODEL = 'users.UserProfile'
+
+# 登录URL（用于 @login_required 装饰器）
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/index/'
+LOGOUT_REDIRECT_URL = '/login/'
+
+# Media文件配置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# 语言和时区设置
+LANGUAGE_CODE = 'zh-hans'
+TIME_ZONE = 'Asia/Shanghai'

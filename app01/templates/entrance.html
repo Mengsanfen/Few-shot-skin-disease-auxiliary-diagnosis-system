@@ -21,7 +21,7 @@
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
     <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-    
+
     <!-- Main CSS File -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
@@ -74,8 +74,6 @@
             animation: float 3s ease-in-out infinite;
         }
 
-
-
         @keyframes neon-pulse {
             from { opacity: 0.5; }
             to { opacity: 1; }
@@ -85,8 +83,9 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-    </style>
-    
+
+            </style>
+
 </head>
 
 <body>
@@ -105,14 +104,14 @@
         <nav id="navbar" class="navbar">
             <ul>
                 <li><a class="nav-link scrollto active" href="#hero">主页</a></li>
-                <!-- ADDED AI问诊导航项 -->
                 <li><a class="nav-link scrollto" href="#ai-diagnosis">智能初诊</a></li>
                 <li><a class="nav-link scrollto" href="#features">皮肤病检测</a></li>
-                <li><a class="nav-link scrollto" href="#data">“医智”数据</a></li>
+                <li><a class="nav-link scrollto" href="#data">"医智"数据</a></li>
                 <li><a class="nav-link scrollto" href="#more-features">系统性能大盘</a></li>
-                <li><a class="nav-link scrollto" href="#pricing">“医智”小贴士</a></li>
+                <li><a class="nav-link scrollto" href="#pricing">"医智"小贴士</a></li>
                 <li><a class="nav-link scrollto" href="#team">开发团队</a></li>
-            </ul>
+
+                </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav>
     </div>
@@ -130,37 +129,32 @@
     <div id="particles-js"></div>
 </section>
 
-    <!-- ======= 团队成员 ======= -->
-    <section id="team" class="section-bg">
-        <div class="container" data-aos="fade-up">
-            <div class="section-header">
-                <h3 class="section-title">科研团队</h3>
-                <span class="section-divider"></span>
-                <p class="section-description">基于原型网络的小样本皮肤病医学图像分类系统 —— SFEPT算法，守护皮肤健康</p>
-            </div>
+<!-- ======= 团队成员 ======= -->
+<section id="team" class="section-bg">
+    <div class="container" data-aos="fade-up">
+        <div class="section-header">
+            <h3 class="section-title">科研团队</h3>
+            <span class="section-divider"></span>
+            <p class="section-description">基于原型网络的小样本皮肤病医学图像分类系统 —— SFEPT算法，守护皮肤健康</p>
+        </div>
 
-            <div class="row justify-content-center" style="margin-left: 0">
-                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" style=" ">
-                    <div class="member">
-                        <div class="pic"><img src="{% static 'img/head/wyx.jpg' %}" alt="">
-                        </div>
-                        <h4>王宇翔</h4>
-                        <span>Chief Executive Officer</span>
-                        <div class="social">
-                            <a href=""><i class="bi bi-wechat"></i></a>
-                            <a href=""><i class="bi bi-facebook"></i></a>
-                            <a href=""><i class="bi bi-tencent-qq"></i></a>
-                            <a href=""><i class="bi bi-github"></i></a>
-                        </div>
+        <div class="row justify-content-center" style="margin-left: 0">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                <div class="member">
+                    <div class="pic"><img src="{% static 'img/head/wyx.jpg' %}" alt=""></div>
+                    <h4>王宇翔</h4>
+                    <span>Chief Executive Officer</span>
+                    <div class="social">
+                        <a href=""><i class="bi bi-wechat"></i></a>
+                        <a href=""><i class="bi bi-facebook"></i></a>
+                        <a href=""><i class="bi bi-tencent-qq"></i></a>
+                        <a href=""><i class="bi bi-github"></i></a>
                     </div>
                 </div>
             </div>
-            
-
-
         </div>
-    </section><!-- End Team Section -->
-
+    </div>
+</section><!-- End Team Section -->
 
 <!-- ======= Footer ======= -->
 <footer id="footer">
@@ -171,7 +165,7 @@
                     &copy; Copyright <strong>SkinProto</strong>. All Rights Reserved
                 </div>
                 <div class="credits">
-                    Designed by <a href="https://github.com/SFmeng">延安大学：王宇翔</a><br>
+                    Designed by <a href="https://github.com/Mengsanfen">延安大学：王宇翔</a><br>
                     基于原型网络的小样本皮肤病辅助诊断系统
                 </div>
             </div>
@@ -189,7 +183,6 @@
 </footer><!-- End  Footer -->
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-chevron-up"></i></a>
-
 
 <!-- Vendor JS Files -->
 <script src="{% static 'vendor/aos/aos.js' %}"></script>
@@ -234,8 +227,6 @@
         }
     });
 
-
-
     // 导航栏交互效果
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('mouseover', () => {
@@ -245,9 +236,7 @@
             link.style.transform = 'scale(1)';
         });
     });
-    
 </script>
-
 
 <!-- Template Main JS File -->
 <script src="{% static 'js/main.js' %}"></script>
