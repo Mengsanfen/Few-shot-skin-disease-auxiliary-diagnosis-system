@@ -1,909 +1,514 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <title>基于原型网络的小样本皮肤病辅助诊断系统</title>
-    <meta content="" name="description">
-    <meta content="" name="keywords">
-
-    <!-- Favicons -->
+    <title>功能总览 | 梦医智联</title>
     <link href="{% static '/img/doctor.png' %}" rel="apple-touch-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
-    <!-- 在引入其他JS文件之前添加jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Vendor CSS Files -->
-    <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-    <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-
-    <!-- Main CSS File -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-
     <style>
-        /* 自定义科技感样式 */
         :root {
-            --tech-blue: rgb(255, 255, 255);
-            --tech-purple: #1c1e1e;
-            --gradient-bg: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            --ink: #152622;
+            --muted: #60716d;
+            --green: #138a73;
+            --green-dark: #0f6658;
+            --coral: #dc7658;
+            --paper: #f5f7f2;
+            --surface: rgba(255, 252, 247, 0.94);
+            --line: rgba(21, 38, 34, 0.08);
+            --shadow: 0 24px 60px rgba(18, 37, 33, 0.08);
         }
 
-
-        .neon-text {
-            text-shadow: 0 0 10px var(--tech-blue),
-                         0 0 20px var(--tech-blue),
-                         0 0 30px var(--tech-blue);
-            animation: neon-pulse 1.5s infinite alternate;
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Noto Sans SC", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(19, 138, 115, 0.12), transparent 28%),
+                radial-gradient(circle at center right, rgba(220, 118, 88, 0.10), transparent 18%),
+                var(--paper);
         }
 
-        .btn-hover-effect {
-            background: #041933;
-            padding: 15px 40px;
-            border-radius: 30px;
+        .shell {
+            width: min(1400px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 24px 0 40px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 18px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 252, 247, 0.84);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--green), var(--coral));
+            color: #fff9ef;
+            font-weight: 700;
+        }
+
+        .brand-copy strong {
+            display: block;
+            font: 700 34px/1 "Cormorant Garamond", serif;
+        }
+
+        .brand-copy span {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-links a,
+        .hero-actions a,
+        .module-link {
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .nav-links a {
+            padding: 10px 14px;
+            background: rgba(19, 138, 115, 0.08);
+            color: #204641;
+            font-size: 14px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(340px, 0.75fr);
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .hero-main,
+        .hero-side,
+        .module-card,
+        .timeline,
+        .story-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-main {
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s;
-        }
-
-        .btn-hover-effect::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg,
-                transparent,
-            rgba(159, 43, 43, 0.85),
-                transparent
-            );
-            transition: left 0.6s;
-        }
-
-        .hover-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
+            min-height: 420px;
             padding: 30px;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.1);
+            display: grid;
+            align-content: space-between;
+            background:
+                linear-gradient(120deg, rgba(18, 62, 54, 0.84), rgba(18, 62, 54, 0.42)),
+                url("{% static 'img/lh/198.jpg' %}") center/cover no-repeat;
+            color: #fff8ed;
         }
 
-        .floating {
-            animation: float 3s ease-in-out infinite;
+        .hero-main::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 25%, transparent 25%) 0 0 / 20px 20px;
+            opacity: 0.18;
+            pointer-events: none;
         }
 
-        .nav-link:hover {
-                transform: scale(1.2);
+        .hero-main > * { position: relative; z-index: 1; }
+
+        .eyebrow {
+            width: fit-content;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255,248,237,.12);
+            border: 1px solid rgba(255,248,237,.18);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
         }
 
-        html, body {
-          margin: 0;
-          padding: 0;
-          overflow-x: hidden;
+        .hero-main h1 {
+            margin: 18px 0 14px;
+            max-width: 12ch;
+            font: 700 clamp(48px, 5vw, 78px)/0.96 "Cormorant Garamond", serif;
         }
 
-
-        @keyframes neon-pulse {
-            from { opacity: 0.5; }
-            to { opacity: 1; }
+        .hero-main p {
+            margin: 0;
+            max-width: 56ch;
+            color: rgba(255, 248, 237, 0.88);
+            font-size: 15px;
+            line-height: 1.9;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 24px;
         }
-        .carousel-item img {
-            width: 100vw;
+
+        .hero-actions a {
+            min-height: 46px;
+            padding: 12px 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cta-primary {
+            background: #fff7eb;
+            color: #12352f;
+        }
+
+        .cta-secondary {
+            background: rgba(255,248,237,.10);
+            color: #fff8ed;
+            border: 1px solid rgba(255,248,237,.16);
+        }
+
+        .hero-side {
+            padding: 22px;
+            background: var(--surface);
+            display: grid;
+            gap: 14px;
+            align-content: start;
+        }
+
+        .hero-side h2 {
+            margin: 0;
+            font: 700 30px/1.08 "Cormorant Garamond", serif;
+        }
+
+        .hero-side p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .hero-side ul {
+            margin: 6px 0 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .hero-side li {
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: rgba(19, 138, 115, 0.08);
+            color: #1d4640;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .story-row {
+            display: grid;
+            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .story-card,
+        .timeline {
+            padding: 22px;
+            background: var(--surface);
+        }
+
+        .story-card h2,
+        .timeline h2 {
+            margin: 0;
+            font: 700 38px/1.05 "Cormorant Garamond", serif;
+        }
+
+        .story-card p,
+        .timeline p {
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .timeline-items {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .timeline-item {
+            padding: 14px;
+            border-radius: 8px;
+            background: #fffdf8;
+            border: 1px solid var(--line);
+        }
+
+        .timeline-item strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .timeline-item span {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .module-card {
+            display: grid;
+            align-content: space-between;
+            min-height: 300px;
+            padding: 22px;
+            background: var(--surface);
+        }
+
+        .module-tag {
+            width: fit-content;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: rgba(19, 138, 115, 0.08);
+            color: #1d4640;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .module-card h3 {
+            margin: 18px 0 10px;
+            font: 700 30px/1.05 "Cormorant Garamond", serif;
+        }
+
+        .module-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .module-link {
+            display: inline-flex;
+            margin-top: 18px;
+            color: var(--green-dark);
+            font-size: 13px;
+        }
+
+        .module-visual {
+            margin-top: 18px;
+            width: 100%;
+            min-height: 140px;
             object-fit: cover;
-            opacity: 1; /* 新增图片透明度 */
+            border-radius: 8px;
         }
 
-        .container-fluid {
-          padding-left: 0;
-          padding-right: 0;
+        @media (max-width: 1180px) {
+            .hero,
+            .story-row,
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
         }
-  
-/* 在现有样式中添加 */
-.title a {
-  position: relative;
-  display: inline-block;
-  color: var(--tech-blue);
-  text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
 
-.title a::before {
-  content: '';
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--tech-purple);
-  transition: width 0.3s ease;
-}
+        @media (max-width: 760px) {
+            .shell {
+                width: min(100% - 20px, 1400px);
+            }
 
-.title a:hover {
-  color: #fff !important;
-  transform: translateY(-3px);
-  text-shadow: 0 0 15px rgba(45,156,211,0.5);
-}
-
-.title a:hover::before {
-  width: 100%;
-}
-
-/* 增强整个区块的悬停反馈 */
-.box:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(45,156,211,0.2);
-}
-
-.box {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-/* 添加流光效果 */
-.box::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 25%,
-    rgba(45,156,211,0.1) 50%,
-    transparent 75%
-  );
-  animation: flow 4s infinite linear;
-  z-index: 1;
-}
-
-@keyframes flow {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* 确保内容在流光层之上 */
-.box > * {
-  position: relative;
-  z-index: 2;
-}
-
-/* 修改#agent部分的背景渐变 */
-#agent section {
-    background: linear-gradient(to bottom, rgba(0, 255, 127, 0.6), rgba(255, 255, 255, 0.8)), 
-                url('{% static 'img/250406/ai.png' %}') fixed center center;
-}
-
-/* 修改#cell部分的背景渐变 */
-#cell section {
-    background: linear-gradient(to bottom, rgba(0, 255, 127, 0.6), rgba(255, 255, 255, 0.8)), 
-                url('{% static 'img/hong4.png' %}') fixed center center;
-}
-
-/* 修改#detect部分的背景渐变 */
-#detect section {
-    background: linear-gradient(to bottom, rgba(0, 255, 127, 0.6), rgba(255, 255, 255, 0.8)), 
-                url('{% static 'img/lh/88.jpg' %}') fixed center center;
-}
-
-/* 修改#data部分的背景渐变 */
-#data section {
-    background: linear-gradient(to bottom, rgba(0, 255, 127, 0.6), rgba(255, 255, 255, 0.8)), 
-                url('{% static 'img/lh/198.jpg' %}') fixed center center;
-}
-
-/* 修改#medmamba部分的背景渐变 */
-#medmamba section {
-    background: linear-gradient(to bottom, rgba(0, 255, 127, 0.6), rgba(255, 255, 255, 0.8)), 
-                url('{% static 'img/lh/1.jpg' %}') fixed center center;
-}
-
-/* 修改#tips部分的背景渐变 */
-#tips section {
-    background: linear-gradient(to bottom, rgba(0, 255, 127, 0.6), rgba(255, 255, 255, 0.8)), 
-                initial; /* 移除原有背景图片 */
-}
-
-/* 修改#teams部分的背景 */
-#teams section {
-    background: linear-gradient(to bottom, #e9edec, rgba(255, 255, 255, 0.8));
-}
-
+            .topbar,
+            .hero-main,
+            .hero-side,
+            .story-card,
+            .timeline,
+            .module-card {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
     </style>
 </head>
-
 <body>
-
-<!-- 加载动画 -->
-<div id="loader">
-    <div class="loading-spinner"></div>
-</div>
-
-{#<!-- ======= Header ======= -->#}
-<header id="header" class="fixed-top d-flex align-items-center header-transparent">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div id="logo">
-            <h1 style="margin-top: auto; margin-left: -80px;"><a href="#" class="text-gradient">SkinProto</a></h1>
+<div class="shell">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark">SP</div>
+            <div class="brand-copy">
+                <strong>功能总览</strong>
+                <span>从这里进入整套皮肤病智能诊断工作流</span>
+            </div>
         </div>
-        <nav id="navbar" class="navbar">
-            <ul>
-                <li><a class="nav-link scrollto " href="/">主页</a></li>
-                <li><a class="nav-link scrollto" href="/agent/">智能初诊</a></li>
-                <li><a class="nav-link scrollto" href="/cell/">皮肤病图像检测</a></li>
-                <li><a class="nav-link scrollto" href="/screen/">系统性能大盘</a></li>
-                <li><a class="nav-link scrollto" href="/lungkonw/">算法架构解析</a></li>
-                <li><a class="nav-link scrollto" href="/health/">皮肤科普与恢复</a></li>
-                <li>
-                    <ul style="display: flex; gap: 5px; margin: 5px; padding: 0; list-style: none;">
-                        <li><img src="{% static 'img/logo_2.png' %}" height="70px"  alt="延安大学"></li>
-                    </ul>
-                </li>
-            </ul>
-            <i class="bi bi-list mobile-nav-toggle"></i>
+        <nav class="nav-links">
+            <a href="/">返回入口</a>
+            <a href="/agent/">智能问诊</a>
+            <a href="/diagnose_skin/">图像诊断</a>
+            <a href="/screen/">系统大屏</a>
         </nav>
-    </div>
-</header>
-{##}
-{#<!-- ======= Hero Section ======= -->#}
-{#<section id="hero">#}
-{#    <div class="hero-text" data-aos="zoom-out">#}
-{#        <h2 class="neon-text">梦医智联</h2>#}
-{#        <div class="typewriter-container">#}
-{#            <p class="typewriter">智能医疗可视化综合平台</p>#}
-{#        </div>#}
-{#        <a href="/index" class="btn-hover-effect scrollto">进入智慧医疗</a>#}
-{#    </div>#}
-{#    <div id="particles-js"></div>#}
-{#</section>#}
+    </header>
 
-<main id="main">
-    <!-- ======= 功能轮播图 ======= -->
-<section id="carousel" class="section-bg" style="width: 100vw; height: 100%;  margin: 0; padding: 0">
-    <div class="container-fluid" data-aos="fade-up">
-        <div class="section-header">
-        </div>
-
-        <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" style="margin-left: 0">
-            <!-- 轮播指示器 -->
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="2"></button>
-                <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="3"></button>
-            </div>
-
-            <!-- 轮播内容 -->
-            <div class="carousel-inner">
-                <!-- AI问诊 -->
-                <div class="carousel-item active">
-                    <a href="/agent">
-                        <img style="height: 650px;"   src="{% static 'img/lh/34.jpg' %}" class="d-block w-100" alt="智能初诊">
-                        <div class="carousel-caption">
-                            <h5>智能初诊</h5>
-                            <p>基于SFEPT原型网络的皮肤病智能诊断系统</p>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- 皮肤病图像检测 -->
-                <div class="carousel-item">
-                    <a href="/cell/">
-                        <img style="height: 650px" src="{% static 'img/lh/22.jpg' %}" class="d-block w-100" alt="皮肤病图像检测">
-                        <div class="carousel-caption">
-                            <h5>皮肤病图像检测</h5>
-                            <p>基于Agent的零样本皮肤病图像检测</p>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- 系统性能大盘 -->
-                <div class="carousel-item">
-                    <a href="/screen">
-                        <img style="height: 650px" src="{% static 'img/lh/198.jpg' %}" class="d-block w-100" alt="系统性能大盘">
-                        <div class="carousel-caption">
-                            <h5>系统性能大盘</h5>
-                            <p>模型性能指标实时可视化展示</p>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- SFEPT算法架构 -->
-                <div class="carousel-item">
-                    <a href="/diagnose_skin/">
-                        <img style="height: 650px" src="{% static 'img/lh/1.jpg' %}" class="d-block w-100" alt="SFEPT">
-                        <div class="carousel-caption">
-                            <h5>SFEPT算法架构</h5>
-                            <p>基于原型网络的小样本皮肤病图像分类</p>
-                        </div>
-                    </a>
+    <section class="hero">
+        <article class="hero-main">
+            <div>
+                <div class="eyebrow">Clinical Workflow Overview</div>
+                <h1>把图像、问诊、知识和系统解释放到同一条体验链路里</h1>
+                <p>
+                    这里不再只是一个模块目录，而是整套系统的操作台。你可以从图像诊断切入，也可以从问诊开始，再回到知识库和系统大屏，完整展示这个毕业设计的能力闭环。
+                </p>
+                <div class="hero-actions">
+                    <a class="cta-primary" href="/diagnose_skin/">先体验图像诊断</a>
+                    <a class="cta-secondary" href="/agent/">或从智能问诊开始</a>
                 </div>
             </div>
+        </article>
 
-            <!-- 轮播控制按钮 -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </div>
-</section>
+        <aside class="hero-side">
+            <h2>推荐演示顺序</h2>
+            <p>如果你要做答辩或路演，这个顺序最容易把系统讲清楚。</p>
+            <ul>
+                <li>先用图像诊断展示模型分类结果和大模型解读</li>
+                <li>再切到智能问诊，展示多轮上下文、RAG 证据与知识图谱</li>
+                <li>然后打开知识库，说明知识来源可维护、可扩展</li>
+                <li>最后回到系统大屏，展示整体态势与模型运营视角</li>
+            </ul>
+        </aside>
+    </section>
 
-        <!-- ADDED AI问诊模块 -->
-    <!-- ======= Spark AI问诊 ======= -->
-{#    <div id="ai-diagnosis">#}
-{#        <section id="features" style="margin-bottom: 60px">#}
-{#            <div class="container" data-aos="fade-up">#}
-{#                <div class="row">#}
-{#                    <div class="col-lg-8">#}
-{#                        <div class="section-header">#}
-{#                            <h3 class="section-title">AI智能问诊</h3>#}
-{#                            <span class="section-divider"></span>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="col-lg-8 col-md-7 ">#}
-{#                        <div class="row">#}
-{#                            <div class="box" data-aos="fade-up">#}
-{#                                <div class="icon"><img src="{% static 'img/icon/AIchat.png' %}" alt=""></div>#}
-{#                                <h4 class="title"><a href="/ai-chat">立即开始智能问诊</a></h4>#}
-{#                                <p class="description">#}
-{#                                    基于医疗大语言模型的智能问诊系统，通过症状描述获取初步诊断建议，7×24小时在线医疗咨询服务</p>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="col-lg-4 col-md-5 features-img">#}
-{#                        <img class="advanced-feature-img-right wow fadeInRight"#}
-{#                             src="{% static 'img/AIchat1.png' %}" alt="">#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </section><!-- End Featuress Section -->#}
-{#    </div>#}
+    <section class="story-row">
+        <article class="story-card">
+            <h2>系统现在最值得被看见的，不是单点模型，而是协同体验</h2>
+            <p>
+                你的项目已经不只是“皮肤病分类模型 demo”。它已经有图像分类、问诊流程、知识库管理、知识图谱、大屏展示这些组件。
+                所以前端最重要的优化，是让这些组件有统一气质和明确路径，让用户一眼就能理解每一步扮演的角色。
+            </p>
+        </article>
 
-    <!-- ======= DeepSeek问诊 ======= -->
-    <div id="agent">
-        <section id="features" style="margin-bottom: 80px; background: linear-gradient(rgba(34,232,235,0.67), rgba(255,255,255,0.95)), url('{% static 'img/250406/ai.png' %}') fixed center center;
-  background-size: cover; height: 550px">
-            <div class="container" data-aos="fade-up">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="section-header">
-                            <h3 class="section-title">智能初诊</h3>
-                            <span class="section-divider"></span>
-                        </div>
-                    </div>
-                    <div class="col-lg-8 col-md-7 ">
-                        <div class="row">
-                            <div class="box" data-aos="fade-up">
-                                <div class="icon"><img style="width: 200px" src="{% static 'img/agent1.png' %}" alt=""></div>
-                                <h4 class="title"><a href="/agent">开始皮肤病智能诊断</a></h4>
-                                <p class="description">
-                                    基于SFEPT原型网络的小样本皮肤病分类系统，通过图像分析获取初步诊断建议，支持多种皮肤病类型的智能识别</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-5 features-img">
-                        <img class="advanced-feature-img-right wow fadeInRight"
-                             src="{% static 'img/AIchat1.png' %}" alt="">
-                    </div>
+        <article class="timeline">
+            <h2>当前页面结构</h2>
+            <div class="timeline-items">
+                <div class="timeline-item">
+                    <strong>入口页 `/`</strong>
+                    <span>快速建立系统认知，进入主工作流。</span>
+                </div>
+                <div class="timeline-item">
+                    <strong>功能总览 `/index/`</strong>
+                    <span>把各模块组织成一套连贯工作流，而不是分散按钮。</span>
+                </div>
+                <div class="timeline-item">
+                    <strong>核心工作台</strong>
+                    <span>问诊、图像诊断、知识库和大屏分别承担分诊、解释、维护和运营视角。</span>
                 </div>
             </div>
-        </section><!-- End Featuress Section -->
-    </div>
-    <!-- ======= 皮肤病图像检测 ======= -->
-    <div id="detect">
-        <section id="features" style=" margin-bottom: 60px;  background: linear-gradient(rgba(34,232,235,0.67), rgba(255,255,255,0.95)), url('{% static 'img/lh/88.jpg' %}') fixed center center;
-      background-size: cover; height: 550px">
-            <div class="container" data-aos="fade-up"; style="height: 400px;">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="section-header">
-                            <h3 class="section-title">皮肤病图像检测</h3>
-                            <span class="section-divider"></span>
-                        </div>
-                    </div>
-                    <div class="col-lg-8 col-md-7 ">
-                        <div class="row">
-                            <div class="box" data-aos="fade-up">
-                                <div class="icon"><img style="width: 200px" src="{% static 'img/icon/AIchat.png' %}" alt=""></div>
-                                <h4 class="title"><a href="/cell/">开始图像检测</a></h4>
-                                <p class="description">
-                                    基于Agent的零样本皮肤病图像检测，用户仅需输入文字提示，<br>
-                                    系统将智能识别皮肤病图像中的病变区域和特征，精准定位并给出初步诊断。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-5 features-img">
-                        <img class="advanced-feature-img-right wow fadeInRight"
-                             src="{% static 'img/detect.jpg' %}" alt="">
-                    </div>
-                </div>
+        </article>
+    </section>
+
+    <section class="module-grid">
+        <article class="module-card">
+            <div>
+                <div class="module-tag">AI Consultation</div>
+                <h3>智能问诊工作台</h3>
+                <p>支持历史上下文、多轮问答、流式生成、RAG 检索证据和知识图谱展示，是整个系统最像产品化的部分。</p>
             </div>
-        </section><!-- End Featuress Section -->
-    </div>
-    <!-- ======= 系统性能大盘 ======= -->
-    <div id="data">
-
-    <section id="features" style="   margin-bottom: 60px; background: linear-gradient(rgba(34,232,235,0.67), rgba(255,255,255,0.95)), url('{% static 'img/lh/198.jpg' %}') fixed center center;
-  background-size: cover; height: 550px">
-        <div class="container" data-aos="fade-up">
-            <div class="row">
-                <div class="col-lg-8 offset-lg-4">
-                    <div class="section-header">
-                        <h3 class="section-title">系统性能大盘</h3>
-                        <span class="section-divider"></span>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-5 features-img">
-                    <img class="advanced-feature-img-right wow fadeInRight"
-                         src="{% static 'img/data2.png' %}" alt="">
-                </div>
-                <div class="col-lg-8 col-md-7">
-                    <div class="row" style="margin-left: 80px">
-                        <div class="box" data-aos="fade-up">
-                            <div class="icon"><img src="{% static 'img/phonee.png' %}" alt="" style="width: 350px"></div>
-                            <h4 class="title"><a href="/screen">模型性能指标可视化</a></h4>
-                            <p class="description">
-                                展示SFEPT模型在皮肤病分类任务上的性能指标，包括准确率、召回率、F1值等关键评估参数</p>
-                        </div>
-                    </div>
-                </div>
-
+            <div>
+                <img class="module-visual" src="{% static 'img/250406/ai.png' %}" alt="智能问诊">
+                <a class="module-link" href="/agent/">进入问诊工作台</a>
             </div>
-        </div>
-    </section><!-- End Featuress Section -->
-    </div>
+        </article>
 
-    <!-- ======= SFEPT算法架构 ======= -->
-    <div id="medmamba">
-    <section id="more-features" style=" margin-bottom: 60px; background: linear-gradient(rgba(34,232,235,0.67), rgba(255,255,255,0.95)), url('{% static 'img/lh/1.jpg' %}') fixed center center;
-  background-size: cover; height: 550px" class="section-bg">
-        <div class="container" data-aos="fade-up">
-            <div class="section-header">
-                <h3 class="section-title">SFEPT算法架构解析</h3>
-                <span class="section-divider"></span>
-                <p class="section-description">
-                    SFEPT（Semantic Feature Enhanced Prototypical Transformer）是一种基于原型网络的小样本皮肤病图像分类算法。通过Swin Transformer提取特征，引入Bias Diminishing原型修正策略，并结合冻结BERT作为潜语义投影器（SAE模块）进行特征增强，实现高精度皮肤病分类。</p>
+        <article class="module-card">
+            <div>
+                <div class="module-tag">Image Diagnosis</div>
+                <h3>皮肤病图像诊断</h3>
+                <p>上传图像后展示预测类别、置信度、Top 结果和大模型分析，适合演示模型能力与解释链路。</p>
             </div>
-
-            <div class="row gy-4">
-
-                <div class="col-lg-6">
-                    <div class="box">
-                        <div class="icon"><img src="{% static '/img/250406/book.png' %}" style="width: 80px"></div>
-                        <h4 class="title"><a href="/lungkonw/">算法原理详解</a></h4>
-                        <p class="description">深入了解SFEPT：原型网络、Swin Transformer、Bias Diminishing策略</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="box">
-                        <div class="icon"><img src="{%  static 'img/doctor2.png' %}" alt="" style="width: 80px"></div>
-                        <h4 class="title"><a href="/diagnose_skin/">皮肤病图像分类演示</a></h4>
-                        <p class="description">体验基于SFEPT的小样本皮肤病分类系统</p>
-                    </div>
-                </div>
-
-
+            <div>
+                <img class="module-visual" src="{% static 'img/lh/34.jpg' %}" alt="图像诊断">
+                <a class="module-link" href="/diagnose_skin/">开始图像诊断</a>
             </div>
-        </div>
-    </section><!-- End More Features Section -->
-    </div>
-    <!-- ======= Call To Action Section ======= -->
+        </article>
 
-    <section id="call-to-action">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-9 text-center text-lg-start">
-                    <h3 class="cta-title">突破数据孤岛，赋能精准医疗 —— 基于原型网络的小样本皮肤病智能辅助诊断</h3>
-                    <p class="cta-text">
-                        <strong>直面临床诊断痛点：</strong>皮肤病类目繁多且临床表现复杂，准确诊断高度依赖专家的丰富经验。然而，在实际临床中，我们面临着类间特征相似度高、类内差异大以及高质量标注数据稀缺等严峻挑战。传统的深度学习模型在数据受限的"长尾"场景下极易陷入过拟合。</p>
-                    <p class="cta-text">
-                        <strong>核心算法 SFEPT 赋能：</strong>本系统依托创新的 SFEPT（Semantic Feature Enhanced Prototypical Transformer）架构，专为极少样本（Few-Shot）场景设计。采用 Swin Transformer 捕获病变区域细微的局部纹理，并引入非迭代的原型修正策略（Bias Diminishing），实现查询集与支持集特征分布的几何对齐，有效纠正原型估计偏差。</p>
-                    <p class="cta-text">
-                        <strong>潜语义映射打破视觉局限：</strong>面对形态极其相似的疑难皮损，系统独创性地集成了潜语义投影模块（SAE）。利用冻结的预训练语言模型（BERT）引入丰富的先验医学知识，在无需额外文本输入的情况下，将视觉特征映射到语义流形，极大提升了特征的判别力。</p>
-                    <p class="cta-text">
-                        <strong>兼顾高精度与临床落地：</strong>系统不仅追求算法精度，更强调"轻量化"与"高能效"。凭借单步前向的非迭代特征平移操作，极大降低了推理延迟与硬件门槛。结合 Grad-CAM 提供的病灶注意力热力图可视化，打破了深度学习的"黑盒"，为医疗边缘设备和资源受限场景提供了可信赖的智能筛查方案。</p>
-
-                </div>
+        <article class="module-card">
+            <div>
+                <div class="module-tag">Knowledge Ops</div>
+                <h3>RAG 知识库管理</h3>
+                <p>维护结构化知识，上传 PDF 与 TXT 文档自动切片，让知识真正进入检索链路，而不是停留在数据库表里。</p>
             </div>
-        </div>
-    </section><!-- End Call To Action Section -->
-    <!-- ======= 医智贴士 ======= -->
-{#    <section id="pricing" class="section-bg">#}
-{#        <div class="container" data-aos="fade-up">#}
-{##}
-{#            <div class="section-header">#}
-{#                <h3 class="section-title">"医"智贴士</h3>#}
-{#                <span class="section-divider"></span>#}
-{#                <p class="section-description">为您提供健康医智生活指南</p>#}
-{#            </div>#}
-{##}
-{#            <div class="row">#}
-{##}
-{#                <div class="col-lg-4 col-md-6">#}
-{#                    <div class="box featured">#}
-{#                        <h3>健康小贴士</h3>#}
-                        {#                        <h4><sup>$</sup>0<span> month</span></h4>#}
-{#                        <ul>#}
-{##}
-{##}
-{#                            <li><i class="bi bi-check-circle"></i> 每日健康智囊</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 健康生活习惯的培养</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 坚持运动</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 均衡饮食</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 充足睡眠</li>#}
-{#                        </ul>#}
-{#                        <a href="/health/" class="get-started-btn">Get Started</a>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{##}
-{#                <div class="col-lg-4 col-md-6">#}
-{#                    <div class="box featured">#}
-{#                        <h3>药品科普</h3>#}
-                        {#                        <h4><sup>$</sup>49<span> month</span></h4>#}
-{#                        <ul>#}
-{#                            <li><i class="bi bi-check-circle"></i> 药品基础知识普及</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 药品使用注意事项</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 药品安全与合理用药</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 药品分类</li>#}
-{#                        </ul>#}
-{#                        <a href="/medical/" class="get-started-btn">Get Started</a>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#                <div class="col-lg-4 col-md-6">#}
-{#                    <div class="box featured">#}
-{#                        <h3>健康指南</h3>#}
-                        {#                        <h4><sup>$</sup>29<span> month</span></h4>#}
-{#                        <ul>#}
-{#                            <li><i class="bi bi-check-circle"></i> 健康生活智能推荐</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 养生小妙招查询</li>#}
-{#                            <li><i class="bi bi-check-circle"></i> 饮食、运动、睡眠、减压...</li>#}
-{#                        </ul>#}
-{#                        <a href="/protect/" class="get-started-btn">Get Started</a>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#            </div>#}
-{#        </div>#}
-{#    </section><!-- End Pricing Section -->#}
-
-    <!-- ======= 医智贴士 ======= -->
-    <div id="tips">
-<section id="pricing" class="section-bg">
-    <div class="container" data-aos="fade-up">
-        <div class="section-header">
-            <h3 class="section-title ">皮肤科普与恢复</h3>
-            <span class="section-divider"></span>
-            <p class="section-description">为您提供皮肤病预防与康复的科学指南</p>
-        </div>
-
-        <div class="row gy-4">
-            <!-- 健康小贴士 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="box featured hover-card">
-                    <div class="icon-wrapper">
-                        <i class="bi bi-heart-pulse icon-animate"></i>
-                    </div>
-                    <h3 class="box-title">健康小贴士</h3>
-                    <ul class="feature-list">
-                        <li><i class="bi bi-check-circle"></i> 每日健康智囊</li>
-                        <li><i class="bi bi-check-circle"></i> 健康生活习惯的培养</li>
-                        <li><i class="bi bi-check-circle"></i> 坚持运动、均衡饮食、充足睡眠</li>
-                    </ul>
-                    <a href="/health/" class="get-started-btn btn-hover-effect">探索</a>
-                </div>
+            <div>
+                <img class="module-visual" src="{% static 'img/250406/me.png' %}" alt="知识库管理">
+                <a class="module-link" href="/medical/">打开知识库工作台</a>
             </div>
+        </article>
 
-            <!-- 药品科普 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="box featured hover-card">
-                    <div class="icon-wrapper">
-                        <i class="bi bi-capsule icon-animate"></i>
-                    </div>
-                    <h3 class="box-title">药品科普</h3>
-                    <ul class="feature-list">
-                        <li><i class="bi bi-check-circle"></i> 药品基础知识普及</li>
-                        <li><i class="bi bi-check-circle"></i> 药品使用注意事项</li>
-                        <li><i class="bi bi-check-circle"></i> 药品安全与合理用药</li>
-                    </ul>
-                    <a href="/medical/" class="get-started-btn btn-hover-effect">探索</a>
-                </div>
+        <article class="module-card">
+            <div>
+                <div class="module-tag">System Board</div>
+                <h3>皮肤病诊断大屏</h3>
+                <p>统一展示问诊活跃趋势、疾病分布、症状热词、知识图谱和模型表现，是整套系统的总控视角。</p>
             </div>
-
-            <!-- 健康指南 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="box featured hover-card">
-                    <div class="icon-wrapper">
-                        <i class="bi bi-clipboard2-pulse icon-animate"></i>
-                    </div>
-                    <h3 class="box-title">健康小妙招</h3>
-                    <ul class="feature-list">
-                        <li><i class="bi bi-check-circle"></i> 健康生活智能推荐</li>
-                        <li><i class="bi bi-check-circle"></i> 养生小妙招查询</li>
-                        <li><i class="bi bi-check-circle"></i> 饮食、运动、睡眠、减压...</li>
-                    </ul>
-                    <a href="/protect/" class="get-started-btn btn-hover-effect">探索</a>
-                </div>
+            <div>
+                <img class="module-visual" src="{% static 'img/lh/198.jpg' %}" alt="系统大屏">
+                <a class="module-link" href="/screen/">查看系统大屏</a>
             </div>
-        </div>
-    </div>
-</section>
-        </div>
+        </article>
 
-<style>
-    /* 新增样式 */
-    .neon-text {
-        text-shadow: 0 0 10px #2d9cd3, 0 0 20px #2d9cd3, 0 0 30px #2d9cd3;
-        animation: neon-pulse 1.5s infinite alternate;
-    }
-
-    .hover-card {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
-        padding: 30px;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .hover-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        background: rgba(255, 255, 255, 0.15);
-    }
-
-    .icon-wrapper {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .icon-animate {
-        font-size: 3rem;
-        color: #2d9cd3;
-        animation: float 3s ease-in-out infinite;
-    }
-
-    .box-title {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #2d9cd3;
-        font-weight: 700;
-    }
-
-    .feature-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .feature-list li {
-        margin-bottom: 10px;
-        padding: 8px 12px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .feature-list li:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateX(10px);
-    }
-
-    .btn-hover-effect {
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 12px 24px;
-        border-radius: 30px;
-        background: linear-gradient(135deg, #2d9cd3, #6c5ce7);
-        color: white;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .btn-hover-effect:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 15px rgba(45, 156, 211, 0.4);
-    }
-
-    @keyframes neon-pulse {
-        from { opacity: 0.5; }
-        to { opacity: 1; }
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-</style>
-
-    <!-- ======= 团队成员 ======= -->
-    <div id="teams">
-    <section id="team" class="section-bg">
-        <div class="container" data-aos="fade-up">
-            <div class="section-header">
-                <h3 class="section-title">科研团队</h3>
-                <span class="section-divider"></span>
-                <p class="section-description">基于原型网络的小样本皮肤病医学图像分类系统 —— SFEPT算法，守护皮肤健康</p>
+        <article class="module-card">
+            <div>
+                <div class="module-tag">Algorithm</div>
+                <h3>算法解析与说明</h3>
+                <p>介绍 SFEPT 的原型修正与特征增强逻辑，帮助系统从“能跑”升级到“能讲清楚”。</p>
             </div>
-
-            <div class="row justify-content-center" style="margin-left: 0">
-                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" style=" ">
-                    <div class="member">
-                        <div class="pic"><img src="{% static 'img/head/wyx.jpg' %}" alt="">
-                        </div>
-                        <h4>王宇翔</h4>
-                        <span>Chief Executive Officer</span>
-                        <div class="social">
-                            <a href=""><i class="bi bi-wechat"></i></a>
-                            <a href=""><i class="bi bi-facebook"></i></a>
-                            <a href=""><i class="bi bi-tencent-qq"></i></a>
-                            <a href=""><i class="bi bi-github"></i></a>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <img class="module-visual" src="{% static 'img/lh/1.jpg' %}" alt="算法解析">
+                <a class="module-link" href="/lungkonw/">查看算法说明</a>
             </div>
+        </article>
+
+        <article class="module-card">
+            <div>
+                <div class="module-tag">Health Education</div>
+                <h3>皮肤科普与护理</h3>
+                <p>补充非诊断型内容，让系统既有智能决策能力，也有面向普通用户的日常健康服务感。</p>
+            </div>
+            <div>
+                <img class="module-visual" src="{% static 'img/lh/saf.jpg' %}" alt="皮肤科普">
+                <a class="module-link" href="/health/">进入皮肤科普</a>
+            </div>
+        </article>
+    </section>
 </div>
-        
-    </section><!-- End Team Section -->
- </div>
-    
-    
-</main><!-- End #main -->
-
-<!-- ======= Footer ======= -->
-<footer id="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-5 text-lg-start text-center">
-                <div class="copyright">
-                    &copy; Copyright <strong>SkinProto</strong>. All Rights Reserved
-                </div>
-                <div class="credits">
-                    Designed by <a href="https://github.com/Mengsanfen">延安大学：王宇翔</a><br>
-                    基于原型网络的小样本皮肤病辅助诊断系统
-                </div>
-            </div>
-            <img src="{% static '/img/ft-logo.png' %}" style="height: 64px; width:220px; margin-top: 3px;">
-            <div class="col-lg-5">
-                <nav class="footer-links text-lg-right text-center pt-2 pt-lg-0" style="margin-top: 20px">
-                    <a href="#intro" class="scrollto">主页</a>
-                    <a href="#about" class="scrollto">关于</a>
-                    <a href="#">隐私政策</a>
-                    <a href="#">使用条款</a>
-                </nav>
-            </div>
-        </div>
-    </div>
-</footer><!-- End  Footer -->
-
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-chevron-up"></i></a>
-
-<!-- Vendor JS Files -->
-<script src="{% static 'vendor/aos/aos.js' %}"></script>
-<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
-
-<!-- 粒子特效库 -->
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script>
-    // 页面加载动画
-    window.addEventListener('load', () => {
-        document.getElementById('loader').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-        }, 500);
-    });
-
-    // 粒子特效初始化
-    particlesJS('particles-js', {
-        particles: {
-            number: { value: 80 },
-            color: { value: '#00a8ff' },
-            shape: { type: 'circle' },
-            opacity: { value: 0.5 },
-            size: { value: 3 },
-            move: {
-                enable: true,
-                speed: 2,
-                direction: 'none',
-                random: false,
-                straight: false,
-                out_mode: 'out',
-            }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: {
-                onhover: { enable: true, mode: 'repulse' },
-                onclick: { enable: true, mode: 'push' }
-            }
-        }
-    });
-
-
-
-    // 导航栏交互效果
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('mouseover', () => {
-            link.style.transform = 'scale(1.3)';
-        });
-        link.addEventListener('mouseout', () => {
-            link.style.transform = 'scale(1.3)';
-        });
-    });
-    
-</script>
-
-
-<!-- Template Main JS File -->
-<script src="{% static 'js/main.js' %}"></script>
-
-
-<script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js"></script>
-<script>
-  new CozeWebSDK.WebChatClient({
-    config: {
-      bot_id: '7489007335110164532',
-      isIframe: false,
-    },
-    auth: {
-      type: 'token',
-      token: 'pat_QfNTIS6zP3uNErBSk9VKIaEG1kkN2hnI5ZvzS9jOBsvYUx9miN7e6m2aVXMszMgQ',
-      onRefreshToken: function () {
-        return 'pat_QfNTIS6zP3uNErBSk9VKIaEG1kkN2hnI5ZvzS9jOBsvYUx9miN7e6m2aVXMszMgQ'
-      }
-    },
-    userInfo: {
-    id: 'wyx0110',
-    url: 'https://c-ssl.dtstatic.com/uploads/blog/202303/19/20230319221800_5a5f2.thumb.1000_0.jpg',
-    nickname: '三分梦',
-    },
-    ui:{
-        base:{
-            icon:'{% static '/img/250406/AI医生.png'%}',
-            zIndex: 1000,
-        },
-        asstBtn: {
-          isNeed: true,    // 是否在页面右下角展示悬浮球
-        },
-        footer: {
-            isShow: true,
-            expressionText: 'Designed by {{'延安大学：王宇翔'}}',
-            linkvars: {
-                name: {
-                    text: '三分梦',
-                    link: 'https://github.com/SFmeng'
-                }
-            }
-        },
-        chatBot: {
-            title: "灵枢智诊",
-            uploadable: true,
-            width: 400,
-        }
-
-    },
-
-  });
-</script>
-
 </body>
 </html>

@@ -2,28 +2,37 @@
 {% load static %}
 {% block css %}
 <style>
+    :root {
+        --diag-green: #138a73;
+        --diag-green-dark: #0f6658;
+        --diag-coral: #dc7658;
+        --diag-paper: #fffdf8;
+        --diag-line: rgba(21, 38, 34, 0.08);
+        --diag-shadow: 0 22px 48px rgba(18, 37, 33, 0.08);
+    }
     .med-card {
         background: rgba(255,255,255,0.98);
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,75,112,0.1);
-        border: 1px solid rgba(58,159,212,0.1);
+        border-radius: 8px;
+        box-shadow: var(--diag-shadow);
+        border: 1px solid var(--diag-line);
     }
     .upload-section {
-        border: 2px dashed #3a9fd4;
-        background: rgba(58,159,212,0.05);
+        border: 1px dashed rgba(19, 138, 115, 0.32);
+        background: rgba(19, 138, 115, 0.05);
         min-height: 380px;
+        border-radius: 8px;
     }
     .result-table {
-        --bs-table-bg: rgba(242,249,255,0.8);
-        --bs-table-striped-bg: rgba(232,244,255,0.6);
-        border-radius: 10px;
+        --bs-table-bg: rgba(250,252,248,0.92);
+        --bs-table-striped-bg: rgba(241,247,244,0.8);
+        border-radius: 8px;
         overflow: hidden;
     }
     .status-badge {
         padding: 8px 15px;
-        border-radius: 20px;
+        border-radius: 8px;
         font-weight: 600;
-        background: linear-gradient(45deg, #3a9fd4, #6c5ce7);
+        background: linear-gradient(135deg, var(--diag-green), var(--diag-coral));
         color: white;
         min-width: 80px;
         display: inline-block;
@@ -34,20 +43,20 @@
         transform: translateY(-2px);
     }
     .instruction-box {
-        background: rgba(242,249,255,0.9);
-        border-left: 4px solid #3a9fd4;
+        background: rgba(244, 249, 246, 0.92);
+        border-left: 4px solid var(--diag-green);
         padding: 1.2rem;
         border-radius: 8px;
     }
     .gradient-btn {
-        background: linear-gradient(45deg, #3a9fd4, #6c5ce7);
+        background: linear-gradient(135deg, var(--diag-green), #1b7e92);
         color: white!important;
         border: none;
         transition: all 0.3s ease;
     }
     .gradient-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(58, 159, 212, 0.4);
+        box-shadow: 0 10px 20px rgba(19, 138, 115, 0.24);
     }
     .gradient-btn:disabled {
         opacity: 0.6;
@@ -68,7 +77,7 @@
         bottom: 0;
         background: rgba(255,255,255,0.9);
         z-index: 10;
-        border-radius: 15px;
+        border-radius: 8px;
         justify-content: center;
         align-items: center;
         flex-direction: column;
@@ -80,7 +89,7 @@
         width: 50px;
         height: 50px;
         border: 4px solid #f3f3f3;
-        border-top: 4px solid #3a9fd4;
+        border-top: 4px solid var(--diag-green);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 15px;
@@ -90,7 +99,7 @@
         100% { transform: rotate(360deg); }
     }
     .loading-text {
-        color: #3a9fd4;
+        color: var(--diag-green);
         font-weight: 500;
         text-align: center;
     }
@@ -120,9 +129,9 @@
     .confidence-medium { color: #ffc107; }
     .confidence-low { color: #dc3545; }
     .ai-analysis-box {
-        background: #f7fbff;
-        border: 1px solid #d8ecf8;
-        border-left: 4px solid #3a9fd4;
+        background: #f8fbf9;
+        border: 1px solid #deebe5;
+        border-left: 4px solid var(--diag-green);
         border-radius: 8px;
         padding: 1rem;
         white-space: pre-wrap;

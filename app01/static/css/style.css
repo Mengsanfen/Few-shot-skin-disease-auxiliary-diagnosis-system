@@ -1389,3 +1389,175 @@ section {
 #footer .footer-links a:hover {
   color: #1dc8cd;
 }
+
+/*--------------------------------------------------------------
+# SkinProto Theme Refresh
+--------------------------------------------------------------*/
+:root {
+  --skin-ink: #152622;
+  --skin-muted: #61716d;
+  --skin-green: #138a73;
+  --skin-green-dark: #0f6658;
+  --skin-coral: #dc7658;
+  --skin-gold: #c79c4b;
+  --skin-surface: #fffdf8;
+  --skin-panel: rgba(255, 252, 247, 0.94);
+  --skin-line: rgba(21, 38, 34, 0.08);
+  --skin-shadow: 0 18px 44px rgba(18, 37, 33, 0.08);
+}
+
+body {
+  background: #f5f7f2;
+  color: var(--skin-ink);
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+a {
+  color: var(--skin-green);
+}
+
+a:hover,
+a:active,
+a:focus {
+  color: var(--skin-green-dark);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--skin-ink);
+  font-weight: 700;
+}
+
+.back-to-top {
+  background: linear-gradient(135deg, var(--skin-green), var(--skin-coral));
+  border-radius: 8px 8px 0 0;
+}
+
+.back-to-top:hover,
+.back-to-top:focus {
+  background: linear-gradient(135deg, var(--skin-green-dark), var(--skin-coral));
+}
+
+#hero {
+  background:
+    linear-gradient(120deg, rgba(18, 62, 54, 0.82), rgba(28, 117, 103, 0.46)),
+    url("../img/250406/bg1.png") center center no-repeat;
+  background-size: cover;
+}
+
+#hero .hero-text {
+  height: calc(60% - 60px);
+}
+
+#hero h2 {
+  color: #fef7eb;
+  font-size: clamp(42px, 5vw, 72px);
+  line-height: 1;
+}
+
+#hero p {
+  color: rgba(255, 248, 236, 0.9);
+}
+
+#hero .btn-get-started,
+.get-started-btn,
+#call-to-action .cta-btn {
+  background: linear-gradient(135deg, var(--skin-green), #1b7e92);
+  border: 0;
+  border-radius: 8px;
+  color: #fffdf8;
+  box-shadow: 0 12px 24px rgba(19, 138, 115, 0.18);
+}
+
+#hero .btn-get-started:hover,
+.get-started-btn:hover,
+#call-to-action .cta-btn:hover {
+  background: linear-gradient(135deg, var(--skin-green-dark), #1b7e92);
+  color: #fffdf8;
+}
+
+.section-header .section-title {
+  color: var(--skin-ink);
+  font-size: 40px;
+}
+
+.section-header .section-description {
+  color: var(--skin-muted);
+  font-style: normal;
+}
+
+.section-header .section-divider {
+  width: 74px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--skin-green), var(--skin-coral));
+}
+
+.section-bg,
+#team,
+#pricing,
+#more-features,
+#features {
+  background: transparent;
+}
+
+#features .box,
+#more-features .box,
+#pricing .box {
+  background: var(--skin-surface);
+  border: 1px solid var(--skin-line);
+  border-radius: 8px;
+  box-shadow: var(--skin-shadow);
+}
+
+#features .title a,
+#more-features h4 a,
+#pricing h3 {
+  color: var(--skin-ink);
+}
+
+#features .description,
+#more-features p,
+#pricing ul li,
+#call-to-action .cta-text,
+#team .member span {
+  color: var(--skin-muted);
+}
+
+#features .icon i,
+#more-features .icon i,
+#pricing .box i {
+  color: var(--skin-green);
+}
+
+#call-to-action {
+  background:
+    linear-gradient(120deg, rgba(18, 62, 54, 0.92), rgba(18, 62, 54, 0.80)),
+    url("../img/lh/198.jpg") center center / cover no-repeat;
+}
+
+#call-to-action .cta-title,
+#call-to-action .cta-text strong {
+  color: #fffaf2;
+}
+
+#team .member {
+  background: var(--skin-surface);
+  border: 1px solid var(--skin-line);
+  border-radius: 8px;
+  padding: 18px 18px 20px;
+  box-shadow: var(--skin-shadow);
+}
+
+#team .member .social a:hover {
+  color: var(--skin-green);
+}
+
+.breadcrumbs {
+  background: transparent;
+}

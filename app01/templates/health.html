@@ -1,623 +1,734 @@
 {% extends 'layout.html' %}
 {% load static %}
+
 {% block css %}
 <style>
-    :root {
-        --primary-color: #4CAF50;
-        --secondary-color: #2196F3;
-        --accent-color: #FF9800;
+    .health-page {
+        display: grid;
+        gap: 24px;
+        padding: 24px 0 8px;
     }
 
-    body {
-        font-family: 'Segoe UI', 微软雅黑, sans-serif;
-        background: #fff;
+    .health-hero {
+        position: relative;
+        min-height: 500px;
+        border-radius: 8px;
+        overflow: hidden;
+        color: #fffdf8;
+        background:
+            linear-gradient(100deg, rgba(12, 48, 43, 0.82), rgba(18, 98, 88, 0.56)),
+            url("{% static 'img/250406/images2.jpg' %}") center/cover no-repeat;
     }
 
-    /* 全屏宽度调整 */
-    .full-width-section {
+    .health-hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 120px;
+        background: linear-gradient(180deg, rgba(12, 48, 43, 0), rgba(12, 48, 43, 0.38));
+    }
+
+    .health-hero-inner {
+        position: relative;
+        z-index: 1;
+        min-height: 500px;
+        display: grid;
+        align-content: space-between;
+        gap: 24px;
+        padding: 36px;
+    }
+
+    .hero-kicker,
+    .topic-tag,
+    .air-chip {
+        display: inline-flex;
+        width: max-content;
+        align-items: center;
+        gap: 8px;
+        min-height: 34px;
+        padding: 0 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .hero-kicker {
+        background: rgba(255, 248, 236, 0.14);
+        border: 1px solid rgba(255, 248, 236, 0.18);
+    }
+
+    .health-hero h1 {
+        margin: 18px 0 14px;
+        max-width: 10ch;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(42px, 5vw, 68px);
+        line-height: 0.96;
+        color: #fffaf4;
+    }
+
+    .health-hero p {
+        margin: 0;
+        max-width: 64ch;
+        font-size: 16px;
+        line-height: 1.85;
+        color: rgba(255, 248, 236, 0.9);
+    }
+
+    .hero-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 26px;
+    }
+
+    .hero-links a {
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .hero-links .primary-link {
+        background: #fff7ee;
+        color: #123730;
+    }
+
+    .hero-links .ghost-link {
+        color: #fff8ee;
+        border: 1px solid rgba(255, 248, 236, 0.18);
+        background: rgba(255, 248, 236, 0.08);
+    }
+
+    .hero-metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .hero-metric {
+        padding: 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 248, 236, 0.14);
+        background: rgba(255, 248, 236, 0.1);
+    }
+
+    .hero-metric span {
+        display: block;
+        color: rgba(255, 248, 236, 0.72);
+        font-size: 12px;
+    }
+
+    .hero-metric strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 22px;
+        line-height: 1.1;
+    }
+
+    .health-band {
+        padding: 0;
+    }
+
+    .section-card {
+        border: 1px solid rgba(20, 42, 37, 0.08);
+        border-radius: 8px;
+        background: rgba(255, 252, 247, 0.9);
+        box-shadow: 0 16px 38px rgba(24, 39, 36, 0.08);
+        overflow: hidden;
+    }
+
+    .section-shell {
+        padding: 24px;
+    }
+
+    .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .section-head h2,
+    .section-head h3 {
+        margin: 0;
+        color: #18312c;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .section-head p {
+        margin: 8px 0 0;
+        color: #5c6e69;
+        line-height: 1.8;
+        font-size: 14px;
+    }
+
+    .feature-grid,
+    .topic-grid,
+    .warning-grid {
+        display: grid;
+        gap: 14px;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .topic-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .warning-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .feature-item,
+    .topic-item,
+    .warning-item {
+        border-radius: 8px;
+        border: 1px solid rgba(20, 42, 37, 0.08);
+        background: #fffdf9;
+        overflow: hidden;
+    }
+
+    .feature-item img {
         width: 100%;
-        max-width: 100%;
-        padding-left: 15px;
-        padding-right: 15px;
-        margin-left: auto;
-        margin-right: auto;
+        height: 200px;
+        object-fit: cover;
+        display: block;
     }
 
-    .hero-section {
-        background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(33, 150, 243, 0.8)),
-                    url('https://source.unsplash.com/1600x900/?health') center/cover;
-        color: white;
-        padding: 120px 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    .feature-copy,
+    .topic-copy,
+    .warning-copy {
+        padding: 16px;
     }
 
-    .feature-card {
-        transition: transform 0.3s;
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    .feature-copy h3,
+    .topic-copy h3,
+    .warning-copy h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #17312c;
     }
 
-    .feature-card:hover {
-        transform: translateY(-10px);
+    .feature-copy p,
+    .topic-copy p,
+    .warning-copy p {
+        margin: 10px 0 0;
+        font-size: 14px;
+        line-height: 1.8;
+        color: #4e605c;
     }
 
-    .health-tips {
-        background: white;
-        padding: 40px 15px; /* 调整左右间距 */
-        margin-top: -80px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border-radius: 0; /* 移除圆角 */
+    .topic-tag {
+        margin-bottom: 12px;
+        background: rgba(19, 138, 115, 0.08);
+        color: #126757;
     }
 
-    .cta-button {
-        background: var(--primary-color);
-        padding: 15px 40px;
-        border-radius: 30px;
-        color: white;
-        transition: all 0.3s;
+    .health-dashboard {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        gap: 18px;
     }
 
-    .cta-button:hover {
-        background: var(--secondary-color);
-        transform: scale(1.05);
+    .tip-panel,
+    .air-panel {
+        min-height: 100%;
     }
 
-    .stat-number {
-        font-size: 2.5rem;
-        color: var(--secondary-color);
-        font-weight: bold;
+    .tip-content {
+        padding: 20px;
+        border-radius: 8px;
+        background:
+            linear-gradient(135deg, rgba(19, 138, 115, 0.08), rgba(220, 118, 88, 0.08)),
+            #fffdf9;
+        min-height: 180px;
+        position: relative;
+        overflow: hidden;
     }
 
-    /* 移除容器最大宽度 */
-    .container-fluid {
-        max-width: 100%;
-        padding-left: 15px;
-        padding-right: 15px;
+    .tip-content::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(19, 138, 115, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(19, 138, 115, 0.05) 1px, transparent 1px);
+        background-size: 26px 26px;
+        opacity: 0.4;
+        pointer-events: none;
     }
 
-    /* 调整行间距 */
-    .no-gutters {
-        --bs-gutter-x: 0;
-        margin-right: 0;
-        margin-left: 0;
+    #healthTipText {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        color: #15352e;
+        font-size: 16px;
+        line-height: 1.9;
+    }
+
+    .tip-refresh {
+        min-width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        border: 1px solid rgba(19, 138, 115, 0.18);
+        background: rgba(19, 138, 115, 0.08);
+        color: #106a59;
+    }
+
+    .tip-refresh.refreshing i {
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #55726b;
+    }
+
+    .air-panel .input-group {
+        margin-bottom: 16px;
+    }
+
+    .air-panel .form-control,
+    .air-panel .btn {
+        min-height: 48px;
+        border-radius: 8px;
+    }
+
+    .air-panel .btn {
+        min-width: 132px;
+        font-weight: 700;
+    }
+
+    .air-result-shell {
+        display: none;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(20, 42, 37, 0.08);
+        background: #fffdf9;
+    }
+
+    .air-status {
+        display: grid;
+        gap: 12px;
+    }
+
+    .air-row {
+        display: grid;
+        grid-template-columns: 84px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(20, 42, 37, 0.08);
+    }
+
+    .air-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .air-row:first-child {
+        padding-top: 0;
+    }
+
+    .air-chip {
+        background: rgba(19, 138, 115, 0.08);
+        color: #126757;
+        justify-self: start;
+    }
+
+    .air-label {
+        color: #59706a;
+        font-size: 13px;
+    }
+
+    .air-value {
+        color: #19362f;
+        font-weight: 700;
+        font-size: 14px;
+        text-align: right;
+    }
+
+    .quality-badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .bg-excellent { background: #daf6de; color: #186339; }
+    .bg-good { background: #ebf8d5; color: #48630d; }
+    .bg-light-polluted { background: #fff1c4; color: #6d5900; }
+    .bg-polluted { background: #ffe0ca; color: #8a4700; }
+    .bg-heavy-polluted { background: #ffd5d2; color: #8f1f18; }
+
+    .health-footer-cta {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        padding: 24px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(19, 138, 115, 0.1), rgba(220, 118, 88, 0.12));
+        border: 1px solid rgba(20, 42, 37, 0.08);
+    }
+
+    .health-footer-cta h3 {
+        margin: 0;
+        font-size: 24px;
+        color: #17312c;
+    }
+
+    .health-footer-cta p {
+        margin: 10px 0 0;
+        color: #4f615d;
+        line-height: 1.8;
+    }
+
+    .health-footer-cta .cta-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .health-footer-cta .cta-actions a {
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .cta-primary {
+        background: #157a67;
+        color: #fffdf8;
+    }
+
+    .cta-secondary {
+        background: rgba(19, 138, 115, 0.08);
+        color: #126757;
+    }
+
+    @media (max-width: 1180px) {
+        .feature-grid,
+        .warning-grid { grid-template-columns: 1fr; }
+        .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .health-dashboard,
+        .health-footer-cta { grid-template-columns: 1fr; }
+        .hero-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+        .health-page { padding-top: 18px; }
+        .health-hero-inner,
+        .section-shell { padding: 18px; }
+        .hero-metrics,
+        .topic-grid { grid-template-columns: 1fr; }
+        .air-row { grid-template-columns: 1fr; }
+        .air-value { text-align: left; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<body>
-    <!-- 主体内容 -->
-    <main>
-        <!-- 首屏大图 -->
-{#        <section class="hero-section text-center full-width-section">#}
-{#            <div class="container-fluid">#}
-{#                <h1 class="display-4 mb-4">拥抱健康生活</h1>#}
-{#                <p class="lead mb-4">每天一小步，健康一大步</p>#}
-{#                <a href="#tips" class="cta-button text-decoration-none">立即开始</a>#}
-{#            </div>#}
-{#        </section>#}
-    <div class="air-quality-section my-5">
-                <!-- 查询输入区域 -->
-                <div class="input-group input-group-lg mb-4 shadow-sm" style="max-width: 600px; margin: 0 auto;">
-                    <input type="text" 
-                           id="airArea" 
-                           class="form-control border-primary" 
-                           placeholder="请输入城市名称，如：北京"
-                           aria-label="城市名称">
-                    <button class="btn btn-primary" 
-                            type="button"
-                            onclick="getAirQuality()"
-                            style="min-width: 120px;">
-                        <i class="bi bi-cloud-sun me-2"></i>查询空气质量
+<section class="site-shell health-page">
+    <section class="health-hero">
+        <div class="health-hero-inner">
+            <div>
+                <div class="hero-kicker">
+                    <i class="bi bi-shield-check"></i>
+                    皮肤健康科普中心
+                </div>
+                <h1>把日常皮肤护理讲得更清楚一点</h1>
+                <p>这一页不再是泛健康杂烩，而是围绕皮肤病智能诊断系统延伸出来的科普内容中心。它把日常护理、环境因素、风险信号和快速问诊入口放在同一条理解路径里，帮助用户先看懂，再决定是否进一步诊断或问诊。</p>
+                <div class="hero-links">
+                    <a class="primary-link" href="/agent/">进入智能问诊</a>
+                    <a class="ghost-link" href="/diagnose_skin/">上传皮肤图片</a>
+                </div>
+            </div>
+
+            <div class="hero-metrics">
+                <div class="hero-metric">
+                    <span>今日建议主题</span>
+                    <strong>清洁 · 保湿 · 防晒</strong>
+                </div>
+                <div class="hero-metric">
+                    <span>重点人群</span>
+                    <strong>痤疮 / 敏感肌 / 湿疹</strong>
+                </div>
+                <div class="hero-metric">
+                    <span>环境因素</span>
+                    <strong>空气质量与作息</strong>
+                </div>
+                <div class="hero-metric">
+                    <span>下一步动作</span>
+                    <strong>科普阅读后可直接问诊</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="health-band section-card">
+        <div class="section-shell">
+            <div class="section-head">
+                <div>
+                    <h2>先从每天都能做到的三件事开始</h2>
+                    <p>真正影响皮肤状态的，往往不是临时抱佛脚，而是持续稳定的基础护理和生活方式。这里把最常见、最有执行价值的日常动作拎出来。</p>
+                </div>
+            </div>
+            <div class="feature-grid">
+                {% for item in habits %}
+                    <article class="feature-item">
+                        <img src="{% static item.image %}" alt="{{ item.title }}">
+                        <div class="feature-copy">
+                            <div class="topic-tag">{{ item.tag }}</div>
+                            <h3>{{ item.title }}</h3>
+                            <p>{{ item.summary }}</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="health-dashboard">
+        <article class="section-card tip-panel">
+            <div class="section-shell">
+                <div class="section-head">
+                    <div>
+                        <h3>今日皮肤健康提示</h3>
+                        <p>接入你现有的健康提示接口，保留动态刷新能力，让这页不是静态文案，而是每天都能更新的一块内容。</p>
+                    </div>
+                    <button id="refreshTip" class="tip-refresh" type="button" aria-label="刷新健康提示">
+                        <i class="bi bi-arrow-clockwise"></i>
                     </button>
                 </div>
-            
-                <!-- 结果展示区域 -->
-                <div id="airResult" class="card border-0 shadow-lg" 
-                     style="display: none;
-                            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                            border-radius: 1rem;">
-                    <div class="card-header bg-primary text-white py-3">
-                        <h5 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>实时空气质量监测</h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- 加载动画 -->
-                        <div id="loading" class="text-center py-4" style="display: none;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="text-muted mt-2">正在获取数据...</p>
-                        </div>
-            
-                        <!-- 数据表格 -->
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover align-middle mb-0">
-                                <tbody id="airData">
-                                    <!-- 数据将通过JS动态填充 -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-light text-muted small">
-                        <i class="bi bi-info-circle me-2"></i>更新时间：<span id="updateTime">-</span>
-                    </div>
+                <div class="tip-content">
+                    <p id="healthTipText">
+                        <span class="loading-inline">
+                            <i class="bi bi-activity"></i>
+                            正在加载今日健康提示...
+                        </span>
+                    </p>
                 </div>
             </div>
-            
-            <style>
-            /* 自定义动画 */
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            .air-quality-section {
-                animation: fadeIn 0.6s ease-out;
-            }
-            
-            .table-hover tbody tr {
-                transition: all 0.2s;
-            }
-            
-            .table-hover tbody tr:hover {
-                background-color: rgba(33, 150, 243, 0.1);
-                transform: scale(1.02);
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            }
-            
-            /* 空气质量等级颜色标记 */
-            .quality-badge {
-                padding: 0.35em 0.65em;
-                border-radius: 1rem;
-                font-size: 0.9em;
-                font-weight: 500;
-            }
-            
-            .bg-excellent { background: #00e676; color: white; }
-            .bg-good { background: #64dd17; color: white; }
-            .bg-light-polluted { background: #ffd600; color: black; }
-            .bg-polluted { background: #ff9100; color: white; }
-            .bg-heavy-polluted { background: #d50000; color: white; }
-            </style>
-        
-        
-<!-- 修改后的健康小贴士模块 -->
-<section class="tech-tip-section" data-aos="fade-up">
-    <div class="tech-tip-container">
-        <div class="static-border"></div>
-        <div class="tip-header">
-            <h3 class="tip-title">
-                <i class="bi bi-cpu-fill"></i>
-                今日健康智囊
-                <span class="status-led"></span>
-            </h3>
-            <button id="refreshTip" class="btn-hover-effect">
-                <i class="bi bi-arrow-clockwise"></i>
-            </button>
+        </article>
+
+        <article class="section-card air-panel">
+            <div class="section-shell">
+                <div class="section-head">
+                    <div>
+                        <h3>环境空气质量查询</h3>
+                        <p>空气质量会影响皮肤敏感、炎症波动和干燥不适。把这块能力保留下来，但展示方式更轻一点，更适合和皮肤护理联动。</p>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="airArea" class="form-control" placeholder="输入城市，例如：北京">
+                    <button class="btn btn-success" type="button" onclick="getAirQuality()">立即查询</button>
+                </div>
+                <div id="loading" class="loading-inline" style="display:none;">
+                    <i class="bi bi-cloud-download"></i>
+                    正在获取空气质量数据...
+                </div>
+                <div id="airResult" class="air-result-shell">
+                    <div class="air-status" id="airData"></div>
+                    <div class="air-label" style="margin-top: 12px;">更新时间：<span id="updateTime">-</span></div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="health-band section-card">
+        <div class="section-shell">
+            <div class="section-head">
+                <div>
+                    <h2>这几类主题最值得提前了解</h2>
+                    <p>如果用户还没进入诊断流程，这里就是一条更柔和的前置路径，先建立判断框架，再决定是否继续上传图片或进入问诊。</p>
+                </div>
+            </div>
+            <div class="topic-grid">
+                {% for item in topics %}
+                    <article class="topic-item">
+                        <div class="topic-copy">
+                            <div class="topic-tag">重点主题</div>
+                            <h3>{{ item.name }}</h3>
+                            <p>{{ item.desc }}</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
         </div>
-        <div class="tip-content">
-            <div class="static-pattern"></div>
-            <p id="healthTipText">
-                <span class="loading">
-                    <i class="bi bi-activity"></i>
-                </span>
-            </p>
+    </section>
+
+    <section class="health-band section-card">
+        <div class="section-shell">
+            <div class="section-head">
+                <div>
+                    <h2>遇到这些变化，不要只靠自己猜</h2>
+                    <p>科普的意义不是让用户自己当医生，而是帮助用户知道什么时候可以先观察，什么时候应该及时到皮肤科评估。</p>
+                </div>
+            </div>
+            <div class="warning-grid">
+                {% for item in warnings %}
+                    <article class="warning-item">
+                        <div class="warning-copy">
+                            <div class="topic-tag">风险提醒</div>
+                            <h3>{{ item.title }}</h3>
+                            <p>{{ item.detail }}</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section class="health-footer-cta">
+        <div>
+            <h3>看完科普后，最有价值的是继续行动</h3>
+            <p>如果你已经有明确症状、皮损图片或反复发作的护理困惑，可以直接进入智能问诊或图像诊断，让科普阅读自然接到系统核心能力上。</p>
+        </div>
+        <div class="cta-actions">
+            <a class="cta-primary" href="/agent/">去智能问诊</a>
+            <a class="cta-secondary" href="/diagnose_skin/">去图像诊断</a>
+        </div>
+    </section>
 </section>
-
-<style>
-/* 修改后的静态样式 */
-.tech-tip-container {
-    background: rgba(16, 24, 39, 0.95);
-    border: 1px solid rgba(45,156,211,0.3);
-    border-radius: 16px;
-    padding: 30px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(45, 156, 211, 0.1);
-}
-
-.static-border {
-    position: absolute;
-    inset: 0;
-    border: 2px solid rgba(45,156,211,0.1);
-    border-radius: 16px;
-    pointer-events: none;
-}
-
-.tip-title {
-    font-family: 'Orbitron', sans-serif;
-    color: #2d9cd3;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-shadow: 0 0 15px rgba(45,156,211,0.3);
-}
-
-.status-led {
-    width: 8px;
-    height: 8px;
-    background: #2d9cd3;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(45,156,211,0.5);
-}
-
-.btn-hover-effect {
-    background: rgba(45,156,211,0.1);
-    border: 1px solid #2d9cd3;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    transition: all 0.3s;
-}
-
-.btn-hover-effect:hover {
-    background: rgba(45,156,211,0.2);
-    transform: rotate(90deg);
-}
-
-.tip-content {
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px;
-    padding: 20px;
-    min-height: 100px;
-    position: relative;
-}
-
-.static-pattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        linear-gradient(0deg, transparent 24%, rgba(45,156,211,0.05) 25%, rgba(45,156,211,0.05) 26%, transparent 27%),
-        linear-gradient(90deg, transparent 24%, rgba(45,156,211,0.05) 25%, rgba(45,156,211,0.05) 26%, transparent 27%);
-    background-size: 50px 50px;
-    opacity: 0.3;
-}
-
-#healthTipText {
-    font-size: 1.1em;
-    line-height: 1.6;
-    color: #e0f2fe;
-    position: relative;
-    margin: 0;
-}
-
-.loading {
-    color: #7f8c8d;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-</style>
-        
-        <!-- 修改配色后的健康小贴士 -->
-{#<section class="health-tip-section" data-aos="fade-up">#}
-{#    <div class="health-tip-container">#}
-{#        <div class="organic-border"></div>#}
-{#        <div class="tip-header">#}
-{#            <h3 class="tip-title">#}
-{#                <i class="bi bi-lightbulb"></i>#}
-{#                健康生活指南#}
-{#                <span class="status-indicator"></span>#}
-{#            </h3>#}
-{#            <button id="refreshTip" class="btn-nature-effect">#}
-{#                <i class="bi bi-arrow-clockwise"></i>#}
-{#            </button>#}
-{#        </div>#}
-{#        <div class="tip-content">#}
-{#            <div class="leaf-pattern"></div>#}
-{#            <p id="healthTipText">#}
-{#                <span class="loading">#}
-{#                    <i class="bi bi-flower1"></i>#}
-{#                </span>#}
-{#            </p>#}
-{#        </div>#}
-{#    </div>#}
-{#</section>#}
-{##}
-{#<style>#}
-{#/* 协调配色样式 */#}
-{#.health-tip-section {#}
-{#    margin: 60px 15px;#}
-{#    border-radius: 16px;#}
-{#    background: rgba(76, 175, 80, 0.05); /* 主色4CAF50的浅色背景 */#}
-{#}#}
-{##}
-{#.health-tip-container {#}
-{#    background: rgba(255,255,255,0.95);#}
-{#    border: 1px solid rgba(33, 150, 243, 0.15); /* 次色2196F3的边框 */#}
-{#    border-radius: 16px;#}
-{#    padding: 30px;#}
-{#    box-shadow: 0 8px 32px rgba(33,150,243,0.08);#}
-{#}#}
-{##}
-{#.organic-border {#}
-{#    border: 2px solid rgba(76,175,80,0.1);#}
-{#    border-radius: 16px;#}
-{#}#}
-{##}
-{#.tip-title {#}
-{#    color: #2e7d32; /* 深绿色 */#}
-{#    font-weight: 600;#}
-{#    display: flex;#}
-{#    align-items: center;#}
-{#    gap: 12px;#}
-{#}#}
-{##}
-{#.tip-title i {#}
-{#    color: #4CAF50; /* 主色 */#}
-{#    font-size: 1.4em;#}
-{#}#}
-{##}
-{#.status-indicator {#}
-{#    width: 8px;#}
-{#    height: 8px;#}
-{#    background: #2196F3; /* 次色 */#}
-{#    border-radius: 50%;#}
-{#    box-shadow: 0 0 8px rgba(33,150,243,0.3);#}
-{#}#}
-{##}
-{#.btn-nature-effect {#}
-{#    background: rgba(76,175,80,0.1);#}
-{#    border: 1px solid #4CAF50;#}
-{#    width: 42px;#}
-{#    height: 42px;#}
-{#    border-radius: 50%;#}
-{#    color: #2e7d32;#}
-{#    transition: all 0.3s;#}
-{#}#}
-{##}
-{#.btn-nature-effect:hover {#}
-{#    background: rgba(33,150,243,0.1);#}
-{#    border-color: #2196F3;#}
-{#    color: #2196F3;#}
-{#    transform: rotate(90deg);#}
-{#}#}
-{##}
-{#.tip-content {#}
-{#    background: rgba(255,255,255,0.9);#}
-{#    border: 1px solid rgba(33,150,243,0.1);#}
-{#    border-radius: 12px;#}
-{#    padding: 20px;#}
-{#    min-height: 100px;#}
-{#}#}
-{##}
-{#.leaf-pattern {#}
-{#    background-image: #}
-{#        radial-gradient(circle at 10% 10%, #}
-{#            rgba(76,175,80,0.05) 0%, #}
-{#            transparent 15%),#}
-{#        radial-gradient(circle at 90% 90%, #}
-{#            rgba(33,150,243,0.05) 0%, #}
-{#            transparent 15%);#}
-{#}#}
-{##}
-{##healthTipText {#}
-{#    color: #37474f; /* 深灰色保持可读性 */#}
-{#    font-size: 1.1em;#}
-{#    line-height: 1.7;#}
-{#}#}
-{##}
-{#.loading {#}
-{#    color: #78909c; /* 中灰色 */#}
-{#}#}
-{#</style>#}
-
-
-        
-        
-        
-        <!-- 健康统计 -->
-        <section class="container-fluid py-5 full-width-section">
-            <div class="row text-center no-gutters g-0">
-                <div class="col-md-3">
-                    <div class="feature-card p-4 bg-white m-2">  <!-- 添加m-2保持间距 -->
-                        <div class="stat-number">80%</div>
-                        <p>疾病可通过预防避免</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="feature-card p-4 bg-white m-2">
-                        <div class="stat-number">30min</div>
-                        <p>每日建议运动时间</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="feature-card p-4 bg-white m-2">
-                        <div class="stat-number">5+</div>
-                        <p>每日建议蔬果种类</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="feature-card p-4 bg-white m-2">
-                        <div class="stat-number">8h</div>
-                        <p>优质睡眠时间</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 健康贴士 -->
-        <section id="tips" class="container-fluid health-tips full-width-section">
-            <h2 class="text-center mb-5">健康生活小贴士</h2>
-            <!-- 添加查询空气质量的按钮和结果展示区域 -->
-{#            <input type="text" id="airArea" placeholder="输入城市">#}
-{#            <button onclick="getAirQuality()">查询空气质量</button>#}
-{#            <div id="airResult"></div>#}
-            
-
-            
-            <!-- 结尾 -->
-            
-            
-            <div class="row no-gutters g-0">
-                <div class="col-md-4 px-2">  <!-- 添加左右间距 -->
-                    <div class="card h-100 border-0">
-                        <img src="{% static '/img/250406/sports.jpg'%}" class="card-img-top" alt="运动">
-                        <div class="card-body">
-                            <h5 class="card-title">坚持运动</h5>
-                            <p class="card-text">每周至少150分钟中等强度有氧运动，保持身体活力</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 px-2">
-                    <div class="card h-100 border-0">
-                        <img src="{% static '/img/250406/veget.png' %}" class="card-img-top" alt="饮食">
-                        <div class="card-body">
-                            <h5 class="card-title">均衡饮食</h5>
-                            <p class="card-text">多吃蔬菜水果，控制油盐摄入，保持饮食多样性</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 px-2">
-                    <div class="card h-100 border-0">
-                        <img src="{% static '/img/250406/sleep.png' %}" class="card-img-top" alt="睡眠">
-                        <div class="card-body">
-                            <h5 class="card-title">充足睡眠</h5>
-                            <p class="card-text">保证7-9小时优质睡眠，建立规律的作息时间</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript">
+<script>
+    function getHealthTip() {
+        const $tipText = $('#healthTipText');
+        $tipText.html(`
+            <span class="loading-inline">
+                <i class="bi bi-activity"></i>
+                正在加载今日健康提示...
+            </span>
+        `);
 
-        function getHealthTip() {
-            const $tipText = $('#healthTipText');
-            
-            // 显示加载状态
-            $tipText.html(`
-                <span class="loading">
-                    <i class="bi bi-activity"></i> 正在加载健康提示...
-                </span>
-            `);
-        
-            // 发起请求
-            $.ajax({
-                url: '/get_tips/',
-                method: 'POST',
-                dataType: 'json',
-                success: function(response) {
-                    console.log('接口响应:', response);
-                    if(response.code === 200 && response.data?.content) {
-                        $tipText.html(response.data.content);
-                    } else {
-                        $tipText.html(`
-                            <span style="color: #dc3545;">
-                                <i class="bi bi-exclamation-triangle"></i>
-                                获取失败：${response.msg || '未知错误'}
-                            </span>
-                        `);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('请求失败:', status, error);
+        $.ajax({
+            url: '/get_tips/',
+            method: 'POST',
+            dataType: 'json',
+            success: function(response) {
+                if (response.code === 200 && response.data?.content) {
+                    $tipText.text(response.data.content);
+                } else {
                     $tipText.html(`
-                        <span style="color: #dc3545;">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            请求失败，<a href="javascript:getHealthTip()">点击重试</a>
+                        <span class="loading-inline" style="color:#b65d3d;">
+                            <i class="bi bi-exclamation-circle"></i>
+                            获取失败，请稍后重试
                         </span>
                     `);
                 }
-            });
-        }
-        
-        // 初始化加载
-        $(document).ready(function(){
-            getHealthTip();
-            
-            // 绑定刷新按钮点击事件
-            $('#refreshTip').click(function(){
-                $(this).addClass('refreshing');
-                getHealthTip();
-                setTimeout(() => {
-                    $(this).removeClass('refreshing');
-                }, 1000);
-            });
+            },
+            error: function() {
+                $tipText.html(`
+                    <span class="loading-inline" style="color:#b65d3d;">
+                        <i class="bi bi-exclamation-circle"></i>
+                        请求失败，点击右上角刷新按钮再试一次
+                    </span>
+                `);
+            }
         });
-    
-        function getAirQuality() {
-            const resultCard = $('#airResult');
-            const loading = $('#loading');
-            
-            // 显示加载状态
-            resultCard.hide();
-            loading.show();
-        
-            $.ajax({
-                type: "POST",
-                url: "/air/data/",
-                data: {name: $('#airArea').val()},
-                success: function(res) {
-                    if(res.code === 200) {
-                        const data = res.result;
-                        const tbody = $('#airData').empty();
-                        
-                        // 构建表格内容（根据实际API字段调整）
-                        const rows = [
-                            {icon: 'geo-alt', label: '监测城市', value: data.area || '-'},
-                            {icon: 'speedometer', label: '空气质量', value: `<span class="quality-badge bg-${getQualityClass(data.quality)}">${data.quality}（AQI ${data.aqi}）</span>`},
-                            {icon: 'circle', label: 'PM2.5', value: data.pm2_5 + ' μg/m³'},
-                            {icon: 'cloud', label: 'PM10', value: data.pm10 + ' μg/m³'},
-                            {icon: 'droplet', label: '二氧化硫', value: data.so2 + ' μg/m³'},
-                            {icon: 'sun', label: '臭氧', value: data.o3 + ' μg/m³'},
-                            {icon: 'activity', label: '二氧化氮', value: data.no2 + ' μg/m³'},
-                            {icon: 'cloud-fog', label: '一氧化碳', value: data.co + ' mg/m³'},
-                            {icon: 'exclamation-triangle', label: '首要污染物', value: data.primary_pollutant || '-'},
-                            {icon: 'clock', label: '监测时间', value: new Date(data.time).toLocaleString()}
-                        ];
-        
-                        rows.forEach(row => {
-                            tbody.append(`
-                                <tr>
-                                    <td style="width: 40px;">
-                                        <i class="bi bi-${row.icon} fs-5 text-primary"></i>
-                                    </td>
-                                    <td class="fw-bold">${row.label}</td>
-                                    <td class="text-end">${row.value}</td>
-                                </tr>
-                            `);
-                        });
-        
-                        // 更新底部时间
-                        $('#updateTime').text(new Date().toLocaleString());
-                        
-                        // 显示结果
-                        loading.hide();
-                        resultCard.slideDown();
-                    }
-                },
-                error: function() {
-                    loading.html('<div class="text-danger"><i class="bi bi-x-circle-fill"></i> 数据获取失败</div>');
-                }
-            });
-        }
-        
-        // 更新颜色分级映射
-        function getQualityClass(quality) {
-            const mapping = {
-                '优': 'excellent',
-                '良好': 'good',  // 根据实际返回值调整
-                '轻度污染': 'light-polluted',
-                '中度污染': 'polluted',
-                '重度污染': 'heavy-polluted'
-            };
-            return mapping[quality] || 'light';
-        }
+    }
 
-    </script>
+    function getQualityClass(quality) {
+        const mapping = {
+            '优': 'excellent',
+            '良好': 'good',
+            '轻度污染': 'light-polluted',
+            '中度污染': 'polluted',
+            '重度污染': 'heavy-polluted'
+        };
+        return mapping[quality] || 'good';
+    }
+
+    function getAirQuality() {
+        const $result = $('#airResult');
+        const $loading = $('#loading');
+        const $list = $('#airData');
+
+        $result.hide();
+        $loading.show();
+        $list.empty();
+
+        $.ajax({
+            type: 'POST',
+            url: '/air/data/',
+            data: {name: $('#airArea').val()},
+            success: function(res) {
+                $loading.hide();
+                if (res.code !== 200) {
+                    $list.html('<div class="loading-inline" style="color:#b65d3d;"><i class="bi bi-exclamation-circle"></i> 暂时没有拿到空气质量数据</div>');
+                    $result.show();
+                    return;
+                }
+
+                const data = res.result || {};
+                const qualityBadge = `<span class="quality-badge bg-${getQualityClass(data.quality)}">${data.quality || '-'} · AQI ${data.aqi || '-'}</span>`;
+                const rows = [
+                    {chip: '城市', label: '监测地区', value: data.area || '-'},
+                    {chip: '空气', label: '空气质量', value: qualityBadge},
+                    {chip: 'PM2.5', label: '细颗粒物', value: `${data.pm2_5 || '-'} μg/m³`},
+                    {chip: 'PM10', label: '可吸入颗粒物', value: `${data.pm10 || '-'} μg/m³`},
+                    {chip: 'SO₂', label: '二氧化硫', value: `${data.so2 || '-'} μg/m³`},
+                    {chip: 'O₃', label: '臭氧', value: `${data.o3 || '-'} μg/m³`}
+                ];
+
+                rows.forEach(function(row) {
+                    $list.append(`
+                        <div class="air-row">
+                            <div class="air-chip">${row.chip}</div>
+                            <div class="air-label">${row.label}</div>
+                            <div class="air-value">${row.value}</div>
+                        </div>
+                    `);
+                });
+
+                $('#updateTime').text(new Date().toLocaleString());
+                $result.show();
+            },
+            error: function() {
+                $loading.hide();
+                $list.html('<div class="loading-inline" style="color:#b65d3d;"><i class="bi bi-exclamation-circle"></i> 数据请求失败</div>');
+                $result.show();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        getHealthTip();
+        $('#refreshTip').on('click', function() {
+            const $button = $(this);
+            $button.addClass('refreshing');
+            getHealthTip();
+            setTimeout(function() {
+                $button.removeClass('refreshing');
+            }, 900);
+        });
+    });
+</script>
 {% endblock %}

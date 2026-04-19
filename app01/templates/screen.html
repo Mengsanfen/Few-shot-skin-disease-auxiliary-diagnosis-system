@@ -16,9 +16,26 @@
         body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.66),rgba(255,255,255,.8)),linear-gradient(rgba(15,140,121,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(15,140,121,.03) 1px,transparent 1px);background-size:auto,28px 28px,28px 28px;pointer-events:none;z-index:-1}
         a{text-decoration:none;color:inherit}.shell{width:min(1480px,calc(100% - 32px));margin:0 auto;padding:22px 0 28px}.card,.hero-main,.hero-side{border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
         .topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:14px 18px;background:rgba(255,253,248,.86);border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(12px)}
+        .command-deck{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:18px;padding:24px;background:rgba(255,253,248,.88);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+        .command-main{display:grid;gap:18px}
+        .command-stats{display:flex;gap:10px;flex-wrap:wrap}
+        .signal{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:12px;font-weight:700}
+        .signal strong{font-size:13px;color:var(--text)}
+        .mini-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+        .top-strip{margin-top:14px}
+        .mini-card{padding:16px 16px 12px;border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(247,250,247,.82))}
+        .mini-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+        .mini-head span{display:block;color:var(--muted);font-size:12px}
+        .mini-head strong{display:block;margin-top:6px;font-size:22px;line-height:1;color:#123c35}
+        .mini-note{font-size:11px;color:#667571}
+        .mini-chart{width:100%;height:118px;margin-top:6px}
+        .command-side{display:grid;align-content:space-between;gap:16px}
+        .command-panel{padding:16px;border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(135deg,rgba(15,140,121,.08),rgba(223,108,79,.08))}
+        .command-panel strong{display:block;margin-top:10px;font-size:26px;color:#123c35;line-height:1.2}
+        .command-panel p{margin:10px 0 0;color:#425451;font-size:13px;line-height:1.8}
         .brand{display:flex;gap:14px;align-items:center}.badge{width:46px;height:46px;border-radius:var(--radius);display:grid;place-items:center;background:linear-gradient(135deg,#167e70,#da7b56);color:#fffef8;font-weight:700}.brand h1{margin:0;font:700 34px/1 "Cormorant Garamond",serif}.brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
         .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.nav a{padding:10px 14px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:13px;font-weight:600}
-        .hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(340px,.92fr);gap:18px;margin-top:18px}.hero-main{min-height:360px;padding:30px;display:grid;align-content:space-between;color:#f7f4ec;background:linear-gradient(120deg,rgba(12,48,43,.84),rgba(23,97,86,.66)),url("{% static 'img/lh/34.jpg' %}") center/cover no-repeat}
+        .hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(340px,.92fr);gap:18px;margin-top:14px}.hero-main{min-height:360px;padding:30px;display:grid;align-content:space-between;color:#f7f4ec;background:linear-gradient(120deg,rgba(12,48,43,.84),rgba(23,97,86,.66)),url("{% static 'img/lh/34.jpg' %}") center/cover no-repeat}
         .hero-tag,.source{display:inline-flex;width:max-content;padding:8px 12px;border-radius:var(--radius);font-size:12px;font-weight:600}.hero-tag{background:rgba(247,244,236,.12);border:1px solid rgba(247,244,236,.18)}.hero-main h2{margin:18px 0 14px;max-width:14ch;font:700 clamp(40px,4vw,62px)/.95 "Cormorant Garamond",serif}.hero-main p{margin:0;max-width:700px;color:rgba(247,244,236,.88);font-size:16px;line-height:1.75}
         .hero-actions,.highlights,.nav,.metric-grid,.dash{display:grid;gap:12px}.hero-actions{grid-auto-flow:column;width:max-content;margin-top:24px}.hero-actions a{padding:12px 16px;border-radius:var(--radius);font-size:14px;font-weight:600}.hero-actions .primary{background:rgba(247,244,236,.92);color:#123a34}.hero-actions .ghost{background:rgba(247,244,236,.1);border:1px solid rgba(247,244,236,.16);color:#fff8ea}
         .highlights{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:24px}.highlight{padding:14px;border:1px solid rgba(247,244,236,.16);border-radius:var(--radius);background:rgba(247,244,236,.1)}.highlight span{display:block;color:rgba(247,244,236,.72);font-size:12px}.highlight strong{display:block;margin-top:8px;font-size:16px;line-height:1.5}
@@ -33,9 +50,9 @@
         .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.tags span{padding:7px 10px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:12px}
         .actions .action{position:relative;min-height:150px;padding:18px;border-radius:var(--radius);overflow:hidden;color:#fffaf0;display:grid;align-content:space-between;background-size:cover;background-position:center}.actions .action::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(18,42,39,.82),rgba(18,42,39,.4))}.actions .action>*{position:relative;z-index:1}.tag{width:max-content;padding:6px 10px;border-radius:var(--radius);background:rgba(255,248,234,.14);border:1px solid rgba(255,248,234,.18);font-size:12px;font-weight:700}.action-link{margin-top:12px;font-size:13px;font-weight:700;color:#fff5df}
         .footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--line);background:rgba(255,252,247,.82);font-size:12px;line-height:1.8;color:#475855}
-        @media (max-width:1260px){.metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr}.span-8,.span-5,.span-4,.span-3{grid-column:span 12}}
-        @media (max-width:820px){.shell{width:min(100% - 20px,1480px);padding-top:14px}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.highlights{grid-template-columns:1fr}.hero-actions{grid-auto-flow:row;width:100%}.hero-actions a{text-align:center}.chart,.chart.small{height:260px}}
-        @media (max-width:560px){.metric-grid{grid-template-columns:1fr}.brand h1{font-size:30px}}
+        @media (max-width:1260px){.command-deck,.hero{grid-template-columns:1fr}.mini-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.span-8,.span-5,.span-4,.span-3{grid-column:span 12}}
+        @media (max-width:820px){.shell{width:min(100% - 20px,1480px);padding-top:14px}.mini-strip,.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.highlights{grid-template-columns:1fr}.hero-actions{grid-auto-flow:row;width:100%}.hero-actions a{text-align:center}.chart,.chart.small{height:260px}}
+        @media (max-width:560px){.mini-strip,.metric-grid{grid-template-columns:1fr}.brand h1{font-size:30px}}
     </style>
 </head>
 <body>
@@ -55,6 +72,39 @@
             <a href="/lungkonw/">算法解析</a>
         </nav>
     </header>
+
+    <section class="mini-strip top-strip">
+        <article class="mini-card">
+            <div class="mini-head">
+                <div>
+                    <span>近 7 日问诊波动</span>
+                    <strong id="miniTrendValue">0 次</strong>
+                </div>
+                <div class="mini-note">新建会话 / 消息互动</div>
+            </div>
+            <div id="miniTrendChart" class="mini-chart"></div>
+        </article>
+        <article class="mini-card">
+            <div class="mini-head">
+                <div>
+                    <span>近期疾病焦点</span>
+                    <strong id="miniDiseaseValue">暂无</strong>
+                </div>
+                <div class="mini-note">按真实数据优先展示</div>
+            </div>
+            <div id="miniDiseaseChart" class="mini-chart"></div>
+        </article>
+        <article class="mini-card">
+            <div class="mini-head">
+                <div>
+                    <span>知识增强命中</span>
+                    <strong id="miniGaugeValue">0%</strong>
+                </div>
+                <div class="mini-note">RAG 参考覆盖率</div>
+            </div>
+            <div id="miniGaugeChart" class="mini-chart"></div>
+        </article>
+    </section>
 
     <section class="hero">
         <article class="hero-main">
@@ -191,6 +241,7 @@
 {{ symptom_counts|json_script:"symptomCountsData" }}
 {{ graph_data|json_script:"graphData" }}
 {{ offline_model_metrics|json_script:"offlineMetricsData" }}
+{{ overview_metrics|json_script:"overviewMetricsData" }}
 
 <script>
     const trendWindows = JSON.parse(document.getElementById("trendWindowsData").textContent);
@@ -198,7 +249,11 @@
     const symptomCounts = JSON.parse(document.getElementById("symptomCountsData").textContent);
     const graphData = JSON.parse(document.getElementById("graphData").textContent);
     const offlineMetrics = JSON.parse(document.getElementById("offlineMetricsData").textContent);
+    const overviewMetrics = JSON.parse(document.getElementById("overviewMetricsData").textContent);
     const colors = {accent:"#0f8c79", coral:"#df6c4f", gold:"#d7a648", ink:"#1d3130", muted:"#5d6d6a", line:"rgba(22,35,33,.08)"};
+    const miniTrendChart = echarts.init(document.getElementById("miniTrendChart"));
+    const miniDiseaseChart = echarts.init(document.getElementById("miniDiseaseChart"));
+    const miniGaugeChart = echarts.init(document.getElementById("miniGaugeChart"));
     const trendChart = echarts.init(document.getElementById("trendChart"));
     const diseaseChart = echarts.init(document.getElementById("diseaseChart"));
     const graphChart = echarts.init(document.getElementById("graphChart"));
@@ -212,6 +267,24 @@
 
     diseaseChart.setOption({animationDuration:700,color:["#0f8c79","#df6c4f","#d7a648","#4f7f77","#c98b74","#718f6d"],tooltip:{trigger:"item",backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"}},title:[{text:(diseaseDistribution[0]||{name:"暂无"}).name,subtext:"当前高频主题",left:"center",top:"40%",textStyle:{fontSize:18,fontWeight:700,color:colors.ink},subtextStyle:{color:colors.muted,fontSize:11}}],legend:{bottom:0,textStyle:{color:colors.muted,fontSize:11}},series:[{type:"pie",radius:["50%","74%"],center:["50%","44%"],label:{color:colors.ink,fontSize:11,formatter:"{b}\\n{d}%"},data:diseaseDistribution}]});
     graphChart.setOption({animationDuration:900,tooltip:{backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"},formatter:(p)=>p.dataType==="edge"?`${p.data.source} → ${p.data.value} → ${p.data.target}`:p.data.name},legend:{bottom:0,textStyle:{color:colors.muted,fontSize:11},data:graphData.categories.map(i=>i.name)},series:[{type:"graph",layout:"force",roam:true,draggable:true,data:graphData.nodes,links:graphData.links,categories:graphData.categories,force:{repulsion:150,edgeLength:[70,130],gravity:.12},label:{show:true,color:colors.ink,fontSize:11},lineStyle:{color:"source",curveness:.14,width:1.6,opacity:.86},edgeSymbol:["none","arrow"],edgeSymbolSize:6}],color:["#0f8c79","#df6c4f","#d7a648","#4f7f77","#9a6e58"]});
+    function getMetricValue(keyword, fallbackValue) {
+        const item = overviewMetrics.find((entry) => String(entry.label || "").includes(keyword));
+        return item ? Number(item.value || 0) : fallbackValue;
+    }
+
+    const miniTrendWindow = trendWindows["7"] || {labels:[], conversations:[], messages:[]};
+    const recentConversationTotal = (miniTrendWindow.conversations || []).reduce((sum, value) => sum + value, 0);
+    const ragHitRate = getMetricValue("RAG", 0);
+    const topDisease = diseaseDistribution[0] || {name:"N/A", value:0};
+
+    document.getElementById("miniTrendValue").textContent = `${recentConversationTotal}x`;
+    document.getElementById("miniDiseaseValue").textContent = topDisease.name;
+    document.getElementById("miniGaugeValue").textContent = `${ragHitRate.toFixed(1)}%`;
+
+    miniTrendChart.setOption({animationDuration:700,color:[colors.accent,colors.coral],grid:{left:4,right:4,top:12,bottom:8},xAxis:{type:"category",show:false,data:miniTrendWindow.labels},yAxis:{type:"value",show:false},tooltip:{trigger:"axis",backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"}},series:[{type:"line",smooth:true,showSymbol:false,data:miniTrendWindow.conversations,areaStyle:{color:"rgba(15,140,121,.14)"},lineStyle:{width:2.5}},{type:"line",smooth:true,showSymbol:false,data:miniTrendWindow.messages,areaStyle:{color:"rgba(223,108,79,.10)"},lineStyle:{width:2}}]});
+    miniDiseaseChart.setOption({animationDuration:700,color:["#0f8c79","#4f7f77","#d7a648"],grid:{left:0,right:0,top:8,bottom:0,containLabel:true},xAxis:{type:"value",show:false},yAxis:{type:"category",axisLine:{show:false},axisTick:{show:false},axisLabel:{color:colors.ink,fontSize:11},data:diseaseDistribution.slice(0,3).map((item)=>item.name).reverse()},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"}},series:[{type:"bar",barWidth:10,data:diseaseDistribution.slice(0,3).map((item)=>item.value).reverse(),itemStyle:{borderRadius:[0,6,6,0],color:(params)=>["#d7a648","#4f7f77","#0f8c79"][params.dataIndex]}}]});
+    miniGaugeChart.setOption({animationDuration:700,series:[{type:"gauge",startAngle:210,endAngle:-30,min:0,max:100,splitNumber:5,radius:"92%",progress:{show:true,width:12,roundCap:true,itemStyle:{color:colors.accent}},axisLine:{lineStyle:{width:12,color:[[1,"rgba(15,140,121,.12)"]]}},axisTick:{show:false},splitLine:{length:10,lineStyle:{width:1,color:"rgba(22,35,33,.18)"}},axisLabel:{distance:-22,color:colors.muted,fontSize:9},pointer:{show:false},anchor:{show:false},detail:{valueAnimation:true,offsetCenter:[0,"10%"],fontSize:18,fontWeight:700,color:colors.ink,formatter:"{value}%"},title:{show:true,offsetCenter:[0,"72%"],fontSize:10,color:colors.muted},data:[{value:Number(ragHitRate.toFixed(1)),name:"RAG"}]}]});
+
     const sortedSymptoms = [...symptomCounts].sort((a,b)=>a.value-b.value);
     symptomChart.setOption({animationDuration:700,grid:{left:86,right:24,top:20,bottom:16},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"}},xAxis:{type:"value",splitLine:{lineStyle:{color:colors.line}},axisLabel:{color:colors.muted,fontSize:11}},yAxis:{type:"category",data:sortedSymptoms.map(i=>i.name),axisLine:{show:false},axisTick:{show:false},axisLabel:{color:colors.ink,fontSize:12}},series:[{type:"bar",barWidth:16,data:sortedSymptoms.map(i=>i.value),itemStyle:{borderRadius:[0,6,6,0],color:(p)=>["#4f7f77","#5d8b80","#6b9789","#b8826a","#c89062","#df6c4f"][p.dataIndex]||colors.accent}}]});
     const orderedMetrics = [...offlineMetrics].reverse();
@@ -220,7 +293,7 @@
     function syncTrend(rangeKey){document.querySelectorAll(".chip").forEach(btn=>btn.classList.toggle("active",btn.dataset.range===rangeKey));trendChart.setOption(trendOption(rangeKey),true)}
     document.querySelectorAll(".chip").forEach(btn=>btn.addEventListener("click",()=>syncTrend(btn.dataset.range)));
     syncTrend("7");
-    window.addEventListener("resize",()=>[trendChart,diseaseChart,graphChart,symptomChart,metricChart].forEach(chart=>chart.resize()));
+    window.addEventListener("resize",()=>[miniTrendChart,miniDiseaseChart,miniGaugeChart,trendChart,diseaseChart,graphChart,symptomChart,metricChart].forEach(chart=>chart.resize()));
     function tickClock(){const now=new Date();const pad=(v)=>String(v).padStart(2,"0");document.getElementById("liveClock").textContent=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;}
     tickClock();setInterval(tickClock,1000);
 </script>

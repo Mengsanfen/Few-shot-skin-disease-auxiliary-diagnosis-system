@@ -14,8 +14,60 @@ from app01.services.knowledge_ingest import ingest_uploaded_document, safe_docum
 from app01.services.medical_rag import BUILTIN_KNOWLEDGE, medical_rag_engine
 
 
+HEALTH_HABITS = [
+    {
+        "title": "温和清洁",
+        "summary": "早晚各一次，运动或大量出汗后补充清洁，尽量选择温和配方，避免频繁去角质。",
+        "tag": "基础护理",
+        "image": "img/250406/images1.jpg",
+    },
+    {
+        "title": "规律作息",
+        "summary": "保持稳定睡眠与节律，减少连续熬夜，有助于炎症期皮肤的恢复与屏障稳定。",
+        "tag": "生活方式",
+        "image": "img/250406/sleep.jpg",
+    },
+    {
+        "title": "饮食与补水",
+        "summary": "控制高糖高油饮食，增加蔬果与优质蛋白，帮助减少痤疮和皮肤敏感的反复波动。",
+        "tag": "饮食管理",
+        "image": "img/250406/veget.png",
+    },
+]
+
+HEALTH_WARNINGS = [
+    {
+        "title": "突然加重的红斑或瘙痒",
+        "detail": "症状快速扩散、夜间瘙痒明显或抓挠后渗出增多时，建议尽快就诊排查。",
+    },
+    {
+        "title": "色素痣短期变化",
+        "detail": "如果出现边界不规则、颜色不均、直径增大或破溃出血，应优先到皮肤科评估。",
+    },
+    {
+        "title": "反复化脓或疼痛性结节",
+        "detail": "说明炎症可能较深或合并感染，不能只靠居家护理拖延处理。",
+    },
+]
+
+HEALTH_TOPICS = [
+    {"name": "敏感肌自护", "desc": "从清洁、保湿、防晒三个环节降低刺激。"},
+    {"name": "痤疮护理", "desc": "关注炎症控制、不要挤压、减少复发诱因。"},
+    {"name": "湿疹管理", "desc": "重视保湿、避免诱发因素、观察季节变化。"},
+    {"name": "防晒与色素", "desc": "降低晒后加深、痘印残留和色沉风险。"},
+]
+
+
 def health(request):
-    return render(request, "health.html")
+    return render(
+        request,
+        "health.html",
+        {
+            "habits": HEALTH_HABITS,
+            "warnings": HEALTH_WARNINGS,
+            "topics": HEALTH_TOPICS,
+        },
+    )
 
 
 def medical(request):
