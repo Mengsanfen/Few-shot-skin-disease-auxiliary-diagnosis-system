@@ -1,6 +1,5 @@
 import json
 from app01.utils.utils import del_filedir
-from app01.yolo import detect
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
@@ -29,7 +28,14 @@ def mask_upload(request):
     path = r'app01/yolo/runs/detect/'
     del_filedir(path)
     """模型推理"""
-    detect.run()
+    try:
+        from app01.yolo import detect
+        detect.run()
+    except OSError as exc:
+        return JsonResponse({
+            'status': False,
+            'message': f'YOLO/Torch 运行环境加载失败: {exc}'
+        }, status=500)
     return JsonResponse({'status': True})
 
 

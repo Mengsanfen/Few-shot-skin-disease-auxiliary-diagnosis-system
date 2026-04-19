@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
@@ -17,3 +18,59 @@ class MedicalKnowledge(models.Model):
         for kw in keywords:
             query |= Q(symptoms__icontains=kw)
         return cls.objects.filter(query).order_by('-id')[:3]
+
+
+class DiagnosisConversation(models.Model):
+    """皮肤病智能问诊会话。"""
+
+    title = models.CharField("会话标题", max_length=120, default="新的皮肤问诊")
+    session_key = models.CharField("会话标识", max_length=80, db_index=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name="用户",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="diagnosis_conversations",
+    )
+    summary = models.TextField("上下文摘要", blank=True, default="")
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+        verbose_name = "智能问诊会话"
+        verbose_name_plural = "智能问诊会话"
+
+    def __str__(self):
+        return self.title
+
+
+class DiagnosisMessage(models.Model):
+    """皮肤病问诊消息记录，保存 RAG 证据与知识图谱路径。"""
+
+    ROLE_CHOICES = (
+        ("user", "用户"),
+        ("assistant", "AI助手"),
+    )
+
+    conversation = models.ForeignKey(
+        DiagnosisConversation,
+        verbose_name="所属会话",
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
+    role = models.CharField("角色", max_length=20, choices=ROLE_CHOICES)
+    content = models.TextField("消息内容")
+    references = models.JSONField("RAG参考", default=list, blank=True)
+    graph_paths = models.JSONField("知识图谱路径", default=list, blank=True)
+    model_used = models.CharField("使用模型", max_length=80, blank=True, default="")
+    created_at = models.DateTimeField("发送时间", auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+        verbose_name = "智能问诊消息"
+        verbose_name_plural = "智能问诊消息"
+
+    def __str__(self):
+        return f"{self.get_role_display()} - {self.created_at:%Y-%m-%d %H:%M}"

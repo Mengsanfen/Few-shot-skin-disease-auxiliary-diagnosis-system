@@ -196,18 +196,19 @@ window.addEventListener('scroll', () => {
 </script>
 
 {#<script src="{% static 'plugins/bootstrap-5.2.3-dist/js/bootstrap.bundle.js' %}"></script>#}
+{% if COZE_TOKEN and COZE_BOT_ID %}
 <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js"></script>
 <script>
   new CozeWebSDK.WebChatClient({
     config: {
-      bot_id: '7489007335110164532',
+      bot_id: '{{ COZE_BOT_ID|escapejs }}',
       isIframe: false,
     },
     auth: {
       type: 'token',
-      token: 'pat_QfNTIS6zP3uNErBSk9VKIaEG1kkN2hnI5ZvzS9jOBsvYUx9miN7e6m2aVXMszMgQ',
+      token: '{{ COZE_TOKEN|escapejs }}',
       onRefreshToken: function () {
-        return 'pat_QfNTIS6zP3uNErBSk9VKIaEG1kkN2hnI5ZvzS9jOBsvYUx9miN7e6m2aVXMszMgQ'
+        return '{{ COZE_TOKEN|escapejs }}'
       }
     },
     userInfo: {
@@ -244,6 +245,7 @@ window.addEventListener('scroll', () => {
 
   });
 </script>
+{% endif %}
 {% block js %}
 
 {% endblock %}

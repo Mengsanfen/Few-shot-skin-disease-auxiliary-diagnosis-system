@@ -10,21 +10,44 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
+
+
+def env_bool(name, default=False):
+    return os.getenv(name, str(default)).lower() in {"1", "true", "yes", "on"}
+
+
+def env_int(name, default):
+    try:
+        return int(os.getenv(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
+def env_str(name, default=""):
+    value = os.getenv(name)
+    return value if value not in (None, "") else default
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-70v)qdfkoflzgo-z^qrlk-!4(#vk7aw36g7c4p5(dieu!*+^ji'
+SECRET_KEY = env_str(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-dev-only-change-me",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool("DJANGO_DEBUG", True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env_str("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # Application definition
 
@@ -63,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app01.context_processors.external_ai_config',
             ],
         },
     },
@@ -73,20 +97,29 @@ WSGI_APPLICATION = 'DM-AI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'medical_db',
-        'USER': 'root',
-        'PASSWORD': 'yx1208',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+DB_ENGINE = env_str("DB_ENGINE", "sqlite").lower()
+if DB_ENGINE == "mysql":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": env_str("DB_NAME", "medical_db"),
+            "USER": env_str("DB_USER", "root"),
+            "PASSWORD": env_str("DB_PASSWORD", ""),
+            "HOST": env_str("DB_HOST", "127.0.0.1"),
+            "PORT": env_str("DB_PORT", "3306"),
+            "OPTIONS": {
+                "charset": "utf8mb4",
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
         }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / env_str("SQLITE_NAME", "db.sqlite3"),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -125,11 +158,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 讯飞星火的API
 SPARK_CONFIG = {
-    "APPID": "2cd7b888",
-    "API_KEY": "9e059a9d07231fbefc85fd16da02d999",
-    "API_SECRET": "ZmE2YmFiY2ViNzEzMjc5YzllN2EzZTU4",
-    "SPARK_URL": "wss://spark-api.xf-yun.com/v4.0/chat",
-    "DOMAIN": "4.0Ultra"
+    "APPID": os.getenv("SPARK_APPID", ""),
+    "API_KEY": os.getenv("SPARK_API_KEY", ""),
+    "API_SECRET": os.getenv("SPARK_API_SECRET", ""),
+    "SPARK_URL": env_str("SPARK_URL", "wss://spark-api.xf-yun.com/v4.0/chat"),
+    "DOMAIN": env_str("SPARK_DOMAIN", "4.0Ultra"),
 }
 
 # 缓存
@@ -141,19 +174,28 @@ CACHES = {
 }
 
 
-# deepseek的API
-# 添加环境变量
-import os
-from dotenv import load_dotenv
-load_dotenv()
-
+# 大模型API：兼容旧 DeepSeek 变量，并提供统一医疗问诊/影像解读配置
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
 BASE_URL = os.getenv("BASE_URL")
+MEDICAL_LLM_API_KEY = os.getenv("MEDICAL_LLM_API_KEY") or DASHSCOPE_API_KEY or DEEPSEEK_API_KEY
+MEDICAL_LLM_BASE_URL = os.getenv("MEDICAL_LLM_BASE_URL") or BASE_URL
+MEDICAL_LLM_MODEL = env_str("MEDICAL_LLM_MODEL", "deepseek-chat")
+MEDICAL_VISION_MODEL = env_str("MEDICAL_VISION_MODEL", MEDICAL_LLM_MODEL)
+MEDICAL_VISION_SEND_IMAGE = env_bool("MEDICAL_VISION_SEND_IMAGE", False)
+MEDICAL_LLM_TIMEOUT = env_int("MEDICAL_LLM_TIMEOUT", 60)
+COZE_TOKEN = os.getenv("COZE_TOKEN", "")
+COZE_BOT_ID = os.getenv("COZE_BOT_ID", "")
+
+# 可选知识图谱后端。未配置时使用本地 MedicalKnowledge 构建轻量图谱证据。
+NEO4J_URI = os.getenv("NEO4J_URI", "")
+NEO4J_USER = os.getenv("NEO4J_USER", "")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
 
 # 目标检测的API
 OBJECT_DETECTION = {
-    "API_KEY": "OXBmYzRyMHl6bWYzYnh6ZDVzdDEwOnFnUkV6R1JVeklDM2NBYVFmemp2blhSNXpaMVJ0enZS",
-    "URL": "https://api.va.landing.ai/v1/tools/agentic-object-detection",
+    "API_KEY": os.getenv("OBJECT_DETECTION_API_KEY", ""),
+    "URL": env_str("OBJECT_DETECTION_URL", "https://api.va.landing.ai/v1/tools/agentic-object-detection"),
 }
 
 # 自定义用户模型

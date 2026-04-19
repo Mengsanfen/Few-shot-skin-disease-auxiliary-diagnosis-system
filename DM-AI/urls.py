@@ -32,6 +32,12 @@ urlpatterns = [
 
     # agent-deepseek
     path('agent/', agent.ai_diagnosis, name="ai_diagnosis"),
+    path('agent/chat/', agent.chat_message, name="agent_chat_message"),
+    path('agent/chat/stream/', agent.chat_message_stream, name="agent_chat_message_stream"),
+    path('agent/conversation/new/', agent.new_conversation, name="agent_new_conversation"),
+    path('agent/conversation/<int:conversation_id>/', agent.conversation_detail, name="agent_conversation_detail"),
+    path('agent/conversation/<int:conversation_id>/clear/', agent.clear_conversation, name="agent_clear_conversation"),
+    path('agent/graph/query/', agent.graph_query, name="agent_graph_query"),
     #口罩检测==》细胞检测
     path('mask/', mask.mask_index),
     path('mask/upload/', mask.mask_upload),

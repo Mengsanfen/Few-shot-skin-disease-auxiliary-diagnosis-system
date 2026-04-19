@@ -5,14 +5,13 @@ SFEPT (Semantic Feature Enhanced Prototypical Transformer) 推理封装模块
 
 核心流程：
 1. 初始化时加载模型权重和计算支持集原型
-2. 推理时对输入图像进行特征提取、原型修正、语义增强、距离计算
+2. 推理时对输入图像进行特征提取、原型修正、距离计算
 """
 
 import os
-import sys
 import threading
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 import torch
@@ -22,42 +21,26 @@ from torchvision import transforms
 
 # 添加 FSL_skin 项目路径到 sys.path
 FSL_SKIN_PATH = Path("D:/AI/FSL_skin")
-if str(FSL_SKIN_PATH) not in sys.path:
-    sys.path.insert(0, str(FSL_SKIN_PATH))
 
 # 导入 SFEPT 相关模块
 try:
     import timm
-    from transformers import BertTokenizer, BertModel
-    from easyfsl.methods.utils import compute_prototypes
 except ImportError as e:
-    raise ImportError(f"请确保安装了所需依赖: timm, transformers。错误: {e}")
+    raise ImportError(f"请确保安装了所需依赖: timm。错误: {e}")
 
 
 # ============================================================================
 # SFEPT 模型组件定义
 # ============================================================================
 
-class VectorDecoder(nn.Module):
-    """
-    向量解码器：使用冻结的 BERT 进行语义特征增强
-    将输入向量解码为 BERT 嵌入表示
-    """
-    def __init__(self, input_dim: int = 768, bert_dim: int = 768):
-        super(VectorDecoder, self).__init__()
-        self.fc = nn.Linear(input_dim, bert_dim)
-        # 加载预训练的 BERT 模型和分词器
-        self.tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-        self.bert_model = BertModel.from_pretrained("bert-base-uncased")
-        # 冻结 BERT 参数
-        for param in self.bert_model.parameters():
-            param.requires_grad = False
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        encoded_input = self.fc(x).unsqueeze(1)
-        with torch.no_grad():
-            bert_output = self.bert_model(inputs_embeds=encoded_input)
-        return bert_output.last_hidden_state.squeeze(1)
+def compute_prototypes(features: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    """按类别计算支持集原型，避免导入外部训练包的无关依赖。"""
+    class_ids = labels.unique(sorted=True)
+    prototypes = []
+    for class_id in class_ids:
+        class_features = features[labels == class_id]
+        prototypes.append(class_features.mean(0))
+    return torch.stack(prototypes)
 
 
 class S2PInference(nn.Module):
@@ -67,7 +50,6 @@ class S2PInference(nn.Module):
     包含:
     - Swin Transformer 特征提取器
     - Bias Diminishing 原型修正策略
-    - BERT 语义增强模块
     """
     def __init__(
         self,
@@ -85,9 +67,6 @@ class S2PInference(nn.Module):
         self.prototypes = torch.tensor(())
         self.support_features = torch.tensor(())
         self.support_labels = torch.tensor(())
-
-        # BERT 语义增强模块
-        self.text_decoder = VectorDecoder()
 
     def compute_features(self, images: torch.Tensor) -> torch.Tensor:
         """提取图像特征并进行归一化"""
@@ -168,8 +147,7 @@ class S2PInference(nn.Module):
         推理流程：
         1. 特征提取 (Swin Transformer → 768维)
         2. Bias Diminishing 原型修正
-        3. [BERT 语义增强 - 暂时禁用]
-        4. L2 距离计算
+        3. L2 距离计算
         """
         # 提取查询图像特征
         query_features = self.compute_features(query_images)
@@ -177,10 +155,8 @@ class S2PInference(nn.Module):
         # Bias Diminishing 原型修正
         self.rectify_prototypes(query_features)
 
-        # [BERT 语义增强 - 暂时禁用]
-        # semantic_features = self.text_decoder(query_features)
-        # enhanced_features = semantic_features + query_features
-        enhanced_features = query_features  # 直接使用原始特征，通道数保持 768 维
+        # 直接使用原始图像特征，通道数保持 768 维。
+        enhanced_features = query_features
 
         # 计算 L2 距离
         scores = self.l2_distance_to_prototypes(enhanced_features)
@@ -313,7 +289,11 @@ class SkinFSLPredictor:
         if os.path.exists(self.model_path):
             print(f"[SkinFSLPredictor] 加载模型权重: {self.model_path}")
             state_dict = torch.load(self.model_path, map_location=self.device)
-            model.load_state_dict(state_dict)
+            missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+            if missing_keys:
+                print(f"[SkinFSLPredictor] 警告: 权重缺少 {len(missing_keys)} 个键")
+            if unexpected_keys:
+                print(f"[SkinFSLPredictor] 忽略权重中未使用的 {len(unexpected_keys)} 个键")
         else:
             print(f"[SkinFSLPredictor] 警告: 模型文件不存在 {self.model_path}")
 

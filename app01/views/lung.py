@@ -16,6 +16,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from PIL import Image
 
+from app01.services.image_report import generate_image_diagnosis_report
 from app01.utils.utils import del_filedir
 
 # 配置日志
@@ -173,6 +174,15 @@ def skin_disease_predict(request):
         # 生成诊断建议
         tips = _generate_tips(result['predicted_class_name'], result['confidence'])
 
+        top_predictions = []
+        if return_all_scores:
+            all_scores = result.get('all_scores', {})
+            sorted_scores = sorted(all_scores.items(), key=lambda x: x[1], reverse=True)[:5]
+            top_predictions = [
+                {'class_name': name, 'confidence': round(score, 4)}
+                for name, score in sorted_scores
+            ]
+
         # 构建响应
         response_data = {
             'status': True,
@@ -184,13 +194,15 @@ def skin_disease_predict(request):
         }
 
         if return_all_scores:
-            # 只返回置信度前5的类别
-            all_scores = result.get('all_scores', {})
-            sorted_scores = sorted(all_scores.items(), key=lambda x: x[1], reverse=True)[:5]
-            response_data['top_predictions'] = [
-                {'class_name': name, 'confidence': round(score, 4)}
-                for name, score in sorted_scores
-            ]
+            response_data['top_predictions'] = top_predictions
+
+        ai_report = generate_image_diagnosis_report(
+            image=image.copy(),
+            prediction=response_data,
+            top_predictions=top_predictions,
+            basic_tips=tips,
+        )
+        response_data.update(ai_report)
 
         logger.info(f"[skin_disease_predict] 预测成功: {result['predicted_class_name']} ({result['confidence']:.4f})")
         return JsonResponse(response_data)

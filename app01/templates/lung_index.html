@@ -119,6 +119,22 @@
     .confidence-high { color: #28a745; }
     .confidence-medium { color: #ffc107; }
     .confidence-low { color: #dc3545; }
+    .ai-analysis-box {
+        background: #f7fbff;
+        border: 1px solid #d8ecf8;
+        border-left: 4px solid #3a9fd4;
+        border-radius: 8px;
+        padding: 1rem;
+        white-space: pre-wrap;
+        line-height: 1.65;
+        color: #34495e;
+    }
+    .ai-analysis-meta {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
 </style>
 {% endblock %}
 
@@ -215,6 +231,15 @@
                                 <th>临床建议</th>
                                 <td id="diagnosisTips" class="text-secondary">
                                     请上传皮肤病图像进行 AI 智能诊断
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>大模型解读</th>
+                                <td>
+                                    <span id="analysisMeta" class="ai-analysis-meta">等待模型分类结果</span>
+                                    <div id="aiAnalysis" class="ai-analysis-box text-secondary">
+                                        完成图像分类后，系统会结合上传图片、分类结果和置信度生成综合诊断建议。
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -461,6 +486,27 @@ function renderResult(data) {
     if (data.top_predictions && data.top_predictions.length > 0) {
         renderTopPredictions(data.top_predictions);
     }
+
+    // 大模型综合解读
+    renderAIAnalysis(data);
+}
+
+function renderAIAnalysis(data) {
+    const analysisEl = document.getElementById('aiAnalysis');
+    const metaEl = document.getElementById('analysisMeta');
+    const analysis = data.ai_analysis || '暂无大模型解读，请检查后端大模型配置。';
+
+    analysisEl.textContent = analysis;
+    analysisEl.classList.remove('text-secondary');
+    analysisEl.classList.add('result-animate');
+
+    if (data.ai_analysis_available) {
+        metaEl.textContent = `来源：${data.analysis_source || '大模型'}`;
+        metaEl.className = 'ai-analysis-meta text-primary';
+    } else {
+        metaEl.textContent = `本地兜底：${data.analysis_source || 'local_fallback'}`;
+        metaEl.className = 'ai-analysis-meta text-muted';
+    }
 }
 
 // ============================================================================
@@ -531,6 +577,10 @@ function showError(message) {
         <span class="badge bg-secondary me-2">--</span>
         <span class="fw-bold">预测失败</span>
     `;
+    document.getElementById('analysisMeta').textContent = '等待模型分类结果';
+    document.getElementById('analysisMeta').className = 'ai-analysis-meta text-muted';
+    document.getElementById('aiAnalysis').textContent = '完成图像分类后，系统会结合上传图片、分类结果和置信度生成综合诊断建议。';
+    document.getElementById('aiAnalysis').classList.add('text-secondary');
 
     // 隐藏 Top 预测
     document.getElementById('topPredictions').style.display = 'none';
