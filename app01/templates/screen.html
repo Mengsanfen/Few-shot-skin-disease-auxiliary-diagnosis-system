@@ -1,135 +1,228 @@
-﻿{% load static %}
-<!doctype html>
-<html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <title>可视化</title>
-
-    <!-- Favicons -->
-
-    <link href="{% static '/img/doctor1.png' %}" rel="icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>皮肤病智能诊断决策大屏</title>
     <link href="{% static '/img/doctor.png' %}" rel="icon">
-
-
-    <script type="text/javascript" src="{% static 'bigscreen/js/jquery.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'bigscreen/css/comon0.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="{% static 'bigscreen/js/echarts.min.js' %}"></script>
+    <style>
+        :root{--bg:#f3f5ef;--panel:rgba(255,252,247,.92);--text:#162321;--muted:#5d6d6a;--line:rgba(22,35,33,.08);--accent:#0f8c79;--coral:#df6c4f;--gold:#d7a648;--shadow:0 18px 45px rgba(25,39,36,.1);--radius:8px}
+        *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans SC",sans-serif;color:var(--text);background:linear-gradient(180deg,rgba(243,245,239,.94),rgba(243,245,239,1)),url("{% static 'img/lh/198.jpg' %}") top center/cover fixed no-repeat}
+        body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.66),rgba(255,255,255,.8)),linear-gradient(rgba(15,140,121,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(15,140,121,.03) 1px,transparent 1px);background-size:auto,28px 28px,28px 28px;pointer-events:none;z-index:-1}
+        a{text-decoration:none;color:inherit}.shell{width:min(1480px,calc(100% - 32px));margin:0 auto;padding:22px 0 28px}.card,.hero-main,.hero-side{border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+        .topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:14px 18px;background:rgba(255,253,248,.86);border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(12px)}
+        .brand{display:flex;gap:14px;align-items:center}.badge{width:46px;height:46px;border-radius:var(--radius);display:grid;place-items:center;background:linear-gradient(135deg,#167e70,#da7b56);color:#fffef8;font-weight:700}.brand h1{margin:0;font:700 34px/1 "Cormorant Garamond",serif}.brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
+        .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.nav a{padding:10px 14px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:13px;font-weight:600}
+        .hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(340px,.92fr);gap:18px;margin-top:18px}.hero-main{min-height:360px;padding:30px;display:grid;align-content:space-between;color:#f7f4ec;background:linear-gradient(120deg,rgba(12,48,43,.84),rgba(23,97,86,.66)),url("{% static 'img/lh/34.jpg' %}") center/cover no-repeat}
+        .hero-tag,.source{display:inline-flex;width:max-content;padding:8px 12px;border-radius:var(--radius);font-size:12px;font-weight:600}.hero-tag{background:rgba(247,244,236,.12);border:1px solid rgba(247,244,236,.18)}.hero-main h2{margin:18px 0 14px;max-width:14ch;font:700 clamp(40px,4vw,62px)/.95 "Cormorant Garamond",serif}.hero-main p{margin:0;max-width:700px;color:rgba(247,244,236,.88);font-size:16px;line-height:1.75}
+        .hero-actions,.highlights,.nav,.metric-grid,.dash{display:grid;gap:12px}.hero-actions{grid-auto-flow:column;width:max-content;margin-top:24px}.hero-actions a{padding:12px 16px;border-radius:var(--radius);font-size:14px;font-weight:600}.hero-actions .primary{background:rgba(247,244,236,.92);color:#123a34}.hero-actions .ghost{background:rgba(247,244,236,.1);border:1px solid rgba(247,244,236,.16);color:#fff8ea}
+        .highlights{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:24px}.highlight{padding:14px;border:1px solid rgba(247,244,236,.16);border-radius:var(--radius);background:rgba(247,244,236,.1)}.highlight span{display:block;color:rgba(247,244,236,.72);font-size:12px}.highlight strong{display:block;margin-top:8px;font-size:16px;line-height:1.5}
+        .hero-side,.card{padding:20px;background:var(--panel);backdrop-filter:blur(10px)}.section-top,.head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.section-top .title,.head h3{margin:0;font-size:18px;font-weight:700}.stamp,.desc,.case-meta,.case-time,.status-label{color:var(--muted);font-size:12px}.status-list,.list,.actions{display:grid;gap:10px;margin-top:16px}
+        .status-item,.case,.alert{display:flex;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--line);border-radius:var(--radius);background:#fffdf8}.status-item strong{display:block;font-size:15px;line-height:1.5}.status-pill{padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}.ready{background:rgba(15,140,121,.12);color:#0b6d5d}.warn{background:rgba(223,108,79,.12);color:#b65d3d}.idle{background:rgba(215,166,72,.14);color:#715c2a}
+        .note{margin-top:16px;padding:14px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(15,140,121,.1),rgba(223,108,79,.08));font-size:13px;line-height:1.8;color:#2b403d}
+        .metric-grid{grid-template-columns:repeat(6,minmax(0,1fr));margin-top:18px}.metric{padding:18px 16px;background:rgba(255,252,247,.9);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 30px rgba(25,39,36,.06)}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;margin-top:10px;font:700 clamp(28px,3vw,42px)/1 "Cormorant Garamond",serif;color:#123c35}.metric small{display:block;margin-top:10px;color:#3c4f4c;font-size:12px;line-height:1.6}
+        .dash{grid-template-columns:repeat(12,minmax(0,1fr));margin-top:18px}.span-8{grid-column:span 8}.span-5{grid-column:span 5}.span-4{grid-column:span 4}.span-3{grid-column:span 3}.desc{margin-top:6px;line-height:1.7}.switch{display:flex;gap:8px;flex-wrap:wrap}.chip{border:0;padding:8px 12px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:12px;font-weight:700;cursor:pointer}.chip.active{background:#166f61;color:#fffaf0}
+        .chart{width:100%;height:320px}.chart.small{height:280px}.source{background:rgba(15,140,121,.08);color:#16574e;margin-top:4px}
+        .case{display:block}.case-row{display:flex;justify-content:space-between;gap:12px}.case h4,.alert h4,.action h4{margin:0;font-size:15px;font-weight:700}.case p,.alert p,.action p{margin:8px 0 0;font-size:13px;line-height:1.8;color:#30413f}
+        .alert.high{border-color:rgba(223,108,79,.28);background:rgba(223,108,79,.08)}.alert.medium{border-color:rgba(215,166,72,.26);background:rgba(215,166,72,.08)}.alert.low{border-color:rgba(15,140,121,.22);background:rgba(15,140,121,.07)}
+        .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.tags span{padding:7px 10px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:12px}
+        .actions .action{position:relative;min-height:150px;padding:18px;border-radius:var(--radius);overflow:hidden;color:#fffaf0;display:grid;align-content:space-between;background-size:cover;background-position:center}.actions .action::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(18,42,39,.82),rgba(18,42,39,.4))}.actions .action>*{position:relative;z-index:1}.tag{width:max-content;padding:6px 10px;border-radius:var(--radius);background:rgba(255,248,234,.14);border:1px solid rgba(255,248,234,.18);font-size:12px;font-weight:700}.action-link{margin-top:12px;font-size:13px;font-weight:700;color:#fff5df}
+        .footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--line);background:rgba(255,252,247,.82);font-size:12px;line-height:1.8;color:#475855}
+        @media (max-width:1260px){.metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr}.span-8,.span-5,.span-4,.span-3{grid-column:span 12}}
+        @media (max-width:820px){.shell{width:min(100% - 20px,1480px);padding-top:14px}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.highlights{grid-template-columns:1fr}.hero-actions{grid-auto-flow:row;width:100%}.hero-actions a{text-align:center}.chart,.chart.small{height:260px}}
+        @media (max-width:560px){.metric-grid{grid-template-columns:1fr}.brand h1{font-size:30px}}
+    </style>
 </head>
-<script>
-    $(window).load(function () {
-        $(".loading").fadeOut()
-    })
-
-    /****/
-    $(document).ready(function () {
-        var whei = $(window).width()
-        $("html").css({fontSize: whei / 20})
-        $(window).resize(function () {
-            var whei = $(window).width()
-            $("html").css({fontSize: whei / 20})
-        });
-    });
-</script>
-<script type="text/javascript" src="{% static 'bigscreen/js/echarts.min.js' %}"></script>
-<script language="JavaScript" src="{% static 'bigscreen/js/js.js' %}"></script>
 <body>
-<div class="canvas" style="opacity: .2">
-    <iframe frameborder="0" src="{% static 'bigscreen/js/index.html' %}" style="width: 100%; height: 100%"></iframe>
-</div>
-<div class="loading">
-    <div class="loadbox"><img src="{% static 'bigscreen/picture/loading.gif' %}"> 页面加载中...</div>
-</div>
-{#<div class="head">#}
-{#    <h1><a href="" style="color: white">疾病大数据可视化</a></h1>#}
-{#    <div class="weather"><span id="showTime"></span></div>#}
-{#    <script>#}
-{#        var t = null;#}
-{#        t = setTimeout(time, 1000);//開始运行#}
-{#        function time() {#}
-{#            clearTimeout(t);//清除定时器#}
-{#            dt = new Date();#}
-{#            var y = dt.getFullYear();#}
-{#            var mt = dt.getMonth() + 1;#}
-{#            var day = dt.getDate();#}
-{#            var h = dt.getHours();//获取时#}
-{#            var m = dt.getMinutes();//获取分#}
-{#            var s = dt.getSeconds();//获取秒#}
-{#            document.getElementById("showTime").innerHTML = y + "年" + mt + "月" + day + "-" + h + "时" + m + "分" + s + "秒";#}
-{#            t = setTimeout(time, 1000); //设定定时器，循环运行#}
-{#        }#}
-{#    </script>#}
-{##}
-{##}
-{#</div>#}
-<div class="mainbox">
-    <ul class="clearfix">
-        <li>
-            <div class="boxall" style="height: 3.2rem">
-                <div class="alltitle">国内卫生医疗机构个数</div>
-                <div class="allnav" id="echart1"></div>
-                <div class="boxfoot"></div>
+<div class="shell">
+    <header class="topbar">
+        <div class="brand">
+            <div class="badge">SP</div>
+            <div>
+                <h1>皮肤病智能诊断决策大屏</h1>
+                <p>把图像分类、智能问诊、RAG 检索与知识图谱放到同一张业务驾驶舱里</p>
             </div>
-            <div class="boxall" style="height: 3.2rem">
-                <div class="alltitle">国内卫生总费用（亿元）</div>
-                <div class="allnav" id="echart2"></div>
-                <div class="boxfoot"></div>
-            </div>
-            <div class="boxall" style="height: 3.2rem">
-                <div style="height:100%; width: 100%;">
-                    <div class="sy" id="fb1"></div>
-                    <div class="sy" id="fb2"></div>
-                    <div class="sy" id="fb3"></div>
-                </div>
-                <div class="boxfoot">
+        </div>
+        <nav class="nav">
+            <a href="/index/">返回首页</a>
+            <a href="/diagnose_skin/">图像诊断</a>
+            <a href="/agent/">智能问诊</a>
+            <a href="/lungkonw/">算法解析</a>
+        </nav>
+    </header>
 
+    <section class="hero">
+        <article class="hero-main">
+            <div>
+                <div class="hero-tag">系统总览 / 实时业务态势</div>
+                <h2>把诊断、问诊、知识与解释放到同一张大屏里</h2>
+                <p>这里不是通用统计模板，而是专门服务于皮肤病智能诊断系统的总控台。它把图像分类结果、AI 问诊会话、RAG 参考依据、知识图谱路径和高风险提醒聚合到一个入口里，既适合答辩展示，也适合系统联调和后续运营。</p>
+                <div class="hero-actions">
+                    <a class="primary" href="/diagnose_skin/">开始图像诊断</a>
+                    <a class="ghost" href="/agent/">进入智能问诊工作台</a>
                 </div>
             </div>
-        </li>
-        <li>
-            <div class="bar">
-                <div class="barbox">
-                    <ul class="clearfix">
-                        <li class="pulll_left counter">183585118</li>
-                        <li class="pulll_left counter">3893462</li>
-                    </ul>
+            <div class="highlights">
+                {% for item in hero_highlights %}
+                    <div class="highlight"><span>{{ item.label }}</span><strong>{{ item.value }}</strong></div>
+                {% endfor %}
+            </div>
+        </article>
+
+        <aside class="hero-side">
+            <div class="section-top">
+                <div class="title">运行状态</div>
+                <div class="stamp">刷新时间 {{ generated_at }}</div>
+            </div>
+            <div class="status-list">
+                {% for item in system_status %}
+                    <div class="status-item">
+                        <div>
+                            <span class="status-label">{{ item.label }}</span>
+                            <strong>{{ item.value }}</strong>
+                        </div>
+                        <span class="status-pill {{ item.tone }}">{% if item.tone == 'ready' %}在线{% elif item.tone == 'warn' %}关注{% else %}待补充{% endif %}</span>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="note">当前累计保存 <strong>{{ total_conversations }}</strong> 个问诊会话、<strong>{{ total_messages }}</strong> 条消息记录。页面会优先展示真实会话数据；当某一类业务数据尚未沉淀充分时，会自动补充演示态指标，保证界面始终完整可讲。</div>
+        </aside>
+    </section>
+
+    <section class="metric-grid">
+        {% for item in overview_metrics %}
+            <article class="metric"><span>{{ item.label }}</span><strong>{{ item.value }}{{ item.unit }}</strong><small>{{ item.hint }}</small></article>
+        {% endfor %}
+    </section>
+
+    <section class="dash">
+        <article class="card span-8">
+            <div class="head">
+                <div>
+                    <h3>问诊活跃趋势</h3>
+                    <div class="desc">按时间窗口查看新建会话和消息交互总量，适合作为系统活跃度和上下文记忆使用情况的主图。</div>
                 </div>
-                <div class="barbox2">
-                    <ul class="clearfix">
-                        <li class="pulll_left">2023年全球传染病致病情况</li>
-                        <li class="pulll_left">2023年全球传染病致死情况</li>
-                    </ul>
+                <div class="switch">
+                    <button class="chip active" data-range="7">近 7 天</button>
+                    <button class="chip" data-range="14">近 14 天</button>
+                    <button class="chip" data-range="30">近 30 天</button>
                 </div>
             </div>
-            <div class="map">
-                <div class="map1"><img src="{% static 'bigscreen/picture/lbx.png' %}"></div>
-                <div class="map2"><img src="{% static 'bigscreen/picture/jt.png' %}"></div>
-                <div class="map3"><img src="{% static 'bigscreen/picture/0506.jpg' %}"></div>
-                <div class="map4" id="map_1"
-                     style="height: 600px; width: 80%;margin-left: 340px"></div>
+            <div id="trendChart" class="chart"></div>
+        </article>
+
+        <article class="card span-4">
+            <div class="head">
+                <div>
+                    <h3>系统预警与答辩提示</h3>
+                    <div class="desc">让老师或运维一眼看到系统当下最值得关注的信息。</div>
+                </div>
             </div>
-        </li>
-        <li>
-            <div class="boxall" style="height:3.4rem">
-                <div class="alltitle">传染病发病与死亡统计</div>
-                <div class="allnav" id="echart4"></div>
-                <div class="boxfoot"></div>
+            <div class="list">
+                {% for item in alerts %}
+                    <div class="alert {{ item.level }}"><div><h4>{{ item.title }}</h4><p>{{ item.detail }}</p></div></div>
+                {% empty %}
+                    <div class="alert low"><div><h4>系统状态平稳</h4><p>当前没有需要特别处理的异常，大屏适合直接用于展示端到端能力闭环。</p></div></div>
+                {% endfor %}
             </div>
-            <div class="boxall" style="height: 3.2rem">
-                <div class="alltitle">全球前10位死亡原因</div>
-                <div class="allnav" id="echart5"></div>
-                <div class="boxfoot"></div>
+            <div class="tags"><span>图像分类可下钻到具体病例</span><span>问诊回复保留历史上下文</span><span>知识图谱可解释诊断依据</span></div>
+        </article>
+
+        <article class="card span-4">
+            <div class="head"><div><h3>疾病分布焦点</h3><div class="desc">展示近期高频皮肤病主题，用来讲系统主要覆盖哪些疾病。</div></div></div>
+            <div class="source">{{ disease_source }}</div>
+            <div id="diseaseChart" class="chart small"></div>
+        </article>
+
+        <article class="card span-4">
+            <div class="head"><div><h3>知识图谱联动</h3><div class="desc">把疾病、症状、检查和处理建议放在同一张关系图中，强调系统不是黑盒输出。</div></div></div>
+            <div id="graphChart" class="chart small"></div>
+        </article>
+
+        <article class="card span-4">
+            <div class="head"><div><h3>症状热词</h3><div class="desc">从用户问诊描述中提取高频症状，形成症状到疾病的联动讲述。</div></div></div>
+            <div id="symptomChart" class="chart small"></div>
+        </article>
+
+        <article class="card span-5">
+            <div class="head"><div><h3>最新病例与会话动态</h3><div class="desc">这里可以作为从大屏切到具体问诊页面或图像诊断页面的跳板。</div></div></div>
+            <div class="list">
+                {% for item in latest_cases %}
+                    <div class="case">
+                        <div class="case-row"><h4>{{ item.title }}</h4><span class="case-time">{{ item.time }}</span></div>
+                        <p>{{ item.summary }}</p>
+                        <div class="case-meta">累计 {{ item.count }} 条消息</div>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="boxall" style="height: 3rem">
-                <div class="alltitle">主要疾病死亡率</div>
-                <div class="allnav" id="echart6"></div>
-                <div class="boxfoot"></div>
+        </article>
+
+        <article class="card span-3">
+            <div class="head"><div><h3>离线模型指标</h3><div class="desc">这里适合展示 SFEPT 在验证集上的关键指标，和在线运行指标形成呼应。</div></div></div>
+            <div id="metricChart" class="chart small"></div>
+        </article>
+
+        <article class="card span-4">
+            <div class="head"><div><h3>快捷入口</h3><div class="desc">让大屏不只是看板，也能成为整套系统的总控台。</div></div></div>
+            <div class="actions">
+                {% for item in quick_actions %}
+                    <a class="action" href="{{ item.href }}" style="background-image:url('{% static item.image %}')">
+                        <div class="tag">{{ item.tag }}</div>
+                        <div><h4>{{ item.title }}</h4><p>{{ item.subtitle }}</p><div class="action-link">立即进入</div></div>
+                    </a>
+                {% endfor %}
             </div>
-        </li>
-    </ul>
+        </article>
+    </section>
+
+    <footer class="footer">
+        <div>页面主题建议：把这张大屏定义为“皮肤病智能诊断总控台”，用于展示系统能力闭环，而不是泛化的医疗统计模板。</div>
+        <div>当前时间 <span id="liveClock">{{ generated_at }}</span></div>
+    </footer>
 </div>
-<div class="back"></div>
 
+{{ trend_windows|json_script:"trendWindowsData" }}
+{{ disease_distribution|json_script:"diseaseDistributionData" }}
+{{ symptom_counts|json_script:"symptomCountsData" }}
+{{ graph_data|json_script:"graphData" }}
+{{ offline_model_metrics|json_script:"offlineMetricsData" }}
 
-{#<script type="text/javascript" src="{% static 'bigscreen/js/china.js' %}"></script>#}
-<script type="text/javascript" src="{% static 'bigscreen/js/area_echarts.js' %}"></script>
+<script>
+    const trendWindows = JSON.parse(document.getElementById("trendWindowsData").textContent);
+    const diseaseDistribution = JSON.parse(document.getElementById("diseaseDistributionData").textContent);
+    const symptomCounts = JSON.parse(document.getElementById("symptomCountsData").textContent);
+    const graphData = JSON.parse(document.getElementById("graphData").textContent);
+    const offlineMetrics = JSON.parse(document.getElementById("offlineMetricsData").textContent);
+    const colors = {accent:"#0f8c79", coral:"#df6c4f", gold:"#d7a648", ink:"#1d3130", muted:"#5d6d6a", line:"rgba(22,35,33,.08)"};
+    const trendChart = echarts.init(document.getElementById("trendChart"));
+    const diseaseChart = echarts.init(document.getElementById("diseaseChart"));
+    const graphChart = echarts.init(document.getElementById("graphChart"));
+    const symptomChart = echarts.init(document.getElementById("symptomChart"));
+    const metricChart = echarts.init(document.getElementById("metricChart"));
+
+    function trendOption(key) {
+        const current = trendWindows[key] || trendWindows["7"];
+        return {animationDuration:700,color:[colors.accent,colors.coral],grid:{left:48,right:20,top:28,bottom:34},tooltip:{trigger:"axis",backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"}},legend:{top:0,right:0,textStyle:{color:colors.muted,fontSize:12}},xAxis:{type:"category",boundaryGap:false,data:current.labels,axisLine:{lineStyle:{color:colors.line}},axisLabel:{color:colors.muted,fontSize:11}},yAxis:{type:"value",splitLine:{lineStyle:{color:colors.line}},axisLabel:{color:colors.muted,fontSize:11}},series:[{name:"新建会话",type:"line",smooth:true,symbolSize:8,areaStyle:{color:"rgba(15,140,121,.14)"},lineStyle:{width:3},data:current.conversations},{name:"消息总量",type:"line",smooth:true,symbolSize:8,areaStyle:{color:"rgba(223,108,79,.10)"},lineStyle:{width:3},data:current.messages}]};
+    }
+
+    diseaseChart.setOption({animationDuration:700,color:["#0f8c79","#df6c4f","#d7a648","#4f7f77","#c98b74","#718f6d"],tooltip:{trigger:"item",backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"}},title:[{text:(diseaseDistribution[0]||{name:"暂无"}).name,subtext:"当前高频主题",left:"center",top:"40%",textStyle:{fontSize:18,fontWeight:700,color:colors.ink},subtextStyle:{color:colors.muted,fontSize:11}}],legend:{bottom:0,textStyle:{color:colors.muted,fontSize:11}},series:[{type:"pie",radius:["50%","74%"],center:["50%","44%"],label:{color:colors.ink,fontSize:11,formatter:"{b}\\n{d}%"},data:diseaseDistribution}]});
+    graphChart.setOption({animationDuration:900,tooltip:{backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"},formatter:(p)=>p.dataType==="edge"?`${p.data.source} → ${p.data.value} → ${p.data.target}`:p.data.name},legend:{bottom:0,textStyle:{color:colors.muted,fontSize:11},data:graphData.categories.map(i=>i.name)},series:[{type:"graph",layout:"force",roam:true,draggable:true,data:graphData.nodes,links:graphData.links,categories:graphData.categories,force:{repulsion:150,edgeLength:[70,130],gravity:.12},label:{show:true,color:colors.ink,fontSize:11},lineStyle:{color:"source",curveness:.14,width:1.6,opacity:.86},edgeSymbol:["none","arrow"],edgeSymbolSize:6}],color:["#0f8c79","#df6c4f","#d7a648","#4f7f77","#9a6e58"]});
+    const sortedSymptoms = [...symptomCounts].sort((a,b)=>a.value-b.value);
+    symptomChart.setOption({animationDuration:700,grid:{left:86,right:24,top:20,bottom:16},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"}},xAxis:{type:"value",splitLine:{lineStyle:{color:colors.line}},axisLabel:{color:colors.muted,fontSize:11}},yAxis:{type:"category",data:sortedSymptoms.map(i=>i.name),axisLine:{show:false},axisTick:{show:false},axisLabel:{color:colors.ink,fontSize:12}},series:[{type:"bar",barWidth:16,data:sortedSymptoms.map(i=>i.value),itemStyle:{borderRadius:[0,6,6,0],color:(p)=>["#4f7f77","#5d8b80","#6b9789","#b8826a","#c89062","#df6c4f"][p.dataIndex]||colors.accent}}]});
+    const orderedMetrics = [...offlineMetrics].reverse();
+    metricChart.setOption({animationDuration:700,grid:{left:98,right:20,top:16,bottom:20},xAxis:{type:"value",min:0,max:100,splitLine:{lineStyle:{color:colors.line}},axisLabel:{color:colors.muted,fontSize:11,formatter:"{value}%"}},yAxis:{type:"category",data:orderedMetrics.map(i=>i.name),axisLine:{show:false},axisTick:{show:false},axisLabel:{color:colors.ink,fontSize:11,width:90,overflow:"break"}},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:"rgba(22,35,33,.94)",borderWidth:0,textStyle:{color:"#fffdf8"},formatter:(p)=>`${p[0].name}: ${p[0].value}%`},series:[{type:"bar",barWidth:14,data:orderedMetrics.map(i=>i.value),itemStyle:{borderRadius:[0,6,6,0],color:(p)=>["#0f8c79","#238f72","#4f7f77","#d7a648","#df6c4f"][p.dataIndex]||colors.accent},label:{show:true,position:"right",color:colors.ink,fontSize:11,formatter:"{c}%"}}]});
+
+    function syncTrend(rangeKey){document.querySelectorAll(".chip").forEach(btn=>btn.classList.toggle("active",btn.dataset.range===rangeKey));trendChart.setOption(trendOption(rangeKey),true)}
+    document.querySelectorAll(".chip").forEach(btn=>btn.addEventListener("click",()=>syncTrend(btn.dataset.range)));
+    syncTrend("7");
+    window.addEventListener("resize",()=>[trendChart,diseaseChart,graphChart,symptomChart,metricChart].forEach(chart=>chart.resize()));
+    function tickClock(){const now=new Date();const pad=(v)=>String(v).padStart(2,"0");document.getElementById("liveClock").textContent=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;}
+    tickClock();setInterval(tickClock,1000);
+</script>
 </body>
 </html>

@@ -10,7 +10,7 @@ from typing import Iterable, Iterator, List, Sequence
 from django.conf import settings
 from django.db.models import Q
 
-from app01.models import MedicalKnowledge
+from app01.models import KnowledgeChunk, MedicalKnowledge
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,8 @@ class RetrievedKnowledge:
     check_items: str
     advice: str
     score: float
+    source_type: str = "structured"
+    page_label: str = ""
 
 
 @dataclass(frozen=True)
@@ -231,6 +233,8 @@ class MedicalRAGEngine:
                         check_items=metadata.get("check_items", ""),
                         advice=metadata.get("advice", ""),
                         score=score,
+                        source_type=metadata.get("source_type", "structured"),
+                        page_label=metadata.get("page_label", ""),
                     )
                 )
 
@@ -243,6 +247,8 @@ class MedicalRAGEngine:
                     check_items=doc.metadata.get("check_items", ""),
                     advice=doc.metadata.get("advice", ""),
                     score=0.1,
+                    source_type=doc.metadata.get("source_type", "structured"),
+                    page_label=doc.metadata.get("page_label", ""),
                 )
                 for doc in self._builtin_documents()[:3]
             ]
@@ -308,7 +314,15 @@ class MedicalRAGEngine:
                     | Q(advice__icontains=keyword)
                 )
             records = MedicalKnowledge.objects.filter(condition).order_by("-id")[:30] if condition else []
+            chunk_condition = Q()
+            for keyword in keywords:
+                chunk_condition |= (
+                    Q(document__title__icontains=keyword)
+                    | Q(content__icontains=keyword)
+                )
+            chunks = KnowledgeChunk.objects.select_related("document").filter(chunk_condition).order_by("document_id", "chunk_index")[:40] if chunk_condition else []
             documents = [self._record_to_document(record, "database") for record in records]
+            documents.extend(self._chunk_to_document(chunk, "document_chunk") for chunk in chunks)
             return documents or self._builtin_documents()
         except Exception as exc:
             logger.warning("[MedicalRAGEngine] DB retrieval failed, using builtins: %s", exc)
@@ -324,6 +338,7 @@ class MedicalRAGEngine:
             ),
             metadata={
                 "source": source,
+                "source_type": "structured",
                 "disease": record.disease,
                 "symptoms": record.symptoms,
                 "check_items": record.check_items,
@@ -340,10 +355,26 @@ class MedicalRAGEngine:
                     f"建议检查：{item['check_items']}\n"
                     f"处理建议：{item['advice']}"
                 ),
-                metadata={"source": "builtin", **item},
+                metadata={"source": "builtin", "source_type": "structured", **item},
             )
             for item in BUILTIN_KNOWLEDGE
         ]
+
+    def _chunk_to_document(self, chunk: KnowledgeChunk, source: str) -> Document:
+        title = chunk.document.title
+        page_suffix = f"（{chunk.page_label}）" if chunk.page_label else ""
+        return Document(
+            page_content=f"文档标题：{title}{page_suffix}\n知识片段：{chunk.content}",
+            metadata={
+                "source": source,
+                "source_type": "document_chunk",
+                "disease": title,
+                "symptoms": chunk.content,
+                "check_items": chunk.page_label or "源文档切片",
+                "advice": "请结合原始文档上下文和临床信息综合判断。",
+                "page_label": chunk.page_label,
+            },
+        )
 
     def _score(self, query: str, doc: Document) -> float:
         text = doc.page_content
@@ -401,7 +432,7 @@ class MedicalRAGEngine:
         for index, item in enumerate(retrieved, 1):
             lines.append(
                 f"[{index}] 来源：{item.source}；疾病/主题：{item.disease}\n"
-                f"症状：{item.symptoms}\n检查：{item.check_items}\n建议：{item.advice}"
+                f"症状/片段：{item.symptoms}\n检查：{item.check_items}\n建议：{item.advice}"
             )
         return "\n\n".join(lines) if lines else "无相关证据"
 
@@ -416,6 +447,8 @@ class MedicalRAGEngine:
                 "symptoms": item.symptoms,
                 "check_items": item.check_items,
                 "advice": item.advice,
+                "source_type": item.source_type,
+                "page_label": item.page_label,
             }
             for item in retrieved
         ]

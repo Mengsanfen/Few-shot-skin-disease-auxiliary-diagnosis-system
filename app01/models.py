@@ -20,6 +20,60 @@ class MedicalKnowledge(models.Model):
         return cls.objects.filter(query).order_by('-id')[:3]
 
 
+def knowledge_document_upload_to(instance, filename):
+    return f"knowledge_docs/{filename}"
+
+
+class KnowledgeDocument(models.Model):
+    title = models.CharField("文档标题", max_length=160)
+    file = models.FileField("原始文件", upload_to=knowledge_document_upload_to)
+    file_type = models.CharField("文件类型", max_length=20, default="txt")
+    chunk_strategy = models.CharField("切片策略", max_length=80, default="medical_recursive")
+    status = models.CharField("处理状态", max_length=20, default="ready")
+    total_chars = models.PositiveIntegerField("总字符数", default=0)
+    total_chunks = models.PositiveIntegerField("切片数量", default=0)
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+        verbose_name = "知识库文档"
+        verbose_name_plural = "知识库文档"
+
+    def __str__(self):
+        return self.title
+
+
+class KnowledgeChunk(models.Model):
+    document = models.ForeignKey(
+        KnowledgeDocument,
+        verbose_name="所属文档",
+        on_delete=models.CASCADE,
+        related_name="chunks",
+    )
+    chunk_index = models.PositiveIntegerField("分块序号")
+    page_label = models.CharField("页码标签", max_length=40, blank=True, default="")
+    content = models.TextField("切片内容")
+    token_estimate = models.PositiveIntegerField("估计 token 数", default=0)
+    start_offset = models.PositiveIntegerField("起始位置", default=0)
+    end_offset = models.PositiveIntegerField("结束位置", default=0)
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+
+    class Meta:
+        ordering = ["document_id", "chunk_index"]
+        verbose_name = "知识切片"
+        verbose_name_plural = "知识切片"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["document", "chunk_index"],
+                name="unique_document_chunk_index",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.document.title}#{self.chunk_index}"
+
+
 class DiagnosisConversation(models.Model):
     """皮肤病智能问诊会话。"""
 
