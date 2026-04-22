@@ -631,6 +631,277 @@ body.page-lung-knowledge .algo-media {
     background: linear-gradient(180deg, rgba(250, 253, 255, 0.95), rgba(245, 248, 252, 0.95));
 }
 
+body.page-landing .metric-card,
+body.page-landing .module-card,
+body.page-overview .stat-card,
+body.page-overview .module-card,
+body.page-overview .route-card,
+body.page-agent .hero-metric {
+    overflow: hidden;
+}
+
+body.page-landing .module-card p,
+body.page-landing .signal-item span,
+body.page-landing .workflow-item span,
+body.page-overview .module-card p,
+body.page-overview .flow-card span,
+body.page-overview .route-card span,
+body.page-landing .hero-subtitle,
+body.page-overview .hero-copy p,
+body.page-agent .consult-title p,
+body.page-agent .hero-metric strong,
+body.page-agent .safety-panel p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+body.page-landing .module-card p,
+body.page-landing .signal-item span,
+body.page-landing .workflow-item span,
+body.page-overview .module-card p,
+body.page-overview .flow-card span,
+body.page-overview .route-card span,
+body.page-landing .hero-subtitle,
+body.page-overview .hero-copy p,
+body.page-agent .hero-metric strong,
+body.page-agent .safety-panel p {
+    -webkit-line-clamp: 2;
+}
+
+body.page-agent .consult-title p {
+    -webkit-line-clamp: 2;
+    max-width: 42ch !important;
+}
+
+body.page-landing .metric-card .icon {
+    display: none !important;
+}
+
+body.page-landing .board-card:first-child > p,
+body.page-overview .surface-card:first-child > p,
+body.page-agent .sidebar .panel-head p,
+body.page-agent .insight-panel .panel-head p,
+body.page-agent .quick-area p {
+    display: none !important;
+}
+
+body.page-landing .metric-card::before,
+body.page-overview .stat-card::before {
+    content: "";
+    display: block;
+    height: 92px;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #eef4ff;
+}
+
+body.page-landing .metric-card:nth-child(1)::before { background-image: url("../img/icon/doctor.png"); }
+body.page-landing .metric-card:nth-child(2)::before { background-image: url("../img/index-lung.png"); }
+body.page-landing .metric-card:nth-child(3)::before { background-image: url("../img/agent4.jpg"); }
+body.page-landing .metric-card:nth-child(4)::before { background-image: url("../img/medical.png"); }
+body.page-landing .metric-card:nth-child(5)::before { background-image: url("../img/chart.png"); }
+body.page-landing .metric-card:nth-child(6)::before { background-image: url("../img/data2.png"); }
+
+body.page-landing .module-card::before,
+body.page-overview .module-card::before,
+body.page-overview .route-card::before {
+    content: "";
+    display: block;
+    height: 168px;
+    margin-bottom: 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #eef4ff;
+}
+
+body.page-landing .module-card:nth-child(1)::before { background-image: url("../img/agent5.jpg"); }
+body.page-landing .module-card:nth-child(2)::before { background-image: url("../img/skin_model.jpg"); }
+body.page-landing .module-card:nth-child(3)::before { background-image: url("../img/product-screen-5.jpg"); }
+body.page-landing .module-card:nth-child(4)::before { background-image: url("../img/product-screen-6.jpg"); }
+
+body.page-landing .board-card:first-child::before,
+body.page-overview .surface-card:first-child::before {
+    content: "";
+    display: block;
+    height: 250px;
+    margin-bottom: 18px;
+    border-radius: 24px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    background-repeat: no-repeat;
+    background-color: #eef4ff;
+}
+
+body.page-landing .board-card:first-child::before {
+    background-image:
+        url("../img/agent2.jpg"),
+        url("../img/product-screen-5.jpg"),
+        url("../img/index-mask.png"),
+        url("../img/data2.png");
+    background-size:
+        calc(50% - 6px) calc(50% - 6px),
+        calc(50% - 6px) calc(50% - 6px),
+        calc(50% - 6px) calc(50% - 6px),
+        calc(50% - 6px) calc(50% - 6px);
+    background-position:
+        left top,
+        right top,
+        left bottom,
+        right bottom;
+}
+
+body.page-landing .workflow-item {
+    position: relative;
+    padding-left: 92px !important;
+    min-height: 86px;
+}
+
+body.page-landing .workflow-item::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    transform: translateY(-50%);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    background-color: #eef4ff;
+}
+
+body.page-landing .workflow-item:nth-child(1)::before { background-image: url("../img/skin_model.jpg"); }
+body.page-landing .workflow-item:nth-child(2)::before { background-image: url("../img/agent4.jpg"); }
+body.page-landing .workflow-item:nth-child(3)::before { background-image: url("../img/product-screen-6.jpg"); }
+
+body.page-overview .signal-card {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+body.page-overview .signal-card::before {
+    content: "";
+    display: block;
+    height: 120px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #eef4ff;
+}
+
+body.page-overview .signal-card:nth-child(1)::before { background-image: url("../img/agent4.jpg"); }
+body.page-overview .signal-card:nth-child(2)::before { background-image: url("../img/skin_model.jpg"); }
+body.page-overview .signal-card:nth-child(3)::before { background-image: url("../img/product-screen-4.jpg"); }
+
+body.page-overview .signal-card strong,
+body.page-overview .signal-card span {
+    padding-inline: 18px !important;
+}
+
+body.page-overview .signal-card strong {
+    padding-top: 16px !important;
+}
+
+body.page-overview .signal-card span {
+    padding-bottom: 18px !important;
+    margin-top: 6px !important;
+}
+
+body.page-overview .stat-card:nth-child(1)::before { background-image: url("../img/index-lung.png"); }
+body.page-overview .stat-card:nth-child(2)::before { background-image: url("../img/agent5.jpg"); }
+body.page-overview .stat-card:nth-child(3)::before { background-image: url("../img/medical.png"); }
+body.page-overview .stat-card:nth-child(4)::before { background-image: url("../img/product-screen-6.jpg"); }
+
+body.page-overview .surface-card:first-child::before {
+    background-image:
+        url("../img/skin_model.jpg"),
+        url("../img/AIchat1.png"),
+        url("../img/product-screen-6.jpg"),
+        url("../img/medical.png");
+    background-size:
+        calc(50% - 6px) calc(50% - 6px),
+        calc(50% - 6px) calc(50% - 6px),
+        calc(50% - 6px) calc(50% - 6px),
+        calc(50% - 6px) calc(50% - 6px);
+    background-position:
+        left top,
+        right top,
+        left bottom,
+        right bottom;
+}
+
+body.page-overview .module-card:nth-child(1)::before { background-image: url("../img/agent2.jpg"); }
+body.page-overview .module-card:nth-child(2)::before { background-image: url("../img/skin_model.jpg"); }
+body.page-overview .module-card:nth-child(3)::before { background-image: url("../img/product-screen-5.jpg"); }
+
+body.page-overview .route-card:nth-child(1)::before { background-image: url("../img/doctor3.png"); }
+body.page-overview .route-card:nth-child(2)::before { background-image: url("../img/product-screen-4.jpg"); }
+body.page-overview .route-card:nth-child(3)::before { background-image: url("../img/agent6.jpg"); }
+
+body.page-agent .hero-metric {
+    position: relative;
+    min-height: 214px;
+    padding-top: 126px !important;
+}
+
+body.page-agent .hero-metric::before,
+body.page-agent .safety-panel::before,
+body.page-agent .quick-area::before,
+body.page-agent .graph-view::before {
+    content: "";
+    display: block;
+    border-radius: 22px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #eef4ff;
+}
+
+body.page-agent .hero-metric::before {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    height: 90px;
+}
+
+body.page-agent .hero-metric:nth-child(1)::before { background-image: url("../img/agent4.jpg"); }
+body.page-agent .hero-metric:nth-child(2)::before { background-image: url("../img/doctor2.png"); }
+body.page-agent .hero-metric:nth-child(3)::before { background-image: url("../img/skin_model.jpg"); }
+
+body.page-agent .safety-panel::before {
+    height: 228px;
+    margin-bottom: 16px;
+    background-image:
+        url("../img/doctor1.png"),
+        url("../img/agent6.jpg");
+    background-size:
+        cover,
+        34% 34%;
+    background-position:
+        center,
+        right 14px bottom 14px;
+}
+
+body.page-agent .quick-area::before,
+body.page-agent .graph-view::before {
+    height: 136px;
+    margin-bottom: 14px;
+}
+
+body.page-agent .quick-area::before { background-image: url("../img/agent5.jpg"); }
+body.page-agent .graph-view::before { background-image: url("../img/doctor3.png"); }
+
 @media (max-width: 1220px) {
     body.page-landing .metric-grid,
     body.page-health .feature-grid,

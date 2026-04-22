@@ -20,7 +20,7 @@ from PIL import Image
 from torchvision import transforms
 
 # 添加 FSL_skin 项目路径到 sys.path
-FSL_SKIN_PATH = Path("D:/AI/FSL_skin")
+DEFAULT_FSL_SKIN_PATH = Path(os.getenv("FSL_SKIN_PATH", "D:/AI/FSL_skin"))
 
 # 导入 SFEPT 相关模块
 try:
@@ -41,6 +41,20 @@ def compute_prototypes(features: torch.Tensor, labels: torch.Tensor) -> torch.Te
         class_features = features[labels == class_id]
         prototypes.append(class_features.mean(0))
     return torch.stack(prototypes)
+
+
+def resolve_runtime_device(requested_device: Optional[str]) -> str:
+    """Normalize the requested device and fall back to CPU when CUDA is unavailable."""
+    normalized = str(requested_device or "").strip().lower()
+    if normalized in {"", "auto"}:
+        return "cuda" if torch.cuda.is_available() else "cpu"
+    if normalized == "mps":
+        return "mps" if getattr(torch, "has_mps", False) and torch.backends.mps.is_available() else "cpu"
+    if normalized != "cpu" and not torch.cuda.is_available():
+        return "cpu"
+    if normalized.isdigit():
+        return f"cuda:{normalized}"
+    return normalized
 
 
 class S2PInference(nn.Module):
@@ -195,10 +209,10 @@ class SkinFSLPredictor:
         return cls._instance
 
     @classmethod
-    def get_instance(cls):
+    def get_instance(cls, **kwargs):
         """获取单例实例"""
         if cls._instance is None:
-            cls._instance = cls()
+            cls._instance = cls(**kwargs)
         return cls._instance
 
     def __init__(
@@ -206,7 +220,8 @@ class SkinFSLPredictor:
         model_path: str = None,
         support_set_dir: str = None,
         class_names: List[str] = None,
-        device: str = "cuda",
+        device: Optional[str] = None,
+        fsl_skin_path: Optional[Union[str, Path]] = None,
         image_size: int = 224,
     ):
         """
@@ -223,12 +238,13 @@ class SkinFSLPredictor:
         if SkinFSLPredictor._initialized:
             return
 
-        self.device = device if torch.cuda.is_available() else "cpu"
+        self.device = resolve_runtime_device(device)
         self.image_size = image_size
+        self.fsl_skin_path = Path(fsl_skin_path) if fsl_skin_path else DEFAULT_FSL_SKIN_PATH
 
         # 默认路径配置
-        self.model_path = model_path or str(FSL_SKIN_PATH / "checkpoints" / "best_swin_model.pth")
-        self.support_set_dir = support_set_dir or str(FSL_SKIN_PATH / "data" / "CUB")
+        self.model_path = model_path or str(self.fsl_skin_path / "checkpoints" / "best_swin_model.pth")
+        self.support_set_dir = support_set_dir or str(self.fsl_skin_path / "data" / "CUB")
 
         # 默认类别名称（可根据实际数据集配置）
         self.class_names = class_names or self._load_class_names()
@@ -259,7 +275,7 @@ class SkinFSLPredictor:
     def _load_class_names(self) -> List[str]:
         """从配置文件加载类别名称"""
         import json
-        config_path = FSL_SKIN_PATH / "data" / "CUB" / "test.json"
+        config_path = Path(self.support_set_dir) / "test.json"
         if config_path.exists():
             with open(config_path, 'r', encoding='utf-8') as f:
                 config = json.load(f)
@@ -315,7 +331,7 @@ class SkinFSLPredictor:
 
         # 从配置文件读取支持集路径
         import json
-        config_path = FSL_SKIN_PATH / "data" / "CUB" / "test.json"
+        config_path = Path(self.support_set_dir) / "test.json"
 
         if not config_path.exists():
             print(f"[SkinFSLPredictor] 警告: 配置文件不存在 {config_path}")
@@ -328,7 +344,7 @@ class SkinFSLPredictor:
 
         for label, class_root in enumerate(class_roots):
             # 构建完整路径
-            class_path = FSL_SKIN_PATH / class_root.lstrip("./")
+            class_path = self.fsl_skin_path / class_root.lstrip("./")
 
             if not class_path.exists():
                 continue
@@ -450,14 +466,14 @@ class SkinFSLPredictor:
 # 便捷函数
 # ============================================================================
 
-def get_predictor() -> SkinFSLPredictor:
+def get_predictor(**kwargs) -> SkinFSLPredictor:
     """
     获取全局预测器实例
 
     Returns:
         SkinFSLPredictor: 单例预测器实例
     """
-    return SkinFSLPredictor.get_instance()
+    return SkinFSLPredictor.get_instance(**kwargs)
 
 
 def predict_skin_disease(

@@ -11,6 +11,7 @@ import io
 import logging
 import random
 
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -38,7 +39,11 @@ def get_predictor():
     if _predictor is None:
         try:
             from app01.ai_core import SkinFSLPredictor
-            _predictor = SkinFSLPredictor.get_instance()
+            inference_config = getattr(settings, "AI_INFERENCE", {})
+            _predictor = SkinFSLPredictor.get_instance(
+                device=inference_config.get("SKIN_DEVICE"),
+                fsl_skin_path=inference_config.get("FSL_SKIN_PATH"),
+            )
             logger.info("[Views] SkinFSLPredictor 初始化成功")
         except Exception as e:
             logger.error(f"[Views] SkinFSLPredictor 初始化失败: {e}")

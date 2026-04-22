@@ -199,6 +199,15 @@ OBJECT_DETECTION = {
 }
 
 # 自定义用户模型
+DEFAULT_INFERENCE_DEVICE = env_str("INFERENCE_DEVICE", "auto").lower()
+AI_INFERENCE = {
+    "DEFAULT_DEVICE": DEFAULT_INFERENCE_DEVICE,
+    "SKIN_DEVICE": env_str("SKIN_DEVICE", DEFAULT_INFERENCE_DEVICE).lower(),
+    "YOLO_DEVICE": env_str("YOLO_DEVICE", DEFAULT_INFERENCE_DEVICE).lower(),
+    "YOLO_HALF": env_bool("YOLO_HALF", False),
+    "FSL_SKIN_PATH": env_str("FSL_SKIN_PATH", "D:/AI/FSL_skin"),
+}
+
 AUTH_USER_MODEL = 'users.UserProfile'
 
 # 登录URL（用于 @login_required 装饰器）
