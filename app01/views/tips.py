@@ -58,6 +58,55 @@ HEALTH_TOPICS = [
 ]
 
 
+HEALTH_FEATURED_IMAGES = [
+    "img/250406/images.jpg",
+    "img/250406/images1.jpg",
+    "img/250406/images2.jpg",
+    "img/250406/images3.jpg",
+]
+
+
+def _short_text(value, limit=36):
+    text = (value or "").replace("，", "、").replace(",", "、").strip()
+    if len(text) <= limit:
+        return text
+    return f"{text[:limit].rstrip('、')}..."
+
+
+def _featured_disease_cards():
+    entries = list(MedicalKnowledge.objects.all().order_by("id")[:4])
+    payload = []
+
+    if entries:
+        for index, entry in enumerate(entries):
+            payload.append(
+                {
+                    "title": entry.disease,
+                    "symptoms": _short_text(entry.symptoms, 34),
+                    "checks": _short_text(entry.check_items, 28),
+                    "advice": _short_text(entry.advice, 40),
+                    "question": f"我想进一步了解{entry.disease}，常见表现是{_short_text(entry.symptoms, 20)}，一般建议做哪些检查，日常护理要注意什么？",
+                    "source": "RAG 知识库",
+                    "image": HEALTH_FEATURED_IMAGES[index % len(HEALTH_FEATURED_IMAGES)],
+                }
+            )
+        return payload
+
+    for index, item in enumerate(BUILTIN_KNOWLEDGE[:4]):
+        payload.append(
+            {
+                "title": item["disease"],
+                "symptoms": _short_text(item["symptoms"], 34),
+                "checks": _short_text(item["check_items"], 28),
+                "advice": _short_text(item["advice"], 40),
+                "question": f"我想进一步了解{item['disease']}，常见表现是{_short_text(item['symptoms'], 20)}，一般建议做哪些检查，日常护理要注意什么？",
+                "source": "内置医学模板",
+                "image": HEALTH_FEATURED_IMAGES[index % len(HEALTH_FEATURED_IMAGES)],
+            }
+        )
+    return payload
+
+
 def health(request):
     return render(
         request,
@@ -66,6 +115,7 @@ def health(request):
             "habits": HEALTH_HABITS,
             "warnings": HEALTH_WARNINGS,
             "topics": HEALTH_TOPICS,
+            "featured_diseases": _featured_disease_cards(),
         },
     )
 

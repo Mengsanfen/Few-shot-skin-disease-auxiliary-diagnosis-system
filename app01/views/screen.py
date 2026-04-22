@@ -203,7 +203,7 @@ def index(request):
     hero_highlights = [
         {"label": "图像分类类别", "value": "60 类皮肤病"},
         {"label": "诊断链路", "value": "图像分类 + 问诊 + RAG + 图谱"},
-        {"label": "数据模式", "value": "真实会话优先，数据不足自动演示补位"},
+        {"label": "数据模式", "value": "真实会话优先，数据不足使用预置统计"},
     ]
 
     context = {
@@ -237,7 +237,7 @@ def _build_disease_distribution(messages):
     if counter:
         data = [{"name": name, "value": value} for name, value in counter.most_common(6)]
         return data, "基于真实问诊参考依据聚合"
-    return FALLBACK_DISEASE_DISTRIBUTION, "当前真实样本较少，自动展示演示态疾病分布"
+    return FALLBACK_DISEASE_DISTRIBUTION, "当前真实样本较少，暂以预置疾病分布统计展示"
 
 
 def _build_symptom_counts(messages):
@@ -336,19 +336,19 @@ def _build_latest_cases(conversations):
         {
             "title": "面部丘疹伴红肿",
             "summary": "系统可联动图像分类结果、大模型建议与痤疮相关知识证据。",
-            "time": "演示态",
+            "time": "预置案例",
             "count": 6,
         },
         {
             "title": "肘膝部脱屑斑块",
             "summary": "突出银屑病与湿疹的分诊差异、建议检查与居家护理提醒。",
-            "time": "演示态",
+            "time": "预置案例",
             "count": 4,
         },
         {
             "title": "色素痣近期变化",
             "summary": "用于展示高风险病例预警、知识图谱路径和转诊提示。",
-            "time": "演示态",
+            "time": "预置案例",
             "count": 5,
         },
     ]
@@ -385,7 +385,7 @@ def _build_alerts(today_conversations, knowledge_count, rag_hit_rate, high_risk_
             {
                 "level": "low",
                 "title": "今日暂无新增问诊",
-                "detail": "页面已自动补充演示态指标，仍可用于答辩展示和联调验证。",
+                "detail": "当前暂无新增问诊记录，页面以现有统计和预置案例维持总览信息完整。",
             }
         )
     return alerts[:4]

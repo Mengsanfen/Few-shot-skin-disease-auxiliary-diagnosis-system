@@ -272,9 +272,9 @@ def lung_upload(request):
 
 def lung_detect(request):
     """
-    兼容旧检测接口（模拟数据）
+    兼容旧检测接口（预置数据）
 
-    注意：此接口仅用于演示，实际请使用 skin_disease_predict
+    注意：此接口仅用于兼容旧流程，实际请使用 skin_disease_predict
     """
     try:
         # 尝试使用真实预测器

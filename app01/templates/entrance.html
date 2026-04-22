@@ -1,469 +1,574 @@
+{% extends "layout.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>梦医智联 | 皮肤病智能诊断平台</title>
-    <link href="{% static '/img/doctor.png' %}" rel="apple-touch-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-    <style>
-        :root {
-            --ink: #152622;
-            --muted: #60716d;
-            --green: #138a73;
-            --green-dark: #0f6658;
-            --coral: #dc7658;
-            --paper: #f7f8f3;
-            --surface: rgba(255, 252, 247, 0.92);
-            --line: rgba(21, 38, 34, 0.08);
-            --shadow: 0 28px 70px rgba(18, 37, 33, 0.10);
+{% block body_class %}page-landing{% endblock %}
+
+{% block css %}
+<style>
+    .landing-shell {
+        width: min(1280px, calc(100% - 32px));
+        margin: 0 auto;
+        display: grid;
+        gap: 18px;
+    }
+
+    .brand-ribbon,
+    .hero-stage,
+    .command-strip,
+    .metric-card,
+    .module-card,
+    .board-card {
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 72px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+    }
+
+    .brand-ribbon {
+        padding: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 23, 39, 0.58);
+        backdrop-filter: blur(18px);
+    }
+
+    .brand-pill {
+        min-height: 42px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        color: rgba(244, 247, 251, 0.86);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .brand-pill i {
+        color: #5b8fff;
+    }
+
+    .hero-stage {
+        position: relative;
+        min-height: 680px;
+        padding: 42px 44px 36px;
+        background:
+            radial-gradient(circle at 38% 30%, rgba(59, 130, 246, 0.30), transparent 24%),
+            radial-gradient(circle at 66% 58%, rgba(240, 138, 67, 0.22), transparent 28%),
+            linear-gradient(145deg, rgba(10, 18, 33, 0.96), rgba(12, 19, 34, 0.92)),
+            url("{% static 'img/250406/bg1.png' %}") center/cover no-repeat;
+        display: grid;
+        align-content: start;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .hero-stage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 38px 38px;
+        opacity: 0.22;
+        pointer-events: none;
+    }
+
+    .hero-stage > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-kicker {
+        min-height: 38px;
+        padding: 0 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(244, 247, 251, 0.78);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .hero-title {
+        margin: 26px 0 0;
+        font-family: "Sora", sans-serif;
+        font-size: clamp(60px, 9vw, 118px);
+        line-height: 0.92;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+    }
+
+    .hero-title .accent {
+        background: linear-gradient(135deg, #3b82f6 0%, #7c98ff 48%, #f08a43 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-subtitle {
+        margin: 20px auto 0;
+        max-width: 780px;
+        color: rgba(244, 247, 251, 0.70);
+        font-size: clamp(18px, 2vw, 22px);
+        line-height: 1.72;
+    }
+
+    .command-strip {
+        width: min(640px, 100%);
+        margin-top: 28px;
+        padding: 22px 28px;
+        background: rgba(9, 14, 27, 0.84);
+        border-color: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 22px 54px rgba(0, 0, 0, 0.34);
+        color: rgba(244, 247, 251, 0.88);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 18px;
+    }
+
+    .command-strip .mark {
+        color: #f08a43;
+    }
+
+    .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 28px;
+    }
+
+    .hero-actions a {
+        min-width: 220px;
+        min-height: 62px;
+        padding: 0 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 22px;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 700;
+        transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .hero-actions a:hover {
+        transform: translateY(-2px);
+    }
+
+    .hero-primary {
+        background: linear-gradient(135deg, #3b82f6, #5b8fff);
+        color: #ffffff;
+        box-shadow: 0 24px 54px rgba(59, 130, 246, 0.28);
+    }
+
+    .hero-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f4f7fb;
+    }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .metric-card {
+        min-height: 188px;
+        padding: 22px 20px;
+        background: linear-gradient(180deg, rgba(31, 43, 68, 0.94), rgba(25, 34, 53, 0.88));
+        display: grid;
+        align-content: space-between;
+    }
+
+    .metric-card .icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        background: rgba(59, 130, 246, 0.10);
+        color: #3b82f6;
+        font-size: 24px;
+    }
+
+    .metric-card strong {
+        display: block;
+        margin-top: 24px;
+        font-family: "Sora", sans-serif;
+        font-size: clamp(34px, 4vw, 56px);
+        line-height: 1;
+        color: #5b8fff;
+        font-weight: 700;
+    }
+
+    .metric-card span {
+        display: block;
+        margin-top: 12px;
+        color: rgba(244, 247, 251, 0.72);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .module-card {
+        min-height: 300px;
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(18, 28, 48, 0.94), rgba(15, 23, 39, 0.88));
+        display: grid;
+        align-content: space-between;
+        gap: 18px;
+    }
+
+    .module-top {
+        display: grid;
+        gap: 14px;
+    }
+
+    .module-tag {
+        min-height: 34px;
+        width: fit-content;
+        padding: 0 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(59, 130, 246, 0.10);
+        color: #78a3ff;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .module-card h3 {
+        margin: 0;
+        font-family: "Sora", sans-serif;
+        font-size: 24px;
+        line-height: 1.28;
+        color: #f4f7fb;
+    }
+
+    .module-card p {
+        margin: 0;
+        color: rgba(244, 247, 251, 0.62);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .module-card a {
+        min-height: 48px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f4f7fb;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .board-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 16px;
+    }
+
+    .board-stack {
+        display: grid;
+        gap: 16px;
+    }
+
+    .board-card {
+        padding: 24px;
+        background: linear-gradient(180deg, rgba(17, 26, 44, 0.94), rgba(14, 21, 36, 0.90));
+    }
+
+    .board-card h2,
+    .board-card h3 {
+        margin: 0;
+        font-family: "Sora", sans-serif;
+        color: #f4f7fb;
+    }
+
+    .board-card h2 {
+        font-size: 32px;
+        line-height: 1.2;
+    }
+
+    .board-card h3 {
+        font-size: 18px;
+    }
+
+    .board-card p {
+        margin: 12px 0 0;
+        color: rgba(244, 247, 251, 0.66);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .signal-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .signal-item {
+        padding: 14px 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        display: grid;
+        gap: 6px;
+    }
+
+    .signal-item strong {
+        color: #f4f7fb;
+        font-size: 15px;
+    }
+
+    .signal-item span {
+        color: rgba(244, 247, 251, 0.58);
+        font-size: 13px;
+    }
+
+    .workflow-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .workflow-item {
+        padding: 16px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(240, 138, 67, 0.10));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .workflow-item strong {
+        display: block;
+        color: #f4f7fb;
+        font-size: 16px;
+    }
+
+    .workflow-item span {
+        display: block;
+        margin-top: 8px;
+        color: rgba(244, 247, 251, 0.62);
+        font-size: 13px;
+        line-height: 1.75;
+    }
+
+    @media (max-width: 1180px) {
+        .metric-grid,
+        .module-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: "Noto Sans SC", sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(circle at top left, rgba(19, 138, 115, 0.14), transparent 28%),
-                radial-gradient(circle at bottom right, rgba(220, 118, 88, 0.12), transparent 22%),
-                var(--paper);
+        .board-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .landing-shell {
+            width: min(100% - 20px, 1280px);
         }
 
-        .shell {
-            width: min(1380px, calc(100% - 32px));
-            margin: 0 auto;
-            padding: 24px 0 40px;
+        .hero-stage {
+            min-height: auto;
+            padding: 28px 20px 24px;
         }
 
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 14px 18px;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: rgba(255, 252, 247, 0.82);
-            backdrop-filter: blur(12px);
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .badge-mark {
-            width: 46px;
-            height: 46px;
-            display: grid;
-            place-items: center;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--green), var(--coral));
-            color: #fffaf1;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-        }
-
-        .brand-copy strong {
-            display: block;
-            font: 700 36px/1 "Cormorant Garamond", serif;
-        }
-
-        .brand-copy span {
-            display: block;
-            margin-top: 6px;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .nav-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .nav-links a,
-        .cta-row a {
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 700;
-        }
-
-        .nav-links a {
-            padding: 10px 14px;
-            background: rgba(19, 138, 115, 0.08);
-            color: #1f4640;
-            font-size: 14px;
-        }
-
-        .hero {
-            display: grid;
-            grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
-            gap: 18px;
-            margin-top: 18px;
-        }
-
-        .hero-main,
-        .hero-side,
-        .story-band,
-        .feature-card,
-        .mini-panel {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-        }
-
-        .hero-main {
-            position: relative;
-            overflow: hidden;
-            min-height: 620px;
-            padding: 34px;
-            display: grid;
-            align-content: space-between;
-            background:
-                linear-gradient(120deg, rgba(18, 62, 54, 0.82), rgba(18, 62, 54, 0.45)),
-                url("{% static 'img/lh/34.jpg' %}") center/cover no-repeat;
-            color: #fff8ed;
-        }
-
-        .hero-main::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 25%, transparent 25%) 0 0 / 20px 20px;
-            opacity: 0.18;
-            pointer-events: none;
-        }
-
-        .hero-main > * { position: relative; z-index: 1; }
-
-        .eyebrow {
-            width: fit-content;
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: rgba(255, 248, 237, 0.12);
-            border: 1px solid rgba(255, 248, 237, 0.18);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-        }
-
-        .hero-main h1 {
-            margin: 18px 0 14px;
-            max-width: 11ch;
-            font: 700 clamp(50px, 6vw, 92px)/0.94 "Cormorant Garamond", serif;
-            color: #fffdf8;
-        }
-
-        .hero-main p {
-            max-width: 52ch;
-            margin: 0;
-            color: rgba(255, 248, 237, 0.88);
-            font-size: 16px;
-            line-height: 1.9;
-        }
-
-        .cta-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .cta-primary,
-        .cta-secondary {
-            padding: 13px 18px;
-            min-height: 46px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cta-primary {
-            background: #fff7eb;
-            color: #12352f;
-        }
-
-        .cta-secondary {
-            background: rgba(255, 248, 237, 0.10);
-            color: #fff8ed;
-            border: 1px solid rgba(255, 248, 237, 0.16);
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 26px;
-        }
-
-        .hero-metric {
-            padding: 14px;
-            border-radius: 8px;
-            background: rgba(255, 248, 237, 0.10);
-            border: 1px solid rgba(255, 248, 237, 0.14);
-        }
-
-        .hero-metric span {
-            display: block;
-            color: rgba(255, 248, 237, 0.72);
-            font-size: 12px;
-        }
-
-        .hero-metric strong {
-            display: block;
-            margin-top: 8px;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-
-        .hero-side {
-            display: grid;
-            gap: 18px;
-            align-content: start;
-        }
-
-        .mini-panel {
-            padding: 20px;
-            background: var(--surface);
-        }
-
-        .mini-panel h2 {
-            margin: 0;
-            font: 700 28px/1.1 "Cormorant Garamond", serif;
-        }
-
-        .mini-panel p {
-            margin: 12px 0 0;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.9;
-        }
-
-        .mini-panel ul {
-            margin: 14px 0 0;
-            padding: 0;
-            list-style: none;
-            display: grid;
-            gap: 8px;
-        }
-
-        .mini-panel li {
-            padding: 10px 12px;
-            border-radius: 8px;
-            background: rgba(19, 138, 115, 0.08);
-            color: #1d4640;
-            font-size: 13px;
-            line-height: 1.7;
-        }
-
-        .story-band {
-            margin-top: 18px;
-            padding: 24px;
-            background: var(--surface);
-        }
-
-        .story-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 18px;
-            align-items: center;
-        }
-
-        .story-copy h2 {
-            margin: 0;
-            font: 700 40px/1.05 "Cormorant Garamond", serif;
-        }
-
-        .story-copy p {
-            margin: 14px 0 0;
-            color: var(--muted);
+        .command-strip {
             font-size: 15px;
-            line-height: 1.9;
+            padding: 18px 16px;
         }
 
-        .story-image img {
+        .metric-grid,
+        .module-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-actions a {
             width: 100%;
-            min-height: 320px;
-            object-fit: cover;
-            border-radius: 8px;
+            min-width: 0;
         }
+    }
+</style>
+{% endblock %}
 
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 18px;
-        }
+{% block content %}
+<div class="landing-shell">
+    <section class="brand-ribbon" data-aos="fade-up">
+        <div class="brand-pill"><i class="bi bi-cpu"></i> 智能问诊</div>
+        <div class="brand-pill"><i class="bi bi-image"></i> 图像诊断</div>
+        <div class="brand-pill"><i class="bi bi-diagram-3"></i> 知识图谱</div>
+        <div class="brand-pill"><i class="bi bi-database"></i> 知识增强</div>
+        <div class="brand-pill"><i class="bi bi-grid-1x2"></i> 运营看板</div>
+        <div class="brand-pill"><i class="bi bi-shield-check"></i> 企业部署</div>
+    </section>
 
-        .feature-card {
-            min-height: 220px;
-            padding: 20px;
-            background: var(--surface);
-        }
-
-        .feature-card i {
-            font-size: 26px;
-            color: var(--green);
-        }
-
-        .feature-card h3 {
-            margin: 18px 0 10px;
-            font: 700 26px/1.1 "Cormorant Garamond", serif;
-        }
-
-        .feature-card p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.9;
-        }
-
-        .feature-card a {
-            display: inline-flex;
-            margin-top: 16px;
-            color: var(--green-dark);
-            font-size: 13px;
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        @media (max-width: 1160px) {
-            .hero,
-            .story-grid,
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 760px) {
-            .shell {
-                width: min(100% - 20px, 1380px);
-            }
-
-            .topbar,
-            .hero-main,
-            .mini-panel,
-            .story-band,
-            .feature-card {
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-
-            .hero-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-main h1 {
-                font-size: 54px;
-            }
-        }
-    </style>
-</head>
-<body>
-<div class="shell">
-    <header class="topbar">
-        <div class="brand">
-            <div class="badge-mark">SP</div>
-            <div class="brand-copy">
-                <strong>SkinProto</strong>
-                <span>梦医智联 · 皮肤病智能诊断平台</span>
-            </div>
+    <section class="hero-stage" data-aos="fade-up" data-aos-delay="40">
+        <div class="hero-kicker">DreamMed Research · Enterprise Medical AI</div>
+        <h1 class="hero-title">
+            <span class="accent">DermoAI</span><br>
+            医疗 AI 中枢
+        </h1>
+        <p class="hero-subtitle">
+            图像诊断、智能问诊、知识增强和可视化大屏统一收口到一个企业级医疗 AI 门户。
+        </p>
+        <div class="command-strip">统一门户 · 智能问诊 · 图像诊断 · 知识中枢 · 数据看板</div>
+        <div class="hero-actions">
+            <a class="hero-primary" href="/index/">进入系统总览</a>
+            <a class="hero-secondary" href="/agent/">打开问诊工作台</a>
         </div>
-        <nav class="nav-links">
-            <a href="/index/">功能总览</a>
-            <a href="/agent/">智能问诊</a>
-            <a href="/diagnose_skin/">图像诊断</a>
-            <a href="/medical/">RAG 知识库</a>
-        </nav>
-    </header>
+    </section>
 
-    <section class="hero">
-        <article class="hero-main">
+    <section class="metric-grid" data-aos="fade-up" data-aos-delay="80">
+        <article class="metric-card">
+            <div class="icon"><i class="bi bi-boxes"></i></div>
             <div>
-                <div class="eyebrow">Dermatology AI Platform</div>
-                <h1>把皮肤病诊断做成可解释、可追溯、可协作的系统</h1>
-                <p>
-                    梦医智联把皮肤病图像分类、智能问诊、RAG 知识增强与知识图谱推理整合成一套完整工作流。
-                    它不只回答“像什么”，也回答“为什么这样判断”“依据来自哪里”。
-                </p>
-                <div class="cta-row">
-                    <a class="cta-primary" href="/index/">进入功能总览</a>
-                    <a class="cta-secondary" href="/agent/">开始智能问诊</a>
+                <strong>6</strong>
+                <span>核心能力域</span>
+            </div>
+        </article>
+        <article class="metric-card">
+            <div class="icon"><i class="bi bi-camera2"></i></div>
+            <div>
+                <strong>2</strong>
+                <span>视觉识别链路</span>
+            </div>
+        </article>
+        <article class="metric-card">
+            <div class="icon"><i class="bi bi-chat-square-text"></i></div>
+            <div>
+                <strong>AI</strong>
+                <span>流式问诊工作台</span>
+            </div>
+        </article>
+        <article class="metric-card">
+            <div class="icon"><i class="bi bi-database-check"></i></div>
+            <div>
+                <strong>RAG</strong>
+                <span>文档与知识条目联动</span>
+            </div>
+        </article>
+        <article class="metric-card">
+            <div class="icon"><i class="bi bi-diagram-2"></i></div>
+            <div>
+                <strong>KG</strong>
+                <span>图谱解释能力</span>
+            </div>
+        </article>
+        <article class="metric-card">
+            <div class="icon"><i class="bi bi-bar-chart"></i></div>
+            <div>
+                <strong>Live</strong>
+                <span>展示级数据大屏</span>
+            </div>
+        </article>
+    </section>
+
+    <section class="module-grid" data-aos="fade-up" data-aos-delay="100">
+        <article class="module-card">
+            <div class="module-top">
+                <div class="module-tag">Workspace</div>
+                <h3>智能问诊</h3>
+                <p>流式回答、多轮上下文、RAG 证据和图谱路径统一呈现。</p>
+            </div>
+            <a href="/agent/">进入模块</a>
+        </article>
+        <article class="module-card">
+            <div class="module-top">
+                <div class="module-tag">Vision</div>
+                <h3>图像诊断</h3>
+                <p>皮肤图像上传、分类预测、Top 结果和解释输出集中展示。</p>
+            </div>
+            <a href="/diagnose_skin/">进入模块</a>
+        </article>
+        <article class="module-card">
+            <div class="module-top">
+                <div class="module-tag">Knowledge</div>
+                <h3>知识库</h3>
+                <p>结构化知识、PDF/TXT 文档切片与检索实验台集成在一起。</p>
+            </div>
+            <a href="/medical/">进入模块</a>
+        </article>
+        <article class="module-card">
+            <div class="module-top">
+                <div class="module-tag">Analytics</div>
+                <h3>系统大屏</h3>
+                <p>统一查看平台运行状态、重点指标、风险提醒与业务分布。</p>
+            </div>
+            <a href="/screen/">进入模块</a>
+        </article>
+    </section>
+
+    <section class="board-grid" data-aos="fade-up" data-aos-delay="120">
+        <article class="board-card">
+            <h2>统一业务入口与核心能力总览</h2>
+            <p>首页用于集中呈现平台定位、模块入口、服务能力和关键指标，帮助企业用户快速进入核心业务流程。</p>
+            <div class="signal-list">
+                <div class="signal-item">
+                    <strong>统一访问入口</strong>
+                    <span>将问诊、图像诊断、知识中枢和数据看板整合到同一个门户中。</span>
+                </div>
+                <div class="signal-item">
+                    <strong>更清晰的信息层级</strong>
+                    <span>通过指标、卡片和模块分区快速识别重点内容，减少无效阅读成本。</span>
+                </div>
+                <div class="signal-item">
+                    <strong>面向业务操作</strong>
+                    <span>页面优先承载业务入口、运行状态和使用路径，而不是说明性段落。</span>
                 </div>
             </div>
-            <div class="hero-grid">
-                <div class="hero-metric"><span>图像能力</span><strong>SFEPT 小样本分类</strong></div>
-                <div class="hero-metric"><span>问诊能力</span><strong>上下文记忆 + 流式输出</strong></div>
-                <div class="hero-metric"><span>知识能力</span><strong>RAG 检索 + 图谱联动</strong></div>
-            </div>
         </article>
 
-        <aside class="hero-side">
-            <section class="mini-panel">
-                <h2>核心价值</h2>
-                <p>让图像分类、问诊交互和知识依据形成同一条诊断链路，适合教学展示、辅助分诊和系统验证。</p>
-                <ul>
-                    <li>支持皮肤病图像上传、分类预测与大模型诊断解读</li>
-                    <li>支持多轮问诊、历史上下文与知识图谱证据展示</li>
-                    <li>支持知识库条目维护与 PDF/TXT 文档自动切片入库</li>
-                </ul>
-            </section>
-            <section class="mini-panel">
-                <h2>体验路径</h2>
-                <p>建议先看功能总览，再进入图像诊断或问诊工作台体验主要能力，最后用系统大屏展示整体闭环。</p>
-            </section>
-        </aside>
-    </section>
+        <div class="board-stack">
+            <article class="board-card">
+                <h3>业务处理链路</h3>
+                <div class="workflow-list">
+                    <div class="workflow-item">
+                        <strong>01 图像诊断</strong>
+                        <span>上传病例图像并获取分类结果与辅助分析。</span>
+                    </div>
+                    <div class="workflow-item">
+                        <strong>02 智能问诊</strong>
+                        <span>结合症状描述、上下文追问和证据检索形成问诊记录。</span>
+                    </div>
+                    <div class="workflow-item">
+                        <strong>03 知识中枢与运营看板</strong>
+                        <span>查看知识支撑、业务状态和运行概况。</span>
+                    </div>
+                </div>
+            </article>
 
-    <section class="story-band">
-        <div class="story-grid">
-            <div class="story-copy">
-                <h2>不是一页炫技式页面，而是一套真正能串起来的诊断产品</h2>
-                <p>
-                    你现在的系统最有价值的地方，是它把“图像结果、问诊内容、知识依据、系统监控”放到了同一张地图上。
-                    所以新的前端方向不是做一个更花的门户，而是让每个页面都更像同一个产品里的不同工作台。
-                </p>
-            </div>
-            <div class="story-image">
-                <img src="{% static 'img/lh/198.jpg' %}" alt="皮肤病智能诊断系统">
-            </div>
+            <article class="board-card">
+                <h3>平台定位</h3>
+                <p>医疗 AI 辅助诊疗平台 · 多模块统一门户 · 企业业务工作台</p>
+            </article>
         </div>
     </section>
-
-    <section class="feature-grid">
-        <article class="feature-card">
-            <i class="bi bi-chat-heart"></i>
-            <h3>智能问诊</h3>
-            <p>带上下文历史、流式生成、RAG 证据与知识图谱联动的皮肤病问诊工作台。</p>
-            <a href="/agent/">进入问诊</a>
-        </article>
-        <article class="feature-card">
-            <i class="bi bi-bounding-box-circles"></i>
-            <h3>图像诊断</h3>
-            <p>上传皮肤病图像，获得模型分类结果、置信度分析与大模型辅助解读。</p>
-            <a href="/diagnose_skin/">开始诊断</a>
-        </article>
-        <article class="feature-card">
-            <i class="bi bi-database-check"></i>
-            <h3>RAG 知识库</h3>
-            <p>维护结构化知识条目，上传 PDF/TXT 文档并自动切分为可检索知识片段。</p>
-            <a href="/medical/">管理知识</a>
-        </article>
-        <article class="feature-card">
-            <i class="bi bi-bar-chart-line"></i>
-            <h3>系统大屏</h3>
-            <p>聚合疾病分布、问诊趋势、知识图谱与模型表现的皮肤病智能诊断驾驶舱。</p>
-            <a href="/screen/">查看大屏</a>
-        </article>
-    </section>
 </div>
-</body>
-</html>
+{% endblock %}

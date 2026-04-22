@@ -1,413 +1,784 @@
 {% extends 'layout.html' %}
 {% load static %}
+{% block body_class %}page-cell{% endblock %}
 
-<head>
-  <script>
-    const csrfToken = '{{ csrf_token }}';  // Django 渲染的 CSRF token
-  </script>
-  <title>细胞识别</title>
-</head>
 {% block css %}
 <style>
-  .container {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-  }
-
-  .image-box {
-    width: 45%;
-    height: 400px;
-    border: 2px dashed #ccc;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f8f8;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s, background-color 0.3s;
-  }
-
-  .image-box:hover {
-    border-color: #aaa;
-    background-color: #f0f0f0;
-  }
-
-  .image-box img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
-  }
-
-  .upload-label {
-    cursor: pointer;
-    color: #888;
-    font-size: 16px;
-  }
-
-  .controls {
-    margin-top: 20px;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-
-  select, button {
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  button:hover {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-
-  /* 覆盖全屏的加载动画样式 */
-  #loading-screen {
-    position: fixed; /* 固定在屏幕上 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* 半透明背景 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* 确保覆盖所有内容 */
-    visibility: hidden; /* 默认隐藏 */
-  }
-
-  .dot-spinner {
-    --uib-size: 2.8rem;
-    --uib-speed: .9s;
-    --uib-color: #62dfcc;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: var(--uib-size);
-    width: var(--uib-size);
-  }
-
-  .dot-spinner__dot {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100%;
-    width: 100%;
-  }
-
-  .dot-spinner__dot::before {
-    content: '';
-    height: 20%;
-    width: 20%;
-    border-radius: 50%;
-    background-color: var(--uib-color);
-    transform: scale(0);
-    opacity: 0.5;
-    animation: pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;
-    box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
-  }
-
-  .dot-spinner__dot:nth-child(2) {
-    transform: rotate(45deg);
-  }
-
-  .dot-spinner__dot:nth-child(2)::before {
-    animation-delay: calc(var(--uib-speed) * -0.875);
-  }
-
-  .dot-spinner__dot:nth-child(3) {
-    transform: rotate(90deg);
-  }
-
-  .dot-spinner__dot:nth-child(3)::before {
-    animation-delay: calc(var(--uib-speed) * -0.75);
-  }
-
-  .dot-spinner__dot:nth-child(4) {
-    transform: rotate(135deg);
-  }
-
-  .dot-spinner__dot:nth-child(4)::before {
-    animation-delay: calc(var(--uib-speed) * -0.625);
-  }
-
-  .dot-spinner__dot:nth-child(5) {
-    transform: rotate(180deg);
-  }
-
-  .dot-spinner__dot:nth-child(5)::before {
-    animation-delay: calc(var(--uib-speed) * -0.5);
-  }
-
-  .dot-spinner__dot:nth-child(6) {
-    transform: rotate(225deg);
-  }
-
-  .dot-spinner__dot:nth-child(6)::before {
-    animation-delay: calc(var(--uib-speed) * -0.375);
-  }
-
-  .dot-spinner__dot:nth-child(7) {
-    transform: rotate(270deg);
-  }
-
-  .dot-spinner__dot:nth-child(7)::before {
-    animation-delay: calc(var(--uib-speed) * -0.25);
-  }
-
-  .dot-spinner__dot:nth-child(8) {
-    transform: rotate(315deg);
-  }
-
-  .dot-spinner__dot:nth-child(8)::before {
-    animation-delay: calc(var(--uib-speed) * -0.125);
-  }
-
-  @keyframes pulse0112 {
-    0%,
-    100% {
-      transform: scale(0);
-      opacity: 0.5;
+    .cell-shell {
+        width: min(1360px, calc(100% - 32px));
+        margin: 0 auto;
+        display: grid;
+        gap: 18px;
     }
 
-    50% {
-      transform: scale(1);
-      opacity: 1;
+    .cell-hero,
+    .cell-panel,
+    .cell-stage,
+    .cell-note {
+        border-radius: 30px;
+        border: 1px solid rgba(19, 52, 50, 0.10);
+        box-shadow: 0 24px 72px rgba(20, 39, 36, 0.10);
+        overflow: hidden;
     }
-  }
-  
-  /* 输入框和按钮的样式 */
-.input-group {
-    display: flex;
-    gap: 10px;
-}
 
-.form-control {
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
+    .cell-hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 18px;
+        padding: 30px;
+        color: #fffaf4;
+        background:
+            linear-gradient(135deg, rgba(8, 41, 43, 0.94), rgba(15, 88, 79, 0.72)),
+            url("{% static 'img/doctor2.png' %}") center/cover no-repeat;
+    }
 
-.btn-primary {
-    padding: 10px 15px;
-    border-radius: 8px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+    .cell-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 14% 18%, rgba(255, 245, 230, 0.16), transparent 18%),
+            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: auto, 26px 26px, 26px 26px;
+        opacity: 0.34;
+        pointer-events: none;
+    }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-}
+    .cell-hero > *,
+    .cell-note > * {
+        position: relative;
+        z-index: 1;
+    }
 
+    .hero-kicker,
+    .hero-chip,
+    .panel-kicker,
+    .drop-tip {
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
 
+    .hero-kicker,
+    .hero-chip,
+    .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .hero-kicker {
+        padding: 9px 14px;
+        background: rgba(255, 248, 237, 0.12);
+        border: 1px solid rgba(255, 248, 237, 0.18);
+    }
+
+    .cell-copy h1 {
+        margin: 18px 0 14px;
+        max-width: 12ch;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(46px, 5vw, 80px);
+        line-height: 0.92;
+        color: #fffdf8;
+    }
+
+    .cell-copy p {
+        margin: 0;
+        max-width: 60ch;
+        color: rgba(255, 248, 237, 0.86);
+        font-size: 15px;
+        line-height: 1.92;
+    }
+
+    .hero-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .hero-chip {
+        min-height: 38px;
+        padding: 0 14px;
+        background: rgba(255, 248, 237, 0.10);
+        border: 1px solid rgba(255, 248, 237, 0.16);
+        color: #fffaf4;
+    }
+
+    .hero-side {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+    }
+
+    .cell-note {
+        padding: 18px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 248, 237, 0.14);
+        background: rgba(255, 248, 237, 0.10);
+        backdrop-filter: blur(12px);
+    }
+
+    .cell-note strong {
+        display: block;
+        color: #fffdf8;
+        font-size: 17px;
+        line-height: 1.55;
+    }
+
+    .cell-note p {
+        margin: 8px 0 0;
+        color: rgba(255, 248, 237, 0.76);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .cell-workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.8fr);
+        gap: 18px;
+    }
+
+    .cell-panel {
+        background: rgba(255, 252, 247, 0.90);
+        backdrop-filter: blur(14px);
+    }
+
+    .panel-head {
+        padding: 18px 20px 16px;
+        border-bottom: 1px solid rgba(19, 52, 50, 0.10);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .panel-kicker {
+        padding: 7px 11px;
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+        margin-bottom: 10px;
+    }
+
+    .panel-head h2,
+    .panel-head h3 {
+        margin: 0;
+        color: #183532;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #5c6f6b;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .stage-grid {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .cell-stage {
+        min-height: 380px;
+        padding: 18px;
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 243, 235, 0.90));
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: 14px;
+    }
+
+    .stage-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .stage-top strong {
+        color: #183532;
+        font-size: 16px;
+    }
+
+    .stage-top span {
+        color: #647773;
+        font-size: 12px;
+    }
+
+    .image-box {
+        min-height: 268px;
+        border-radius: 24px;
+        border: 1px dashed rgba(18, 125, 114, 0.20);
+        background:
+            radial-gradient(circle at top left, rgba(18, 125, 114, 0.08), transparent 18%),
+            rgba(255, 255, 255, 0.82);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 180ms ease, transform 180ms ease, background-color 180ms ease;
+    }
+
+    .image-box.dragging {
+        border-color: rgba(18, 125, 114, 0.46);
+        background-color: rgba(18, 125, 114, 0.06);
+        transform: translateY(-1px);
+    }
+
+    .image-box img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 18px;
+    }
+
+    .drop-tip {
+        text-align: center;
+        color: #60736f;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .drop-tip strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #173432;
+        font-size: 16px;
+        text-transform: none;
+        letter-spacing: 0;
+    }
+
+    .stage-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .stage-actions label,
+    .stage-actions button {
+        min-height: 46px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .stage-actions label {
+        background: linear-gradient(135deg, #127d72, #d97653);
+        color: #fffdf8;
+        box-shadow: 0 18px 36px rgba(18, 125, 114, 0.20);
+    }
+
+    .stage-actions button {
+        border: 1px solid rgba(18, 125, 114, 0.16);
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+    }
+
+    .stage-actions label:hover,
+    .stage-actions button:hover {
+        transform: translateY(-1px);
+    }
+
+    #image-upload {
+        display: none;
+    }
+
+    .detect-form {
+        padding: 20px;
+        border-top: 1px solid rgba(19, 52, 50, 0.10);
+        display: grid;
+        gap: 12px;
+    }
+
+    .detect-form label {
+        color: #5d706c;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .detect-form .field-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+    }
+
+    #target-input {
+        min-height: 50px;
+        padding: 0 16px;
+        border-radius: 16px;
+        border: 1px solid rgba(18, 125, 114, 0.14);
+        background: rgba(255, 255, 255, 0.92);
+        color: #183532;
+        font-size: 14px;
+        outline: none;
+    }
+
+    #target-input:focus {
+        border-color: rgba(18, 125, 114, 0.34);
+        box-shadow: 0 0 0 5px rgba(18, 125, 114, 0.10);
+    }
+
+    #detect-btn {
+        min-width: 132px;
+        min-height: 50px;
+        border: 0;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #127d72, #d97653);
+        color: #fffdf8;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 18px 36px rgba(18, 125, 114, 0.20);
+    }
+
+    #detect-btn:disabled {
+        opacity: 0.6;
+        cursor: wait;
+        box-shadow: none;
+    }
+
+    .insight-stack {
+        padding: 18px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .insight-card {
+        padding: 16px;
+        border-radius: 22px;
+        border: 1px solid rgba(19, 52, 50, 0.10);
+        background: rgba(255, 255, 255, 0.84);
+    }
+
+    .insight-card h4 {
+        margin: 0 0 8px;
+        color: #173432;
+        font-size: 15px;
+    }
+
+    .insight-card p,
+    .insight-card li {
+        margin: 0;
+        color: #60736f;
+        font-size: 13px;
+        line-height: 1.82;
+    }
+
+    .insight-card ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    #loading-screen {
+        position: fixed;
+        inset: 0;
+        background: rgba(7, 18, 17, 0.72);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        visibility: hidden;
+        z-index: 2000;
+        backdrop-filter: blur(8px);
+    }
+
+    #loading-screen.show {
+        visibility: visible;
+    }
+
+    .loading-card {
+        min-width: 260px;
+        padding: 24px 28px;
+        border-radius: 26px;
+        background: rgba(255, 252, 247, 0.94);
+        box-shadow: 0 24px 70px rgba(20, 39, 36, 0.24);
+        text-align: center;
+    }
+
+    .dot-spinner {
+        --uib-size: 2.8rem;
+        --uib-speed: .9s;
+        --uib-color: #127d72;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        height: var(--uib-size);
+        width: var(--uib-size);
+        margin-bottom: 14px;
+    }
+
+    .dot-spinner__dot {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+        width: 100%;
+    }
+
+    .dot-spinner__dot::before {
+        content: '';
+        height: 20%;
+        width: 20%;
+        border-radius: 50%;
+        background-color: var(--uib-color);
+        transform: scale(0);
+        opacity: 0.5;
+        animation: pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;
+        box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
+    }
+
+    .dot-spinner__dot:nth-child(2) { transform: rotate(45deg); }
+    .dot-spinner__dot:nth-child(2)::before { animation-delay: calc(var(--uib-speed) * -0.875); }
+    .dot-spinner__dot:nth-child(3) { transform: rotate(90deg); }
+    .dot-spinner__dot:nth-child(3)::before { animation-delay: calc(var(--uib-speed) * -0.75); }
+    .dot-spinner__dot:nth-child(4) { transform: rotate(135deg); }
+    .dot-spinner__dot:nth-child(4)::before { animation-delay: calc(var(--uib-speed) * -0.625); }
+    .dot-spinner__dot:nth-child(5) { transform: rotate(180deg); }
+    .dot-spinner__dot:nth-child(5)::before { animation-delay: calc(var(--uib-speed) * -0.5); }
+    .dot-spinner__dot:nth-child(6) { transform: rotate(225deg); }
+    .dot-spinner__dot:nth-child(6)::before { animation-delay: calc(var(--uib-speed) * -0.375); }
+    .dot-spinner__dot:nth-child(7) { transform: rotate(270deg); }
+    .dot-spinner__dot:nth-child(7)::before { animation-delay: calc(var(--uib-speed) * -0.25); }
+    .dot-spinner__dot:nth-child(8) { transform: rotate(315deg); }
+    .dot-spinner__dot:nth-child(8)::before { animation-delay: calc(var(--uib-speed) * -0.125); }
+
+    @keyframes pulse0112 {
+        0%, 100% {
+            transform: scale(0);
+            opacity: 0.5;
+        }
+
+        50% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @media (max-width: 1120px) {
+        .cell-hero,
+        .cell-workspace,
+        .stage-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .cell-shell {
+            width: min(100% - 20px, 1360px);
+        }
+
+        .cell-hero,
+        .cell-panel,
+        .cell-stage {
+            border-radius: 24px;
+        }
+
+        .stage-grid,
+        .detect-form,
+        .insight-stack {
+            padding: 18px;
+        }
+
+        .detect-form .field-row {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div id="loading-screen">
-  <div class="dot-spinner" id="spinner">
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-  </div>
+    <div class="loading-card">
+        <div class="dot-spinner">
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+        </div>
+        <strong style="display:block;color:#173432;font-size:16px;">目标检测进行中</strong>
+        <span style="display:block;margin-top:8px;color:#60736f;font-size:13px;line-height:1.8;">正在将图像发送到检测服务并生成标注结果。</span>
+    </div>
 </div>
 
-<div class="container">
-  <div class="image-box" id="upload-preview">
-    <label class="upload-label" for="image-upload">点击上传图片或拖拽到此</label>
-    <input type="file" id="image-upload" name="image" accept="image/*" style="display:none">
-  </div>
-  <div class="image-box" id="output-preview">
-    <span class="upload-label">识别后的图像将在此显示</span>
-  </div>
-</div>
+<div class="cell-shell">
+    <section class="cell-hero">
+        <div class="cell-copy">
+            <div class="hero-kicker">Cell Detection Studio</div>
+            <h1>把上传、提示词和检测结果放进同一工作台</h1>
+            <p>
+                这次重构把旧版细胞识别页整理成更像“医学视觉分析控制台”的样子。
+                你可以拖拽上传图片、输入识别目标，然后在右侧直接查看标注后的输出结果。
+            </p>
+            <div class="hero-chips">
+                <div class="hero-chip">Landing AI 检测接口</div>
+                <div class="hero-chip">拖拽上传</div>
+                <div class="hero-chip">Prompt 驱动识别</div>
+            </div>
+        </div>
 
-<div class="controls">
-  <div class="input-group mb-3">
-    <input type="text" id="target-input" class="form-control" placeholder="请输入目标名称">
-    <button id="detect-btn" class="btn btn-primary">开始识别</button>
-  </div>
+        <aside class="hero-side">
+            <article class="cell-note">
+                <strong>推荐使用流程</strong>
+                <p>先上传样本图像，再输入具体目标名称，比如红细胞、白细胞或异常结构，最后启动检测。</p>
+            </article>
+            <article class="cell-note">
+                <strong>统一识别流程</strong>
+                <p>输入图像、目标提示词和可视化结果都集中在同一页，便于连续处理与结果查看。</p>
+            </article>
+            <article class="cell-note">
+                <strong>结果说明</strong>
+                <p>页面只负责展示视觉识别结果，最终医学判断仍需结合专业检查与人工复核。</p>
+            </article>
+        </aside>
+    </section>
+
+    <section class="cell-workspace">
+        <section class="cell-panel">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-kicker">Workspace</div>
+                    <h2>图像检测工作区</h2>
+                    <p>左侧输入原始样本，右侧查看标注结果，交互路径更加直观。</p>
+                </div>
+            </div>
+
+            <div class="stage-grid">
+                <article class="cell-stage">
+                    <div class="stage-top">
+                        <div>
+                            <strong>原始图像</strong>
+                            <span>上传或拖拽医学样本图</span>
+                        </div>
+                    </div>
+                    <div class="image-box" id="upload-preview">
+                        <div class="drop-tip">
+                            <strong>点击或拖拽图片到这里</strong>
+                            支持常见图像格式<br>
+                            上传后会在这里显示预览
+                        </div>
+                        <input type="file" id="image-upload" name="image" accept="image/*">
+                    </div>
+                    <div class="stage-actions">
+                        <label for="image-upload">选择图像</label>
+                        <button type="button" id="clearUploadBtn">清空</button>
+                    </div>
+                </article>
+
+                <article class="cell-stage">
+                    <div class="stage-top">
+                        <div>
+                            <strong>检测结果</strong>
+                            <span>目标框与识别标签输出</span>
+                        </div>
+                    </div>
+                    <div class="image-box" id="output-preview">
+                        <div class="drop-tip">
+                            <strong>等待检测完成</strong>
+                            识别后的标注图会显示在这里
+                        </div>
+                    </div>
+                    <div class="stage-actions">
+                        <button type="button" id="reusePromptBtn">使用默认目标词</button>
+                    </div>
+                </article>
+            </div>
+
+            <div class="detect-form">
+                <label for="target-input">输入目标名称</label>
+                <div class="field-row">
+                    <input type="text" id="target-input" placeholder="例如：红细胞、白细胞、细胞核、异常团块">
+                    <button id="detect-btn" type="button">开始识别</button>
+                </div>
+            </div>
+        </section>
+
+        <aside class="cell-panel">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-kicker">Guide</div>
+                    <h3>操作说明</h3>
+                    <p>把旧页面里的零散按钮整理成更明确的检测步骤。</p>
+                </div>
+            </div>
+            <div class="insight-stack">
+                <article class="insight-card">
+                    <h4>1. 上传样本图</h4>
+                    <p>支持点击上传和拖拽上传，页面会立即显示输入图预览。</p>
+                </article>
+                <article class="insight-card">
+                    <h4>2. 指定识别目标</h4>
+                    <p>目标词越具体，模型的识别行为越清晰，也更适合展示 prompt 驱动检测。</p>
+                </article>
+                <article class="insight-card">
+                    <h4>3. 查看标注结果</h4>
+                    <ul>
+                        <li>边框代表识别出的目标区域</li>
+                        <li>标签显示类别和置信分数</li>
+                        <li>建议结合人工复核做最终判断</li>
+                    </ul>
+                </article>
+            </div>
+        </aside>
+    </section>
 </div>
 {% endblock %}
 
 {% block js %}
 <script>
-  const uploadInput = document.getElementById('image-upload');
-  const uploadPreview = document.getElementById('upload-preview');
-  const outputPreview = document.getElementById('output-preview');
-  const detectBtn = document.getElementById('detect-btn');
-  const targetSelect = document.getElementById('target-select');
-  const spinner = document.getElementById('spinner');
-  const loadingScreen = document.getElementById('loading-screen');
-  // 获取输入框的值
+    const uploadInput = document.getElementById('image-upload');
+    const uploadPreview = document.getElementById('upload-preview');
+    const outputPreview = document.getElementById('output-preview');
+    const detectBtn = document.getElementById('detect-btn');
+    const loadingScreen = document.getElementById('loading-screen');
     const targetInput = document.getElementById('target-input');
-    
-    // 修改 detectBtn 的点击事件
-    detectBtn.addEventListener('click', () => {
+    const clearUploadBtn = document.getElementById('clearUploadBtn');
+    const reusePromptBtn = document.getElementById('reusePromptBtn');
+
+    let currentImageFile = null;
+
+    function setLoading(show) {
+        loadingScreen.classList.toggle('show', show);
+        detectBtn.disabled = show;
+    }
+
+    function renderUploadPreview(src) {
+        uploadPreview.innerHTML = `<img src="${src}" alt="上传图像">`;
+    }
+
+    function renderOutputPlaceholder() {
+        outputPreview.innerHTML = `
+            <div class="drop-tip">
+                <strong>等待检测完成</strong>
+                识别后的标注图会显示在这里
+            </div>
+        `;
+    }
+
+    function renderOutputImage(src) {
+        outputPreview.innerHTML = `<img src="${src}" alt="识别结果">`;
+    }
+
+    function setDragState(active) {
+        uploadPreview.classList.toggle('dragging', active);
+    }
+
+    function loadFile(file) {
+        if (!file) return;
+        currentImageFile = file;
+        const reader = new FileReader();
+        reader.onload = event => renderUploadPreview(event.target.result);
+        reader.readAsDataURL(file);
+    }
+
+    uploadPreview.addEventListener('click', () => uploadInput.click());
+
+    uploadInput.addEventListener('change', () => {
+        loadFile(uploadInput.files[0]);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadPreview.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            setDragState(true);
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadPreview.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            setDragState(false);
+        });
+    });
+
+    uploadPreview.addEventListener('drop', (event) => {
+        const file = event.dataTransfer.files[0];
+        if (file) {
+            loadFile(file);
+        }
+    });
+
+    clearUploadBtn.addEventListener('click', () => {
+        currentImageFile = null;
+        uploadInput.value = '';
+        uploadPreview.innerHTML = `
+            <div class="drop-tip">
+                <strong>点击或拖拽图片到这里</strong>
+                支持常见图像格式<br>
+                上传后会在这里显示预览
+            </div>
+        `;
+        renderOutputPlaceholder();
+    });
+
+    reusePromptBtn.addEventListener('click', () => {
+        targetInput.value = '红细胞';
+        targetInput.focus();
+    });
+
+    detectBtn.addEventListener('click', async () => {
         if (!currentImageFile) {
-            alert('请先上传图片');
+            alert('请先上传图像');
             return;
         }
-    
-        const prompt = targetInput.value.trim(); // 获取输入框的值
+
+        const prompt = targetInput.value.trim();
         if (!prompt) {
             alert('请输入目标名称');
+            targetInput.focus();
             return;
         }
-    
-        // 点击时禁用按钮
-        detectBtn.disabled = true;
-    
-        // 显示 loading screen
-        loadingScreen.style.visibility = 'visible';
-    
-        // 强制让浏览器渲染加载动画
-        requestAnimationFrame(() => {
+
+        setLoading(true);
+
+        try {
             const formData = new FormData();
             formData.append('image', currentImageFile);
-            formData.append('prompt', prompt); // 使用输入框的值
-    
-            fetch('/cell/detect/', {
+            formData.append('prompt', prompt);
+
+            const response = await fetch('/cell/detect/', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRFToken': csrfToken,  // 添加 CSRF token
+                    'X-CSRFToken': '{{ csrf_token }}',
                 }
-            })
-            .then(response => response.blob())
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
-                outputPreview.innerHTML = `<img src="${url}" alt="识别图像">`;
-            })
-            .catch(error => {
-                console.error(error);
-                alert('识别失败');
-            })
-            .finally(() => {
-                // 隐藏 loading screen
-                loadingScreen.style.visibility = 'hidden';
-                detectBtn.disabled = false;
             });
-        });
-    });
 
-  let currentImageFile = null;
-
-  // 获取 CSRF token
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+            if (!response.ok) {
+                throw new Error('识别服务返回异常');
             }
-        }
-    }
-    return cookieValue;
-  }
 
-  const csrfToken = getCookie('csrftoken');  // 这里重新获取 CSRF token
-
-  uploadPreview.addEventListener('click', () => uploadInput.click());
-
-  uploadInput.addEventListener('change', () => {
-    const file = uploadInput.files[0];
-    if (file) {
-      currentImageFile = file;
-      const reader = new FileReader();
-      reader.onload = e => {
-        uploadPreview.innerHTML = `<img src="${e.target.result}" alt="上传图片">`;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  uploadPreview.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadPreview.style.borderColor = 'rgba(8,255,0,0.64)';
-  });
-
-  uploadPreview.addEventListener('dragleave', (e) => {
-    uploadPreview.style.borderColor = '#ccc';
-  });
-
-  uploadPreview.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      currentImageFile = file;
-      const reader = new FileReader();
-      reader.onload = e => {
-        uploadPreview.innerHTML = `<img src="${e.target.result}" alt="上传图片">`;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  detectBtn.addEventListener('click', () => {
-    if (!currentImageFile) {
-        alert('请先上传图片');
-        return;
-    }
-
-    // 点击时禁用按钮
-    detectBtn.disabled = true;
-
-    // 显示 loading screen
-    loadingScreen.style.visibility = 'visible';
-
-    // 强制让浏览器渲染加载动画
-    requestAnimationFrame(() => {
-        const formData = new FormData();
-        formData.append('image', currentImageFile);
-        formData.append('prompt', targetSelect.value);
-
-        fetch('/cell/detect/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': csrfToken,  // 添加 CSRF token
-            }
-        })
-        .then(response => response.blob())
-        .then(blob => {
+            const blob = await response.blob();
             const url = URL.createObjectURL(blob);
-            outputPreview.innerHTML = `<img src="${url}" alt="识别图像">`;
-        })
-        .catch(error => {
-            console.error(error);
-            alert('识别失败');
-        })
-        .finally(() => {
-            // 隐藏 loading screen
-            loadingScreen.style.visibility = 'hidden';
-            detectBtn.disabled = false;
-        });
+            renderOutputImage(url);
+        } catch (error) {
+            alert(`识别失败：${error.message}`);
+        } finally {
+            setLoading(false);
+        }
     });
-  });
 </script>
 {% endblock %}

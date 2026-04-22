@@ -1,514 +1,501 @@
+{% extends "layout.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>功能总览 | 梦医智联</title>
-    <link href="{% static '/img/doctor.png' %}" rel="apple-touch-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-    <style>
-        :root {
-            --ink: #152622;
-            --muted: #60716d;
-            --green: #138a73;
-            --green-dark: #0f6658;
-            --coral: #dc7658;
-            --paper: #f5f7f2;
-            --surface: rgba(255, 252, 247, 0.94);
-            --line: rgba(21, 38, 34, 0.08);
-            --shadow: 0 24px 60px rgba(18, 37, 33, 0.08);
+{% block body_class %}page-overview{% endblock %}
+
+{% block css %}
+<style>
+    .overview-shell {
+        width: min(1280px, calc(100% - 32px));
+        margin: 0 auto;
+        display: grid;
+        gap: 18px;
+    }
+
+    .overview-hero,
+    .stat-card,
+    .surface-card,
+    .module-card,
+    .flow-card,
+    .signal-card {
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 72px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+    }
+
+    .overview-hero {
+        position: relative;
+        padding: 34px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) 360px;
+        gap: 18px;
+        background:
+            radial-gradient(circle at 28% 22%, rgba(59, 130, 246, 0.24), transparent 24%),
+            radial-gradient(circle at 82% 68%, rgba(240, 138, 67, 0.20), transparent 28%),
+            linear-gradient(145deg, rgba(10, 18, 33, 0.96), rgba(12, 19, 34, 0.92)),
+            url("{% static 'img/lh/198.jpg' %}") center/cover no-repeat;
+    }
+
+    .overview-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 36px 36px;
+        opacity: 0.20;
+        pointer-events: none;
+    }
+
+    .overview-hero > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-kicker,
+    .hero-chip,
+    .card-kicker,
+    .module-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .hero-kicker {
+        min-height: 38px;
+        padding: 0 14px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(244, 247, 251, 0.80);
+    }
+
+    .hero-copy h1 {
+        margin: 20px 0 14px;
+        max-width: 10ch;
+        font-family: "Sora", sans-serif;
+        font-size: clamp(44px, 6vw, 84px);
+        line-height: 0.94;
+        font-weight: 800;
+        color: #f4f7fb;
+    }
+
+    .hero-copy p {
+        margin: 0;
+        max-width: 720px;
+        color: rgba(244, 247, 251, 0.70);
+        font-size: 15px;
+        line-height: 1.86;
+    }
+
+    .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .hero-actions a {
+        min-height: 52px;
+        padding: 0 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .hero-primary {
+        background: linear-gradient(135deg, #3b82f6, #5b8fff);
+        color: #ffffff;
+        box-shadow: 0 22px 48px rgba(59, 130, 246, 0.26);
+    }
+
+    .hero-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f4f7fb;
+    }
+
+    .hero-side {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+    }
+
+    .signal-card {
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.10);
+        backdrop-filter: blur(12px);
+    }
+
+    .signal-card strong {
+        display: block;
+        color: #f4f7fb;
+        font-size: 17px;
+        line-height: 1.5;
+    }
+
+    .signal-card span {
+        display: block;
+        margin-top: 8px;
+        color: rgba(244, 247, 251, 0.66);
+        font-size: 13px;
+        line-height: 1.78;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .stat-card {
+        min-height: 180px;
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(31, 43, 68, 0.94), rgba(25, 34, 53, 0.88));
+    }
+
+    .stat-card .card-kicker {
+        min-height: 34px;
+        padding: 0 12px;
+        background: rgba(59, 130, 246, 0.10);
+        color: #78a3ff;
+    }
+
+    .stat-card strong {
+        display: block;
+        margin-top: 24px;
+        font-family: "Sora", sans-serif;
+        font-size: clamp(34px, 4vw, 52px);
+        line-height: 1;
+        font-weight: 700;
+        color: #5b8fff;
+    }
+
+    .stat-card span {
+        display: block;
+        margin-top: 12px;
+        color: rgba(244, 247, 251, 0.68);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .surface-grid {
+        display: grid;
+        grid-template-columns: 1.18fr 0.82fr;
+        gap: 16px;
+    }
+
+    .surface-card {
+        padding: 24px;
+        background: linear-gradient(180deg, rgba(17, 26, 44, 0.94), rgba(14, 21, 36, 0.90));
+    }
+
+    .surface-card h2,
+    .surface-card h3 {
+        margin: 0;
+        font-family: "Sora", sans-serif;
+        color: #f4f7fb;
+    }
+
+    .surface-card h2 {
+        font-size: 30px;
+        line-height: 1.2;
+    }
+
+    .surface-card h3 {
+        font-size: 20px;
+    }
+
+    .surface-card p {
+        margin: 12px 0 0;
+        color: rgba(244, 247, 251, 0.66);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .signal-list,
+    .flow-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .flow-card {
+        padding: 16px;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(240, 138, 67, 0.10));
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .flow-card strong {
+        display: block;
+        color: #f4f7fb;
+        font-size: 16px;
+    }
+
+    .flow-card span {
+        display: block;
+        margin-top: 8px;
+        color: rgba(244, 247, 251, 0.62);
+        font-size: 13px;
+        line-height: 1.76;
+    }
+
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .module-card {
+        min-height: 320px;
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(18, 28, 48, 0.94), rgba(15, 23, 39, 0.88));
+        display: grid;
+        align-content: space-between;
+        gap: 18px;
+    }
+
+    .module-tag {
+        min-height: 34px;
+        padding: 0 12px;
+        background: rgba(59, 130, 246, 0.10);
+        color: #78a3ff;
+    }
+
+    .module-card h3 {
+        margin: 16px 0 10px;
+        font-family: "Sora", sans-serif;
+        font-size: 24px;
+        line-height: 1.3;
+        color: #f4f7fb;
+    }
+
+    .module-card p {
+        margin: 0;
+        color: rgba(244, 247, 251, 0.62);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .module-card a {
+        min-height: 48px;
+        padding: 0 16px;
+        width: fit-content;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #f4f7fb;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .route-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .route-card {
+        min-height: 210px;
+        padding: 20px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(17, 26, 44, 0.94), rgba(14, 21, 36, 0.90));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 72px rgba(0, 0, 0, 0.28);
+    }
+
+    .route-card strong {
+        display: block;
+        color: #f4f7fb;
+        font-family: "Sora", sans-serif;
+        font-size: 20px;
+    }
+
+    .route-card span {
+        display: block;
+        margin-top: 10px;
+        color: rgba(244, 247, 251, 0.62);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 1180px) {
+        .stats-grid,
+        .module-grid,
+        .route-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: "Noto Sans SC", sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(circle at top left, rgba(19, 138, 115, 0.12), transparent 28%),
-                radial-gradient(circle at center right, rgba(220, 118, 88, 0.10), transparent 18%),
-                var(--paper);
+        .overview-hero,
+        .surface-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .overview-shell {
+            width: min(100% - 20px, 1280px);
         }
 
-        .shell {
-            width: min(1400px, calc(100% - 32px));
-            margin: 0 auto;
-            padding: 24px 0 40px;
+        .overview-hero {
+            padding: 28px 20px 24px;
         }
 
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 14px 18px;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: rgba(255, 252, 247, 0.84);
-            backdrop-filter: blur(12px);
+        .stats-grid,
+        .module-grid,
+        .route-grid {
+            grid-template-columns: 1fr;
         }
+    }
+</style>
+{% endblock %}
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .brand-mark {
-            width: 44px;
-            height: 44px;
-            display: grid;
-            place-items: center;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--green), var(--coral));
-            color: #fff9ef;
-            font-weight: 700;
-        }
-
-        .brand-copy strong {
-            display: block;
-            font: 700 34px/1 "Cormorant Garamond", serif;
-        }
-
-        .brand-copy span {
-            display: block;
-            margin-top: 6px;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .nav-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .nav-links a,
-        .hero-actions a,
-        .module-link {
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 700;
-        }
-
-        .nav-links a {
-            padding: 10px 14px;
-            background: rgba(19, 138, 115, 0.08);
-            color: #204641;
-            font-size: 14px;
-        }
-
-        .hero {
-            display: grid;
-            grid-template-columns: minmax(0, 1.25fr) minmax(340px, 0.75fr);
-            gap: 18px;
-            margin-top: 18px;
-        }
-
-        .hero-main,
-        .hero-side,
-        .module-card,
-        .timeline,
-        .story-card {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-        }
-
-        .hero-main {
-            position: relative;
-            overflow: hidden;
-            min-height: 420px;
-            padding: 30px;
-            display: grid;
-            align-content: space-between;
-            background:
-                linear-gradient(120deg, rgba(18, 62, 54, 0.84), rgba(18, 62, 54, 0.42)),
-                url("{% static 'img/lh/198.jpg' %}") center/cover no-repeat;
-            color: #fff8ed;
-        }
-
-        .hero-main::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 25%, transparent 25%) 0 0 / 20px 20px;
-            opacity: 0.18;
-            pointer-events: none;
-        }
-
-        .hero-main > * { position: relative; z-index: 1; }
-
-        .eyebrow {
-            width: fit-content;
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: rgba(255,248,237,.12);
-            border: 1px solid rgba(255,248,237,.18);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-        }
-
-        .hero-main h1 {
-            margin: 18px 0 14px;
-            max-width: 12ch;
-            font: 700 clamp(48px, 5vw, 78px)/0.96 "Cormorant Garamond", serif;
-        }
-
-        .hero-main p {
-            margin: 0;
-            max-width: 56ch;
-            color: rgba(255, 248, 237, 0.88);
-            font-size: 15px;
-            line-height: 1.9;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 24px;
-        }
-
-        .hero-actions a {
-            min-height: 46px;
-            padding: 12px 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cta-primary {
-            background: #fff7eb;
-            color: #12352f;
-        }
-
-        .cta-secondary {
-            background: rgba(255,248,237,.10);
-            color: #fff8ed;
-            border: 1px solid rgba(255,248,237,.16);
-        }
-
-        .hero-side {
-            padding: 22px;
-            background: var(--surface);
-            display: grid;
-            gap: 14px;
-            align-content: start;
-        }
-
-        .hero-side h2 {
-            margin: 0;
-            font: 700 30px/1.08 "Cormorant Garamond", serif;
-        }
-
-        .hero-side p {
-            margin: 8px 0 0;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.9;
-        }
-
-        .hero-side ul {
-            margin: 6px 0 0;
-            padding: 0;
-            list-style: none;
-            display: grid;
-            gap: 8px;
-        }
-
-        .hero-side li {
-            padding: 10px 12px;
-            border-radius: 8px;
-            background: rgba(19, 138, 115, 0.08);
-            color: #1d4640;
-            font-size: 13px;
-            line-height: 1.7;
-        }
-
-        .story-row {
-            display: grid;
-            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-            gap: 18px;
-            margin-top: 18px;
-        }
-
-        .story-card,
-        .timeline {
-            padding: 22px;
-            background: var(--surface);
-        }
-
-        .story-card h2,
-        .timeline h2 {
-            margin: 0;
-            font: 700 38px/1.05 "Cormorant Garamond", serif;
-        }
-
-        .story-card p,
-        .timeline p {
-            margin: 12px 0 0;
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.9;
-        }
-
-        .timeline-items {
-            display: grid;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .timeline-item {
-            padding: 14px;
-            border-radius: 8px;
-            background: #fffdf8;
-            border: 1px solid var(--line);
-        }
-
-        .timeline-item strong {
-            display: block;
-            font-size: 15px;
-        }
-
-        .timeline-item span {
-            display: block;
-            margin-top: 6px;
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.8;
-        }
-
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin-top: 18px;
-        }
-
-        .module-card {
-            display: grid;
-            align-content: space-between;
-            min-height: 300px;
-            padding: 22px;
-            background: var(--surface);
-        }
-
-        .module-tag {
-            width: fit-content;
-            padding: 7px 10px;
-            border-radius: 8px;
-            background: rgba(19, 138, 115, 0.08);
-            color: #1d4640;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-        }
-
-        .module-card h3 {
-            margin: 18px 0 10px;
-            font: 700 30px/1.05 "Cormorant Garamond", serif;
-        }
-
-        .module-card p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.9;
-        }
-
-        .module-link {
-            display: inline-flex;
-            margin-top: 18px;
-            color: var(--green-dark);
-            font-size: 13px;
-        }
-
-        .module-visual {
-            margin-top: 18px;
-            width: 100%;
-            min-height: 140px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        @media (max-width: 1180px) {
-            .hero,
-            .story-row,
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 760px) {
-            .shell {
-                width: min(100% - 20px, 1400px);
-            }
-
-            .topbar,
-            .hero-main,
-            .hero-side,
-            .story-card,
-            .timeline,
-            .module-card {
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-        }
-    </style>
-</head>
-<body>
-<div class="shell">
-    <header class="topbar">
-        <div class="brand">
-            <div class="brand-mark">SP</div>
-            <div class="brand-copy">
-                <strong>功能总览</strong>
-                <span>从这里进入整套皮肤病智能诊断工作流</span>
+{% block content %}
+<div class="overview-shell">
+    <section class="overview-hero" data-aos="fade-up">
+        <div class="hero-copy">
+            <div class="hero-kicker">System Overview · Enterprise Cockpit</div>
+            <h1>统一查看医疗 AI 平台的业务结构与运行状态</h1>
+            <p>总览页集中呈现平台模块、业务入口、运行指标和核心链路，方便企业用户快速进入重点工作区域。</p>
+            <div class="hero-actions">
+                <a class="hero-primary" href="/diagnose_skin/">进入图像诊断</a>
+                <a class="hero-secondary" href="/agent/">进入智能问诊</a>
             </div>
         </div>
-        <nav class="nav-links">
-            <a href="/">返回入口</a>
-            <a href="/agent/">智能问诊</a>
-            <a href="/diagnose_skin/">图像诊断</a>
-            <a href="/screen/">系统大屏</a>
-        </nav>
-    </header>
 
-    <section class="hero">
-        <article class="hero-main">
-            <div>
-                <div class="eyebrow">Clinical Workflow Overview</div>
-                <h1>把图像、问诊、知识和系统解释放到同一条体验链路里</h1>
-                <p>
-                    这里不再只是一个模块目录，而是整套系统的操作台。你可以从图像诊断切入，也可以从问诊开始，再回到知识库和系统大屏，完整展示这个毕业设计的能力闭环。
-                </p>
-                <div class="hero-actions">
-                    <a class="cta-primary" href="/diagnose_skin/">先体验图像诊断</a>
-                    <a class="cta-secondary" href="/agent/">或从智能问诊开始</a>
-                </div>
+        <div class="hero-side">
+            <article class="signal-card">
+                <strong>统一业务入口</strong>
+                <span>所有核心模块按统一导航、卡片和工作区结构组织，便于快速切换。</span>
+            </article>
+            <article class="signal-card">
+                <strong>关键能力集中展示</strong>
+                <span>图像诊断、智能问诊、知识增强和运营看板在同一层级内统一呈现。</span>
+            </article>
+            <article class="signal-card">
+                <strong>便于日常使用</strong>
+                <span>总览页强调入口、状态与处理链路，减少说明性内容对操作的干扰。</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="stats-grid" data-aos="fade-up" data-aos-delay="50">
+        <article class="stat-card">
+            <div class="card-kicker">01</div>
+            <strong>图像诊断</strong>
+            <span>皮肤病例图像识别与辅助分析</span>
+        </article>
+        <article class="stat-card">
+            <div class="card-kicker">02</div>
+            <strong>智能问诊</strong>
+            <span>多轮上下文与辅助问答</span>
+        </article>
+        <article class="stat-card">
+            <div class="card-kicker">03</div>
+            <strong>知识增强</strong>
+            <span>结构化知识与文档检索</span>
+        </article>
+        <article class="stat-card">
+            <div class="card-kicker">04</div>
+            <strong>运营总览</strong>
+            <span>业务指标、分布与风险提醒</span>
+        </article>
+    </section>
+
+    <section class="surface-grid" data-aos="fade-up" data-aos-delay="80">
+        <article class="surface-card">
+            <h2>平台价值体现在诊断、问诊与知识服务的协同闭环</h2>
+            <p>系统通过图像分析、智能问诊、知识中枢和数据看板形成连续工作链路，让信息获取、辅助判断和业务查看保持一致体验。</p>
+            <div class="signal-list">
+                <article class="flow-card">
+                    <strong>图像诊断负责病例识别入口</strong>
+                    <span>上传图像后快速给出分类结果和分析反馈。</span>
+                </article>
+                <article class="flow-card">
+                    <strong>问诊工作台负责连续交互</strong>
+                    <span>围绕症状描述、追问记录和证据检索组织问诊过程。</span>
+                </article>
+                <article class="flow-card">
+                    <strong>知识中枢与看板负责统一支撑</strong>
+                    <span>提供知识来源、状态监控和业务概况，支撑平台持续运行。</span>
+                </article>
             </div>
         </article>
 
-        <aside class="hero-side">
-            <h2>推荐演示顺序</h2>
-            <p>如果你要做答辩或路演，这个顺序最容易把系统讲清楚。</p>
-            <ul>
-                <li>先用图像诊断展示模型分类结果和大模型解读</li>
-                <li>再切到智能问诊，展示多轮上下文、RAG 证据与知识图谱</li>
-                <li>然后打开知识库，说明知识来源可维护、可扩展</li>
-                <li>最后回到系统大屏，展示整体态势与模型运营视角</li>
-            </ul>
+        <aside class="surface-card">
+            <h3>业务处理路径</h3>
+            <div class="flow-list">
+                <article class="flow-card">
+                    <strong>Step 1 · 图像诊断</strong>
+                    <span>上传图像并获取初步分类与结果说明。</span>
+                </article>
+                <article class="flow-card">
+                    <strong>Step 2 · 智能问诊</strong>
+                    <span>结合症状描述和历史上下文继续处理个案问题。</span>
+                </article>
+                <article class="flow-card">
+                    <strong>Step 3 · 知识中枢 / 数据看板</strong>
+                    <span>查看知识支撑、运行状态和整体业务分布。</span>
+                </article>
+            </div>
         </aside>
     </section>
 
-    <section class="story-row">
-        <article class="story-card">
-            <h2>系统现在最值得被看见的，不是单点模型，而是协同体验</h2>
-            <p>
-                你的项目已经不只是“皮肤病分类模型 demo”。它已经有图像分类、问诊流程、知识库管理、知识图谱、大屏展示这些组件。
-                所以前端最重要的优化，是让这些组件有统一气质和明确路径，让用户一眼就能理解每一步扮演的角色。
-            </p>
-        </article>
-
-        <article class="timeline">
-            <h2>当前页面结构</h2>
-            <div class="timeline-items">
-                <div class="timeline-item">
-                    <strong>入口页 `/`</strong>
-                    <span>快速建立系统认知，进入主工作流。</span>
-                </div>
-                <div class="timeline-item">
-                    <strong>功能总览 `/index/`</strong>
-                    <span>把各模块组织成一套连贯工作流，而不是分散按钮。</span>
-                </div>
-                <div class="timeline-item">
-                    <strong>核心工作台</strong>
-                    <span>问诊、图像诊断、知识库和大屏分别承担分诊、解释、维护和运营视角。</span>
-                </div>
-            </div>
-        </article>
-    </section>
-
-    <section class="module-grid">
+    <section class="module-grid" data-aos="fade-up" data-aos-delay="100">
         <article class="module-card">
             <div>
-                <div class="module-tag">AI Consultation</div>
+                <div class="module-tag">Consultation</div>
                 <h3>智能问诊工作台</h3>
-                <p>支持历史上下文、多轮问答、流式生成、RAG 检索证据和知识图谱展示，是整个系统最像产品化的部分。</p>
+                <p>面向症状咨询、追问记录、证据检索和图谱关系查看的统一工作区。</p>
             </div>
-            <div>
-                <img class="module-visual" src="{% static 'img/250406/ai.png' %}" alt="智能问诊">
-                <a class="module-link" href="/agent/">进入问诊工作台</a>
-            </div>
+            <a href="/agent/">进入模块</a>
         </article>
-
         <article class="module-card">
             <div>
                 <div class="module-tag">Image Diagnosis</div>
-                <h3>皮肤病图像诊断</h3>
-                <p>上传图像后展示预测类别、置信度、Top 结果和大模型分析，适合演示模型能力与解释链路。</p>
+                <h3>皮肤图像诊断</h3>
+                <p>完成图像上传、模型识别、结果展示与辅助说明的完整处理流程。</p>
             </div>
-            <div>
-                <img class="module-visual" src="{% static 'img/lh/34.jpg' %}" alt="图像诊断">
-                <a class="module-link" href="/diagnose_skin/">开始图像诊断</a>
-            </div>
+            <a href="/diagnose_skin/">进入模块</a>
         </article>
-
         <article class="module-card">
             <div>
                 <div class="module-tag">Knowledge Ops</div>
-                <h3>RAG 知识库管理</h3>
-                <p>维护结构化知识，上传 PDF 与 TXT 文档自动切片，让知识真正进入检索链路，而不是停留在数据库表里。</p>
+                <h3>RAG 知识库</h3>
+                <p>支持结构化知识维护、文档切片上传和检索结果支撑。</p>
             </div>
-            <div>
-                <img class="module-visual" src="{% static 'img/250406/me.png' %}" alt="知识库管理">
-                <a class="module-link" href="/medical/">打开知识库工作台</a>
-            </div>
+            <a href="/medical/">进入模块</a>
         </article>
+    </section>
 
-        <article class="module-card">
-            <div>
-                <div class="module-tag">System Board</div>
-                <h3>皮肤病诊断大屏</h3>
-                <p>统一展示问诊活跃趋势、疾病分布、症状热词、知识图谱和模型表现，是整套系统的总控视角。</p>
-            </div>
-            <div>
-                <img class="module-visual" src="{% static 'img/lh/198.jpg' %}" alt="系统大屏">
-                <a class="module-link" href="/screen/">查看系统大屏</a>
-            </div>
+    <section class="route-grid" data-aos="fade-up" data-aos-delay="120">
+        <article class="route-card">
+            <strong>门户入口</strong>
+            <span>统一提供平台访问、模块导航和重点能力概览。</span>
         </article>
-
-        <article class="module-card">
-            <div>
-                <div class="module-tag">Algorithm</div>
-                <h3>算法解析与说明</h3>
-                <p>介绍 SFEPT 的原型修正与特征增强逻辑，帮助系统从“能跑”升级到“能讲清楚”。</p>
-            </div>
-            <div>
-                <img class="module-visual" src="{% static 'img/lh/1.jpg' %}" alt="算法解析">
-                <a class="module-link" href="/lungkonw/">查看算法说明</a>
-            </div>
+        <article class="route-card">
+            <strong>系统总览</strong>
+            <span>集中查看模块关系、指标状态和主要业务路径。</span>
         </article>
-
-        <article class="module-card">
-            <div>
-                <div class="module-tag">Health Education</div>
-                <h3>皮肤科普与护理</h3>
-                <p>补充非诊断型内容，让系统既有智能决策能力，也有面向普通用户的日常健康服务感。</p>
-            </div>
-            <div>
-                <img class="module-visual" src="{% static 'img/lh/saf.jpg' %}" alt="皮肤科普">
-                <a class="module-link" href="/health/">进入皮肤科普</a>
-            </div>
+        <article class="route-card">
+            <strong>业务工作区</strong>
+            <span>各核心模块保持统一视觉和操作语义，方便企业场景下长期使用。</span>
         </article>
     </section>
 </div>
-</body>
-</html>
+{% endblock %}

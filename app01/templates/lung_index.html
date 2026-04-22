@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
+{% block body_class %}page-lung{% endblock %}
 {% block css %}
 <style>
     :root {
@@ -144,11 +145,99 @@
         color: #6c757d;
         font-size: 0.85rem;
     }
+    .diag-intro {
+        padding: 1.75rem;
+        margin-bottom: 1.25rem;
+        background:
+            radial-gradient(circle at top left, rgba(31, 111, 255, 0.12), transparent 30%),
+            radial-gradient(circle at 85% 24%, rgba(15, 138, 128, 0.08), transparent 24%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 248, 252, 0.96));
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 28px;
+        box-shadow: 0 18px 42px rgba(16, 36, 64, 0.08);
+    }
+    .diag-kicker {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: rgba(31, 111, 255, 0.1);
+        border: 1px solid rgba(31, 111, 255, 0.12);
+        color: #1f5ac7;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .diag-intro h1 {
+        margin: 1rem 0 0.75rem;
+        font-family: "Manrope", "Noto Sans SC", sans-serif;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        color: #14243b;
+    }
+    .diag-intro p {
+        margin: 0;
+        max-width: 62ch;
+        color: #5d6d85;
+        line-height: 1.82;
+    }
+    .diag-points {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.9rem;
+        margin-top: 1.25rem;
+    }
+    .diag-point {
+        padding: 1rem 1.05rem;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.86);
+    }
+    .diag-point span {
+        display: block;
+        color: #66758b;
+        font-size: 12px;
+    }
+    .diag-point strong {
+        display: block;
+        margin-top: 0.45rem;
+        color: #14243b;
+        font-size: 15px;
+        line-height: 1.55;
+    }
+    @media (max-width: 768px) {
+        .diag-points {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container py-5">
+    <section class="diag-intro">
+        <div class="diag-kicker">Image Diagnosis Workspace</div>
+        <h1>把皮肤图像上传、模型预测和结果解释放进同一条临床工作流</h1>
+        <p>这一页负责承接系统中的图像诊断能力。你可以直接上传病例图像，获得 SFEPT 模型分类结果，并结合右侧报告查看置信度与辅助分析说明，让算法展示和产品界面保持同一套企业级节奏。</p>
+        <div class="diag-points">
+            <div class="diag-point">
+                <span>工作模式</span>
+                <strong>单页完成上传、推理、结果呈现与分析说明</strong>
+            </div>
+            <div class="diag-point">
+                <span>业务价值</span>
+                <strong>支持病例判读、结果讲解与后续问诊联动</strong>
+            </div>
+            <div class="diag-point">
+                <span>结果连接</span>
+                <strong>后续可继续联动智能问诊与知识中枢解释结果</strong>
+            </div>
+        </div>
+    </section>
     <div class="row g-4 justify-content-center">
         <!-- 上传区域 -->
         <div class="col-lg-6">

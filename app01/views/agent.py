@@ -35,6 +35,7 @@ def ai_diagnosis(request):
             "conversations": conversations,
             "messages": messages,
             "quick_prompts": QUICK_PROMPTS,
+            "prefill_prompt": (request.GET.get("prompt") or "").strip(),
         },
     )
 

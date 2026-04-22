@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
+{% block body_class %}page-health{% endblock %}
 
 {% block css %}
 <style>
@@ -11,35 +12,42 @@
 
     .health-hero {
         position: relative;
-        min-height: 500px;
+        min-height: 480px;
         border-radius: 8px;
         overflow: hidden;
         color: #fffdf8;
         background:
-            linear-gradient(100deg, rgba(12, 48, 43, 0.82), rgba(18, 98, 88, 0.56)),
+            linear-gradient(100deg, rgba(12, 48, 43, 0.84), rgba(18, 98, 88, 0.58)),
             url("{% static 'img/250406/images2.jpg' %}") center/cover no-repeat;
+        box-shadow: 0 22px 48px rgba(24, 39, 36, 0.14);
     }
 
     .health-hero::after {
         content: "";
         position: absolute;
-        inset: auto 0 0;
-        height: 120px;
-        background: linear-gradient(180deg, rgba(12, 48, 43, 0), rgba(12, 48, 43, 0.38));
+        inset: 0;
+        background:
+            radial-gradient(circle at 14% 18%, rgba(255, 246, 234, 0.16), transparent 18%),
+            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: auto, 34px 34px, 34px 34px;
+        opacity: 0.4;
+        pointer-events: none;
     }
 
     .health-hero-inner {
         position: relative;
         z-index: 1;
-        min-height: 500px;
+        min-height: 480px;
         display: grid;
         align-content: space-between;
         gap: 24px;
-        padding: 36px;
+        padding: 34px;
     }
 
     .hero-kicker,
     .topic-tag,
+    .disease-source,
     .air-chip {
         display: inline-flex;
         width: max-content;
@@ -61,16 +69,16 @@
         margin: 18px 0 14px;
         max-width: 10ch;
         font-family: "Cormorant Garamond", serif;
-        font-size: clamp(42px, 5vw, 68px);
-        line-height: 0.96;
+        font-size: clamp(42px, 5vw, 70px);
+        line-height: 0.95;
         color: #fffaf4;
     }
 
     .health-hero p {
         margin: 0;
-        max-width: 64ch;
+        max-width: 62ch;
         font-size: 16px;
-        line-height: 1.85;
+        line-height: 1.9;
         color: rgba(255, 248, 236, 0.9);
     }
 
@@ -78,7 +86,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        margin-top: 26px;
+        margin-top: 24px;
     }
 
     .hero-links a {
@@ -114,6 +122,7 @@
         border-radius: 8px;
         border: 1px solid rgba(255, 248, 236, 0.14);
         background: rgba(255, 248, 236, 0.1);
+        backdrop-filter: blur(8px);
     }
 
     .hero-metric span {
@@ -126,17 +135,13 @@
         display: block;
         margin-top: 8px;
         font-size: 22px;
-        line-height: 1.1;
-    }
-
-    .health-band {
-        padding: 0;
+        line-height: 1.2;
     }
 
     .section-card {
         border: 1px solid rgba(20, 42, 37, 0.08);
         border-radius: 8px;
-        background: rgba(255, 252, 247, 0.9);
+        background: rgba(255, 252, 247, 0.92);
         box-shadow: 0 16px 38px rgba(24, 39, 36, 0.08);
         overflow: hidden;
     }
@@ -166,10 +171,11 @@
         color: #5c6e69;
         line-height: 1.8;
         font-size: 14px;
+        max-width: 60ch;
     }
 
     .feature-grid,
-    .topic-grid,
+    .disease-grid,
     .warning-grid {
         display: grid;
         gap: 14px;
@@ -179,8 +185,8 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .topic-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+    .disease-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .warning-grid {
@@ -188,7 +194,7 @@
     }
 
     .feature-item,
-    .topic-item,
+    .disease-item,
     .warning-item {
         border-radius: 8px;
         border: 1px solid rgba(20, 42, 37, 0.08);
@@ -196,21 +202,22 @@
         overflow: hidden;
     }
 
-    .feature-item img {
+    .feature-item img,
+    .disease-item img {
         width: 100%;
-        height: 200px;
+        height: 210px;
         object-fit: cover;
         display: block;
     }
 
     .feature-copy,
-    .topic-copy,
+    .disease-copy,
     .warning-copy {
         padding: 16px;
     }
 
     .feature-copy h3,
-    .topic-copy h3,
+    .disease-copy h3,
     .warning-copy h3 {
         margin: 0;
         font-size: 18px;
@@ -219,7 +226,6 @@
     }
 
     .feature-copy p,
-    .topic-copy p,
     .warning-copy p {
         margin: 10px 0 0;
         font-size: 14px;
@@ -235,13 +241,8 @@
 
     .health-dashboard {
         display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
         gap: 18px;
-    }
-
-    .tip-panel,
-    .air-panel {
-        min-height: 100%;
     }
 
     .tip-content {
@@ -381,6 +382,136 @@
     .bg-polluted { background: #ffe0ca; color: #8a4700; }
     .bg-heavy-polluted { background: #ffd5d2; color: #8f1f18; }
 
+    .disease-source {
+        margin-top: 12px;
+        background: rgba(19, 138, 115, 0.08);
+        color: #126757;
+    }
+
+    .disease-meta {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .disease-meta div {
+        padding-top: 10px;
+        border-top: 1px solid rgba(20, 42, 37, 0.08);
+    }
+
+    .disease-meta span {
+        display: block;
+        color: #61716d;
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .disease-meta strong {
+        display: block;
+        color: #18322d;
+        font-size: 14px;
+        line-height: 1.75;
+    }
+
+    .disease-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .disease-actions a {
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .disease-actions .ask-link {
+        background: #157a67;
+        color: #fffdf8;
+    }
+
+    .disease-actions .library-link {
+        background: rgba(19, 138, 115, 0.08);
+        color: #126757;
+    }
+
+    .expand-btn {
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(19, 138, 115, 0.16);
+        background: #ffffff;
+        color: #126757;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .disease-detail {
+        display: grid;
+        gap: 10px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 220ms ease, opacity 220ms ease, margin-top 220ms ease;
+        margin-top: 0;
+    }
+
+    .disease-item.expanded .disease-detail {
+        max-height: 280px;
+        opacity: 1;
+        margin-top: 14px;
+    }
+
+    .disease-item.expanded .expand-btn {
+        background: rgba(19, 138, 115, 0.08);
+    }
+
+    .detail-block {
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: rgba(19, 138, 115, 0.05);
+        border: 1px solid rgba(19, 138, 115, 0.08);
+    }
+
+    .detail-block span {
+        display: block;
+        margin-bottom: 6px;
+        color: #61716d;
+        font-size: 12px;
+    }
+
+    .detail-block p {
+        margin: 0;
+        color: #18322d;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .topic-ribbon {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .topic-ribbon span {
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        background: rgba(19, 138, 115, 0.08);
+        color: #126757;
+        border: 1px solid rgba(19, 138, 115, 0.08);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
     .health-footer-cta {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -402,6 +533,7 @@
         margin: 10px 0 0;
         color: #4f615d;
         line-height: 1.8;
+        font-size: 14px;
     }
 
     .health-footer-cta .cta-actions {
@@ -433,21 +565,42 @@
 
     @media (max-width: 1180px) {
         .feature-grid,
-        .warning-grid { grid-template-columns: 1fr; }
-        .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .warning-grid,
+        .disease-grid {
+            grid-template-columns: 1fr;
+        }
+
         .health-dashboard,
-        .health-footer-cta { grid-template-columns: 1fr; }
-        .hero-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .health-footer-cta {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-metrics {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
     }
 
     @media (max-width: 720px) {
-        .health-page { padding-top: 18px; }
+        .health-page {
+            padding-top: 18px;
+        }
+
         .health-hero-inner,
-        .section-shell { padding: 18px; }
-        .hero-metrics,
-        .topic-grid { grid-template-columns: 1fr; }
-        .air-row { grid-template-columns: 1fr; }
-        .air-value { text-align: left; }
+        .section-shell {
+            padding: 18px;
+        }
+
+        .hero-metrics {
+            grid-template-columns: 1fr;
+        }
+
+        .air-row {
+            grid-template-columns: 1fr;
+        }
+
+        .air-value {
+            text-align: left;
+        }
     }
 </style>
 {% endblock %}
@@ -461,8 +614,8 @@
                     <i class="bi bi-shield-check"></i>
                     皮肤健康科普中心
                 </div>
-                <h1>把日常皮肤护理讲得更清楚一点</h1>
-                <p>这一页不再是泛健康杂烩，而是围绕皮肤病智能诊断系统延伸出来的科普内容中心。它把日常护理、环境因素、风险信号和快速问诊入口放在同一条理解路径里，帮助用户先看懂，再决定是否进一步诊断或问诊。</p>
+                <h1>把日常护理和常见皮肤问题讲得更清楚一点</h1>
+                <p>这里不只是泛健康资讯页，而是围绕皮肤病智能诊断系统延伸出来的前台内容中心。你可以先看懂基础护理、常见疾病提示和知识库内容，再决定是否继续上传图片或进入智能问诊。</p>
                 <div class="hero-links">
                     <a class="primary-link" href="/agent/">进入智能问诊</a>
                     <a class="ghost-link" href="/diagnose_skin/">上传皮肤图片</a>
@@ -479,18 +632,18 @@
                     <strong>痤疮 / 敏感肌 / 湿疹</strong>
                 </div>
                 <div class="hero-metric">
-                    <span>环境因素</span>
-                    <strong>空气质量与作息</strong>
+                    <span>内容来源</span>
+                    <strong>科普页 + RAG 知识库</strong>
                 </div>
                 <div class="hero-metric">
                     <span>下一步动作</span>
-                    <strong>科普阅读后可直接问诊</strong>
+                    <strong>问诊与图像诊断联动</strong>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="health-band section-card">
+    <section class="section-card">
         <div class="section-shell">
             <div class="section-head">
                 <div>
@@ -514,12 +667,12 @@
     </section>
 
     <section class="health-dashboard">
-        <article class="section-card tip-panel">
+        <article class="section-card">
             <div class="section-shell">
                 <div class="section-head">
                     <div>
                         <h3>今日皮肤健康提示</h3>
-                        <p>接入你现有的健康提示接口，保留动态刷新能力，让这页不是静态文案，而是每天都能更新的一块内容。</p>
+                        <p>保留动态刷新能力，让这一页不是静态科普，而是每天都能更新的一块轻量内容。</p>
                     </div>
                     <button id="refreshTip" class="tip-refresh" type="button" aria-label="刷新健康提示">
                         <i class="bi bi-arrow-clockwise"></i>
@@ -541,7 +694,7 @@
                 <div class="section-head">
                     <div>
                         <h3>环境空气质量查询</h3>
-                        <p>空气质量会影响皮肤敏感、炎症波动和干燥不适。把这块能力保留下来，但展示方式更轻一点，更适合和皮肤护理联动。</p>
+                        <p>空气质量会影响皮肤敏感、炎症波动和干燥不适，这里保留一个轻量查询入口。</p>
                     </div>
                 </div>
                 <div class="input-group">
@@ -560,21 +713,51 @@
         </article>
     </section>
 
-    <section class="health-band section-card">
+    <section class="section-card">
         <div class="section-shell">
             <div class="section-head">
                 <div>
-                    <h2>这几类主题最值得提前了解</h2>
-                    <p>如果用户还没进入诊断流程，这里就是一条更柔和的前置路径，先建立判断框架，再决定是否继续上传图片或进入问诊。</p>
+                    <h2>常见皮肤问题速览</h2>
+                    <p>这组卡片直接来自知识库内容，前台科普不再是孤立文案，而是和你的 RAG 检索底座形成闭环。用户看完就能继续去知识库深挖，或者直接发起问诊。</p>
                 </div>
+                <a class="cta-secondary" href="/medical/">查看知识库</a>
             </div>
-            <div class="topic-grid">
-                {% for item in topics %}
-                    <article class="topic-item">
-                        <div class="topic-copy">
-                            <div class="topic-tag">重点主题</div>
-                            <h3>{{ item.name }}</h3>
-                            <p>{{ item.desc }}</p>
+            <div class="disease-grid">
+                {% for item in featured_diseases %}
+                    <article class="disease-item">
+                        <img src="{% static item.image %}" alt="{{ item.title }}">
+                        <div class="disease-copy">
+                            <h3>{{ item.title }}</h3>
+                            <div class="disease-source">{{ item.source }}</div>
+                            <div class="disease-meta">
+                                <div>
+                                    <span>典型表现</span>
+                                    <strong>{{ item.symptoms }}</strong>
+                                </div>
+                                <div>
+                                    <span>建议检查</span>
+                                    <strong>{{ item.checks }}</strong>
+                                </div>
+                                <div>
+                                    <span>护理提醒</span>
+                                    <strong>{{ item.advice }}</strong>
+                                </div>
+                            </div>
+                            <div class="disease-actions">
+                                <button class="expand-btn disease-toggle" type="button" aria-expanded="false">展开详情</button>
+                                <a class="ask-link" href="/agent/?prompt={{ item.question|urlencode }}">针对性提问</a>
+                                <a class="library-link" href="/medical/">看知识库</a>
+                            </div>
+                            <div class="disease-detail">
+                                <div class="detail-block">
+                                    <span>适合继续追问</span>
+                                    <p>{{ item.question }}</p>
+                                </div>
+                                <div class="detail-block">
+                                    <span>建议动作</span>
+                                    <p>如果你的症状与这张卡片接近，可以直接点击“针对性提问”进入智能问诊；如果想先看知识依据，再进入 RAG 知识库查看原始条目。</p>
+                                </div>
+                            </div>
                         </div>
                     </article>
                 {% endfor %}
@@ -582,12 +765,28 @@
         </div>
     </section>
 
-    <section class="health-band section-card">
+    <section class="section-card">
+        <div class="section-shell">
+            <div class="section-head">
+                <div>
+                    <h2>适合先浏览的科普主题</h2>
+                    <p>如果还没进入诊断流程，这里可以先建立理解框架，再决定是否进一步识别或问诊。</p>
+                </div>
+            </div>
+            <div class="topic-ribbon">
+                {% for item in topics %}
+                    <span>{{ item.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="section-card">
         <div class="section-shell">
             <div class="section-head">
                 <div>
                     <h2>遇到这些变化，不要只靠自己猜</h2>
-                    <p>科普的意义不是让用户自己当医生，而是帮助用户知道什么时候可以先观察，什么时候应该及时到皮肤科评估。</p>
+                    <p>科普不是让用户自行诊断，而是帮助用户知道什么时候可以先观察，什么时候应该尽快就诊。</p>
                 </div>
             </div>
             <div class="warning-grid">
@@ -606,8 +805,8 @@
 
     <section class="health-footer-cta">
         <div>
-            <h3>看完科普后，最有价值的是继续行动</h3>
-            <p>如果你已经有明确症状、皮损图片或反复发作的护理困惑，可以直接进入智能问诊或图像诊断，让科普阅读自然接到系统核心能力上。</p>
+            <h3>看完科普后，最好别停在“知道了”</h3>
+            <p>如果已经有明确症状、反复发作的护理困惑，或者手头就有皮损图片，这里可以自然接到系统的核心能力上。</p>
         </div>
         <div class="cta-actions">
             <a class="cta-primary" href="/agent/">去智能问诊</a>
@@ -728,6 +927,18 @@
             setTimeout(function() {
                 $button.removeClass('refreshing');
             }, 900);
+        });
+
+        $('.disease-toggle').on('click', function() {
+            const $button = $(this);
+            const $card = $button.closest('.disease-item');
+            const expanded = $card.hasClass('expanded');
+            $('.disease-item').removeClass('expanded');
+            $('.disease-toggle').attr('aria-expanded', 'false').text('展开详情');
+            if (!expanded) {
+                $card.addClass('expanded');
+                $button.attr('aria-expanded', 'true').text('收起详情');
+            }
         });
     });
 </script>

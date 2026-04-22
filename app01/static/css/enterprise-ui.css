@@ -1,0 +1,690 @@
+/*
+ * DreamMed Research enterprise UI override layer.
+ * Loaded after page-level inline styles so we can unify every template
+ * without rewriting each page from scratch.
+ */
+
+:root {
+    --enterprise-page-max: 1320px;
+}
+
+body.page-landing .landing-shell,
+body.page-overview .overview-shell,
+body.page-agent .consult-shell,
+body.page-ai-chat .spark-shell,
+body.page-cell .cell-shell,
+body.page-mask .mask-shell,
+body.page-protect .protect-shell,
+body.page-medical .knowledge-shell {
+    width: min(var(--enterprise-page-max), calc(100% - 32px)) !important;
+    margin-inline: auto !important;
+    gap: 20px !important;
+}
+
+body.page-health .health-page {
+    gap: 20px !important;
+}
+
+body.page-landing .brand-ribbon,
+body.page-landing .hero-stage,
+body.page-landing .command-strip,
+body.page-landing .metric-card,
+body.page-landing .module-card,
+body.page-landing .board-card,
+body.page-overview .overview-hero,
+body.page-overview .stat-card,
+body.page-overview .surface-card,
+body.page-overview .module-card,
+body.page-overview .flow-card,
+body.page-overview .signal-card,
+body.page-agent .consult-header,
+body.page-agent .workspace-panel,
+body.page-agent .hero-metric,
+body.page-agent .safety-panel,
+body.page-ai-chat .spark-hero,
+body.page-ai-chat .spark-panel,
+body.page-ai-chat .spark-note,
+body.page-cell .cell-hero,
+body.page-cell .cell-panel,
+body.page-cell .cell-stage,
+body.page-cell .cell-note,
+body.page-mask .mask-hero,
+body.page-mask .mask-panel,
+body.page-mask .mask-stage,
+body.page-mask .mask-note,
+body.page-protect .protect-hero,
+body.page-protect .protect-panel,
+body.page-protect .result-card,
+body.page-protect .tip-card,
+body.page-medical .hero,
+body.page-medical .panel,
+body.page-medical .stat-card,
+body.page-medical .entry-card,
+body.page-medical .doc-card,
+body.page-medical .reference-item,
+body.page-medical .path-item,
+body.page-medical .helper,
+body.page-health .health-hero,
+body.page-health .section-card,
+body.page-health .feature-item,
+body.page-health .disease-item,
+body.page-health .warning-item,
+body.page-lung .med-card,
+body.page-lung .instruction-box,
+body.page-lung .ai-analysis-box,
+body.page-lung-knowledge .algo-hero,
+body.page-lung-knowledge .algo-card,
+body.page-lung-knowledge .algo-feature {
+    border-radius: var(--radius-2xl) !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+body.page-landing .hero-stage,
+body.page-overview .overview-hero,
+body.page-agent .consult-header,
+body.page-ai-chat .spark-hero,
+body.page-cell .cell-hero,
+body.page-mask .mask-hero,
+body.page-protect .protect-hero,
+body.page-medical .hero,
+body.page-health .health-hero {
+    background:
+        radial-gradient(circle at top left, rgba(31, 111, 255, 0.12), transparent 30%),
+        radial-gradient(circle at right 78%, rgba(15, 138, 128, 0.08), transparent 26%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 248, 252, 0.96)) !important;
+    color: var(--text) !important;
+}
+
+body.page-landing .hero-stage::before,
+body.page-overview .overview-hero::before,
+body.page-agent .consult-header::before,
+body.page-ai-chat .spark-hero::before,
+body.page-cell .cell-hero::before,
+body.page-mask .mask-hero::before,
+body.page-protect .protect-hero::before,
+body.page-health .health-hero::after {
+    display: none !important;
+}
+
+body.page-landing .hero-kicker,
+body.page-overview .hero-kicker,
+body.page-overview .card-kicker,
+body.page-agent .hero-kicker,
+body.page-agent .hero-chip,
+body.page-agent .panel-kicker,
+body.page-ai-chat .spark-kicker,
+body.page-ai-chat .spark-chip,
+body.page-ai-chat .panel-kicker,
+body.page-cell .hero-kicker,
+body.page-cell .hero-chip,
+body.page-cell .panel-kicker,
+body.page-mask .hero-kicker,
+body.page-mask .hero-chip,
+body.page-mask .panel-kicker,
+body.page-protect .hero-kicker,
+body.page-protect .hero-chip,
+body.page-protect .panel-kicker,
+body.page-medical .eyebrow,
+body.page-medical .source-chip,
+body.page-health .hero-kicker,
+body.page-health .topic-tag,
+body.page-health .disease-source,
+body.page-health .air-chip,
+body.page-lung .status-badge,
+body.page-lung-knowledge .algo-kicker,
+body.page-lung-knowledge .algo-tag {
+    border-radius: 999px !important;
+    background: var(--primary-soft) !important;
+    color: var(--primary) !important;
+    border: 1px solid rgba(31, 111, 255, 0.12) !important;
+    box-shadow: none !important;
+}
+
+body.page-landing .brand-ribbon,
+body.page-landing .command-strip,
+body.page-landing .metric-card,
+body.page-landing .board-card,
+body.page-overview .stat-card,
+body.page-overview .surface-card,
+body.page-overview .module-card,
+body.page-overview .flow-card,
+body.page-overview .signal-card,
+body.page-agent .workspace-panel,
+body.page-ai-chat .spark-panel,
+body.page-cell .cell-panel,
+body.page-mask .mask-panel,
+body.page-protect .protect-panel,
+body.page-medical .panel,
+body.page-medical .stat-card,
+body.page-health .section-card,
+body.page-lung .med-card,
+body.page-lung-knowledge .algo-card,
+body.page-lung-knowledge .algo-feature {
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(16px) !important;
+}
+
+body.page-landing .hero-title,
+body.page-overview .hero-copy h1,
+body.page-agent .consult-title h1,
+body.page-ai-chat .spark-copy h1,
+body.page-cell .cell-copy h1,
+body.page-mask .mask-copy h1,
+body.page-protect .protect-copy h1,
+body.page-medical .hero h1,
+body.page-health .health-hero h1,
+body.page-lung-knowledge .algo-copy h1 {
+    margin: 18px 0 12px !important;
+    max-width: 11ch !important;
+    font-family: "Manrope", "Noto Sans SC", sans-serif !important;
+    font-size: clamp(32px, 4vw, 58px) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.03em !important;
+    color: var(--text) !important;
+}
+
+body.page-landing .hero-subtitle,
+body.page-overview .hero-copy p,
+body.page-agent .consult-title p,
+body.page-ai-chat .spark-copy p,
+body.page-cell .cell-copy p,
+body.page-mask .mask-copy p,
+body.page-protect .protect-copy p,
+body.page-medical .hero p,
+body.page-health .health-hero p,
+body.page-lung-knowledge .algo-copy p {
+    color: var(--text-soft) !important;
+    font-size: 15px !important;
+    line-height: 1.82 !important;
+}
+
+body.page-landing .hero-title .accent {
+    background: linear-gradient(135deg, var(--primary), var(--teal)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+}
+
+body.page-landing .hero-stage,
+body.page-overview .overview-hero {
+    min-height: 0 !important;
+    padding: 30px !important;
+}
+
+body.page-agent .consult-header,
+body.page-ai-chat .spark-hero,
+body.page-cell .cell-hero,
+body.page-mask .mask-hero,
+body.page-protect .protect-hero,
+body.page-medical .hero {
+    padding: 28px !important;
+}
+
+body.page-health .health-hero,
+body.page-health .health-hero-inner {
+    min-height: 0 !important;
+}
+
+body.page-health .health-hero-inner {
+    padding: 30px !important;
+}
+
+body.page-landing .brand-pill,
+body.page-agent .hero-chip,
+body.page-ai-chat .spark-chip,
+body.page-cell .hero-chip,
+body.page-mask .hero-chip,
+body.page-protect .hero-chip {
+    background: rgba(15, 138, 128, 0.06) !important;
+    color: var(--text-soft) !important;
+    border: 1px solid rgba(15, 138, 128, 0.08) !important;
+}
+
+body.page-agent .safety-panel,
+body.page-ai-chat .spark-note,
+body.page-cell .cell-note,
+body.page-mask .mask-note,
+body.page-protect .tip-card,
+body.page-medical .hero-note,
+body.page-overview .signal-card,
+body.page-overview .flow-card {
+    background: linear-gradient(180deg, rgba(250, 253, 255, 0.96), rgba(244, 248, 252, 0.94)) !important;
+    color: var(--text) !important;
+}
+
+body.page-agent .safety-panel strong,
+body.page-ai-chat .spark-note strong,
+body.page-cell .cell-note strong,
+body.page-mask .mask-note strong,
+body.page-protect .tip-card strong,
+body.page-medical .hero-note strong,
+body.page-overview .signal-card strong,
+body.page-overview .flow-card strong {
+    color: var(--text) !important;
+}
+
+body.page-agent .safety-panel p,
+body.page-ai-chat .spark-note p,
+body.page-cell .cell-note p,
+body.page-mask .mask-note p,
+body.page-protect .tip-card p,
+body.page-medical .hero-note span,
+body.page-overview .signal-card span,
+body.page-overview .flow-card span {
+    color: var(--text-soft) !important;
+}
+
+body.page-landing .command-strip,
+body.page-landing .command-strip .mark,
+body.page-landing .metric-card,
+body.page-landing .board-card,
+body.page-overview .stat-card,
+body.page-overview .surface-card,
+body.page-overview .module-card {
+    color: var(--text) !important;
+}
+
+body.page-landing .command-strip {
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+body.page-landing .command-strip .mark {
+    color: var(--primary) !important;
+}
+
+body.page-landing .metric-card strong,
+body.page-overview .stat-card strong {
+    color: var(--primary) !important;
+}
+
+body.page-landing .metric-card span,
+body.page-landing .board-card p,
+body.page-overview .stat-card span,
+body.page-overview .surface-card p,
+body.page-overview .module-card p {
+    color: var(--text-soft) !important;
+}
+
+body.page-landing .board-card h2,
+body.page-landing .board-card h3,
+body.page-overview .surface-card h2,
+body.page-overview .surface-card h3,
+body.page-overview .module-card h3 {
+    color: var(--text) !important;
+}
+
+body.page-landing .signal-item,
+body.page-landing .workflow-item,
+body.page-overview .module-card {
+    background: linear-gradient(180deg, rgba(250, 253, 255, 0.96), rgba(244, 248, 252, 0.94)) !important;
+    border: 1px solid var(--line) !important;
+}
+
+body.page-landing .signal-item strong,
+body.page-landing .workflow-item strong,
+body.page-overview .module-card a {
+    color: var(--text) !important;
+}
+
+body.page-landing .signal-item span,
+body.page-landing .workflow-item span {
+    color: var(--text-soft) !important;
+}
+
+body.page-overview .module-card a {
+    background: rgba(31, 111, 255, 0.05) !important;
+    border: 1px solid rgba(31, 111, 255, 0.1) !important;
+}
+
+body.page-agent .hero-metric {
+    background: linear-gradient(180deg, rgba(250, 253, 255, 0.96), rgba(244, 248, 252, 0.94)) !important;
+    border: 1px solid var(--line) !important;
+}
+
+body.page-agent .hero-metric span {
+    color: var(--text-soft) !important;
+}
+
+body.page-agent .hero-metric strong {
+    color: var(--text) !important;
+}
+
+body.page-landing .hero-primary,
+body.page-overview .hero-primary,
+body.page-agent .new-chat-btn,
+body.page-agent .send-btn,
+body.page-agent .graph-btn,
+body.page-ai-chat .spark-primary,
+body.page-ai-chat #send-btn,
+body.page-protect .search-btn,
+body.page-medical .action-btn,
+body.page-medical .btn-strong,
+body.page-health .primary-link,
+body.page-lung .gradient-btn,
+body.page-lung-knowledge .algo-primary {
+    background: linear-gradient(135deg, var(--primary), #2d87ff) !important;
+    color: #ffffff !important;
+    border: 0 !important;
+    box-shadow: 0 18px 32px rgba(31, 111, 255, 0.18) !important;
+}
+
+body.page-landing .hero-secondary,
+body.page-overview .hero-secondary,
+body.page-agent .ghost-btn,
+body.page-ai-chat .spark-secondary,
+body.page-medical .ghost-btn,
+body.page-medical .btn-soft,
+body.page-medical .btn-warm,
+body.page-health .ghost-link,
+body.page-lung .btn-light,
+body.page-lung-knowledge .algo-secondary {
+    background: rgba(255, 255, 255, 0.88) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: none !important;
+}
+
+body.page-agent .new-chat-btn,
+body.page-agent .send-btn,
+body.page-agent .graph-btn,
+body.page-agent .ghost-btn,
+body.page-ai-chat #send-btn,
+body.page-medical .action-btn,
+body.page-medical .ghost-btn,
+body.page-medical .btn-soft,
+body.page-medical .btn-strong,
+body.page-medical .btn-warm,
+body.page-protect .search-btn,
+body.page-lung .gradient-btn,
+body.page-lung .btn-light,
+body.page-lung-knowledge .algo-primary,
+body.page-lung-knowledge .algo-secondary {
+    min-height: 46px !important;
+    padding: 0 18px !important;
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+}
+
+body.page-agent .panel-head,
+body.page-ai-chat .panel-head,
+body.page-cell .panel-head,
+body.page-mask .panel-head,
+body.page-protect .panel-head,
+body.page-medical .panel-head,
+body.page-health .section-head {
+    margin-bottom: 0 !important;
+    padding: 20px 22px 18px !important;
+    border-bottom: 1px solid var(--line) !important;
+}
+
+body.page-health .section-shell {
+    padding: 22px !important;
+}
+
+body.page-agent .panel-head h2,
+body.page-agent .panel-head h3,
+body.page-ai-chat .panel-head h2,
+body.page-ai-chat .panel-head h3,
+body.page-cell .panel-head h2,
+body.page-cell .panel-head h3,
+body.page-mask .panel-head h2,
+body.page-mask .panel-head h3,
+body.page-protect .panel-head h2,
+body.page-protect .panel-head h3,
+body.page-medical .panel-head h3,
+body.page-health .section-head h2,
+body.page-health .section-head h3,
+body.page-lung h4,
+body.page-lung-knowledge .algo-card h2,
+body.page-lung-knowledge .algo-card h3 {
+    color: var(--text) !important;
+    font-family: "Manrope", "Noto Sans SC", sans-serif !important;
+}
+
+body.page-agent .panel-head p,
+body.page-ai-chat .panel-head p,
+body.page-cell .panel-head p,
+body.page-mask .panel-head p,
+body.page-protect .panel-head p,
+body.page-medical .panel-head p,
+body.page-health .section-head p {
+    color: var(--text-soft) !important;
+}
+
+body.page-agent .chat-stream,
+body.page-ai-chat .chat-messages,
+body.page-cell .cell-stage,
+body.page-mask .mask-stage,
+body.page-protect .protect-panel,
+body.page-lung .upload-section {
+    background:
+        radial-gradient(circle at top left, rgba(31, 111, 255, 0.05), transparent 26%),
+        linear-gradient(180deg, rgba(250, 253, 255, 0.94), rgba(245, 248, 252, 0.94)) !important;
+}
+
+body.page-agent .empty-state,
+body.page-ai-chat .chat-empty,
+body.page-medical .empty-state,
+body.page-lung .ai-analysis-box {
+    background: #f8fbff !important;
+    border: 1px dashed rgba(31, 111, 255, 0.18) !important;
+    color: var(--text-soft) !important;
+}
+
+body.page-agent .message-bubble,
+body.page-ai-chat .message-bubble {
+    border-radius: 22px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    color: var(--text) !important;
+    box-shadow: 0 14px 30px rgba(16, 36, 64, 0.08) !important;
+}
+
+body.page-agent .message-row.user .message-bubble,
+body.page-ai-chat .message.user .message-bubble {
+    background: linear-gradient(135deg, rgba(31, 111, 255, 0.08), rgba(15, 138, 128, 0.07)) !important;
+}
+
+body.page-agent .message-content,
+body.page-ai-chat .message-text {
+    color: var(--text) !important;
+}
+
+body.page-agent .conversation-item,
+body.page-agent .prompt-chip,
+body.page-medical .entry-card,
+body.page-medical .doc-card,
+body.page-medical .reference-item,
+body.page-medical .path-item,
+body.page-health .feature-item,
+body.page-health .disease-item,
+body.page-health .warning-item {
+    background: rgba(255, 255, 255, 0.92) !important;
+}
+
+body.page-agent .conversation-item.active,
+body.page-agent .conversation-item:hover,
+body.page-medical .entry-card.active {
+    background: rgba(31, 111, 255, 0.07) !important;
+    border-color: rgba(31, 111, 255, 0.16) !important;
+}
+
+body.page-agent textarea,
+body.page-agent input,
+body.page-ai-chat textarea,
+body.page-ai-chat input,
+body.page-cell input,
+body.page-mask input,
+body.page-protect input,
+body.page-medical input,
+body.page-medical textarea,
+body.page-health input,
+body.page-lung input,
+body.page-lung textarea {
+    background: rgba(255, 255, 255, 0.96) !important;
+    color: var(--text) !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+    border-radius: 18px !important;
+    box-shadow: none !important;
+}
+
+body.page-agent textarea:focus,
+body.page-agent input:focus,
+body.page-ai-chat textarea:focus,
+body.page-ai-chat input:focus,
+body.page-cell input:focus,
+body.page-mask input:focus,
+body.page-protect input:focus,
+body.page-medical input:focus,
+body.page-medical textarea:focus,
+body.page-health input:focus,
+body.page-lung input:focus,
+body.page-lung textarea:focus {
+    border-color: rgba(31, 111, 255, 0.34) !important;
+    box-shadow: 0 0 0 4px rgba(31, 111, 255, 0.1) !important;
+}
+
+body.page-medical .toolbar,
+body.page-health .feature-grid,
+body.page-health .warning-grid {
+    gap: 14px !important;
+}
+
+body.page-lung .container.py-5 {
+    width: min(var(--enterprise-page-max), calc(100% - 32px)) !important;
+    max-width: none !important;
+    margin-inline: auto !important;
+    padding-top: 12px !important;
+    padding-bottom: 24px !important;
+}
+
+body.page-lung .upload-section {
+    border-style: solid !important;
+    border-color: rgba(31, 111, 255, 0.12) !important;
+}
+
+body.page-lung .result-table {
+    border-radius: 20px !important;
+}
+
+body.page-lung .loading-overlay {
+    border-radius: var(--radius-2xl) !important;
+}
+
+body.page-lung-knowledge .algo-shell {
+    width: min(var(--enterprise-page-max), calc(100% - 32px));
+    margin: 0 auto;
+    display: grid;
+    gap: 20px;
+}
+
+body.page-lung-knowledge .algo-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    gap: 20px;
+}
+
+body.page-lung-knowledge .algo-copy,
+body.page-lung-knowledge .algo-visual {
+    position: relative;
+    z-index: 1;
+}
+
+body.page-lung-knowledge .algo-hero {
+    padding: 30px;
+    background:
+        radial-gradient(circle at top left, rgba(31, 111, 255, 0.12), transparent 30%),
+        radial-gradient(circle at 80% 24%, rgba(15, 138, 128, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 248, 252, 0.96));
+}
+
+body.page-lung-knowledge .algo-hero p,
+body.page-lung-knowledge .algo-card p,
+body.page-lung-knowledge .algo-feature p {
+    color: var(--text-soft);
+    line-height: 1.82;
+}
+
+body.page-lung-knowledge .algo-features {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+body.page-lung-knowledge .algo-feature {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.94);
+}
+
+body.page-lung-knowledge .algo-card {
+    padding: 24px;
+}
+
+body.page-lung-knowledge .algo-media {
+    width: 100%;
+    border-radius: 22px;
+    border: 1px solid var(--line);
+    display: block;
+    background: linear-gradient(180deg, rgba(250, 253, 255, 0.95), rgba(245, 248, 252, 0.95));
+}
+
+@media (max-width: 1220px) {
+    body.page-landing .metric-grid,
+    body.page-health .feature-grid,
+    body.page-health .warning-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    body.page-lung-knowledge .algo-grid,
+    body.page-lung-knowledge .algo-features {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 960px) {
+    body.page-landing .hero-stage,
+    body.page-overview .overview-hero,
+    body.page-agent .consult-header,
+    body.page-ai-chat .spark-hero,
+    body.page-cell .cell-hero,
+    body.page-mask .mask-hero,
+    body.page-protect .protect-hero,
+    body.page-medical .hero {
+        grid-template-columns: 1fr !important;
+    }
+
+    body.page-landing .metric-grid,
+    body.page-overview .stats-grid,
+    body.page-medical .stats-grid,
+    body.page-health .hero-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body.page-landing .landing-shell,
+    body.page-overview .overview-shell,
+    body.page-agent .consult-shell,
+    body.page-ai-chat .spark-shell,
+    body.page-cell .cell-shell,
+    body.page-mask .mask-shell,
+    body.page-protect .protect-shell,
+    body.page-medical .knowledge-shell,
+    body.page-lung .container.py-5,
+    body.page-lung-knowledge .algo-shell {
+        width: min(100% - 20px, var(--enterprise-page-max)) !important;
+    }
+
+    body.page-landing .metric-grid,
+    body.page-overview .stats-grid,
+    body.page-medical .stats-grid,
+    body.page-health .feature-grid,
+    body.page-health .warning-grid,
+    body.page-health .disease-grid,
+    body.page-health .hero-metrics {
+        grid-template-columns: 1fr !important;
+    }
+}

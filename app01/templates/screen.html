@@ -8,15 +8,15 @@
     <link href="{% static '/img/doctor.png' %}" rel="icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="{% static 'bigscreen/js/echarts.min.js' %}"></script>
     <style>
-        :root{--bg:#f3f5ef;--panel:rgba(255,252,247,.92);--text:#162321;--muted:#5d6d6a;--line:rgba(22,35,33,.08);--accent:#0f8c79;--coral:#df6c4f;--gold:#d7a648;--shadow:0 18px 45px rgba(25,39,36,.1);--radius:8px}
-        *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans SC",sans-serif;color:var(--text);background:linear-gradient(180deg,rgba(243,245,239,.94),rgba(243,245,239,1)),url("{% static 'img/lh/198.jpg' %}") top center/cover fixed no-repeat}
-        body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.66),rgba(255,255,255,.8)),linear-gradient(rgba(15,140,121,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(15,140,121,.03) 1px,transparent 1px);background-size:auto,28px 28px,28px 28px;pointer-events:none;z-index:-1}
+        :root{--bg:#f4f7fb;--panel:rgba(255,255,255,.92);--text:#14243b;--muted:#66758b;--line:rgba(15,23,42,.08);--accent:#1f6fff;--coral:#0f8a80;--gold:#c9834d;--shadow:0 18px 42px rgba(31,52,88,.08);--radius:24px}
+        *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans SC",sans-serif;color:var(--text);background:radial-gradient(circle at 12% 14%,rgba(31,111,255,.12),transparent 22%),radial-gradient(circle at 88% 18%,rgba(15,138,128,.1),transparent 18%),linear-gradient(180deg,#f6f9fc 0%,#f2f6fa 38%,#edf3f8 100%)}
+        body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.66),rgba(255,255,255,.82)),linear-gradient(rgba(31,111,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(31,111,255,.03) 1px,transparent 1px);background-size:auto,28px 28px,28px 28px;pointer-events:none;z-index:-1}
         a{text-decoration:none;color:inherit}.shell{width:min(1480px,calc(100% - 32px));margin:0 auto;padding:22px 0 28px}.card,.hero-main,.hero-side{border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-        .topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:14px 18px;background:rgba(255,253,248,.86);border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(12px)}
-        .command-deck{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:18px;padding:24px;background:rgba(255,253,248,.88);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+        .topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:16px 20px;background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(14px)}
+        .command-deck{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:18px;padding:24px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
         .command-main{display:grid;gap:18px}
         .command-stats{display:flex;gap:10px;flex-wrap:wrap}
         .signal{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:12px;font-weight:700}
@@ -33,16 +33,16 @@
         .command-panel{padding:16px;border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(135deg,rgba(15,140,121,.08),rgba(223,108,79,.08))}
         .command-panel strong{display:block;margin-top:10px;font-size:26px;color:#123c35;line-height:1.2}
         .command-panel p{margin:10px 0 0;color:#425451;font-size:13px;line-height:1.8}
-        .brand{display:flex;gap:14px;align-items:center}.badge{width:46px;height:46px;border-radius:var(--radius);display:grid;place-items:center;background:linear-gradient(135deg,#167e70,#da7b56);color:#fffef8;font-weight:700}.brand h1{margin:0;font:700 34px/1 "Cormorant Garamond",serif}.brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
-        .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.nav a{padding:10px 14px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:13px;font-weight:600}
-        .hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(340px,.92fr);gap:18px;margin-top:14px}.hero-main{min-height:360px;padding:30px;display:grid;align-content:space-between;color:#f7f4ec;background:linear-gradient(120deg,rgba(12,48,43,.84),rgba(23,97,86,.66)),url("{% static 'img/lh/34.jpg' %}") center/cover no-repeat}
-        .hero-tag,.source{display:inline-flex;width:max-content;padding:8px 12px;border-radius:var(--radius);font-size:12px;font-weight:600}.hero-tag{background:rgba(247,244,236,.12);border:1px solid rgba(247,244,236,.18)}.hero-main h2{margin:18px 0 14px;max-width:14ch;font:700 clamp(40px,4vw,62px)/.95 "Cormorant Garamond",serif}.hero-main p{margin:0;max-width:700px;color:rgba(247,244,236,.88);font-size:16px;line-height:1.75}
-        .hero-actions,.highlights,.nav,.metric-grid,.dash{display:grid;gap:12px}.hero-actions{grid-auto-flow:column;width:max-content;margin-top:24px}.hero-actions a{padding:12px 16px;border-radius:var(--radius);font-size:14px;font-weight:600}.hero-actions .primary{background:rgba(247,244,236,.92);color:#123a34}.hero-actions .ghost{background:rgba(247,244,236,.1);border:1px solid rgba(247,244,236,.16);color:#fff8ea}
+        .brand{display:flex;gap:14px;align-items:center}.badge{width:48px;height:48px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#1f6fff,#0f8a80);color:#fffef8;font:800 16px/1 "Manrope",sans-serif}.brand h1{margin:0;font:800 30px/1 "Manrope","Noto Sans SC",sans-serif}.brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
+        .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.nav a{padding:10px 14px;border-radius:999px;background:rgba(31,111,255,.08);color:#1f5ac7;font-size:13px;font-weight:700}
+        .hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(340px,.92fr);gap:18px;margin-top:14px}.hero-main{min-height:360px;padding:30px;display:grid;align-content:space-between;color:var(--text);background:radial-gradient(circle at top left,rgba(31,111,255,.12),transparent 28%),radial-gradient(circle at 80% 26%,rgba(15,138,128,.08),transparent 22%),linear-gradient(180deg,rgba(255,255,255,.98),rgba(245,248,252,.96))}
+        .hero-tag,.source{display:inline-flex;width:max-content;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700}.hero-tag{background:rgba(31,111,255,.1);border:1px solid rgba(31,111,255,.12);color:#1f5ac7}.hero-main h2{margin:18px 0 14px;max-width:12ch;font:800 clamp(36px,4vw,54px)/1.02 "Manrope","Noto Sans SC",sans-serif}.hero-main p{margin:0;max-width:700px;color:var(--muted);font-size:15px;line-height:1.82}
+        .hero-actions,.highlights,.nav,.metric-grid,.dash{display:grid;gap:12px}.hero-actions{grid-auto-flow:column;width:max-content;margin-top:24px}.hero-actions a{padding:12px 16px;border-radius:18px;font-size:14px;font-weight:700}.hero-actions .primary{background:linear-gradient(135deg,#1f6fff,#2d87ff);color:#fff}.hero-actions .ghost{background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--text)}
         .highlights{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:24px}.highlight{padding:14px;border:1px solid rgba(247,244,236,.16);border-radius:var(--radius);background:rgba(247,244,236,.1)}.highlight span{display:block;color:rgba(247,244,236,.72);font-size:12px}.highlight strong{display:block;margin-top:8px;font-size:16px;line-height:1.5}
-        .hero-side,.card{padding:20px;background:var(--panel);backdrop-filter:blur(10px)}.section-top,.head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.section-top .title,.head h3{margin:0;font-size:18px;font-weight:700}.stamp,.desc,.case-meta,.case-time,.status-label{color:var(--muted);font-size:12px}.status-list,.list,.actions{display:grid;gap:10px;margin-top:16px}
+        .hero-side,.card{padding:20px;background:var(--panel);backdrop-filter:blur(10px)}.section-top,.head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.section-top .title,.head h3{margin:0;font-size:18px;font-weight:800;font-family:"Manrope","Noto Sans SC",sans-serif}.stamp,.desc,.case-meta,.case-time,.status-label{color:var(--muted);font-size:12px}.status-list,.list,.actions{display:grid;gap:10px;margin-top:16px}
         .status-item,.case,.alert{display:flex;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--line);border-radius:var(--radius);background:#fffdf8}.status-item strong{display:block;font-size:15px;line-height:1.5}.status-pill{padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}.ready{background:rgba(15,140,121,.12);color:#0b6d5d}.warn{background:rgba(223,108,79,.12);color:#b65d3d}.idle{background:rgba(215,166,72,.14);color:#715c2a}
         .note{margin-top:16px;padding:14px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(15,140,121,.1),rgba(223,108,79,.08));font-size:13px;line-height:1.8;color:#2b403d}
-        .metric-grid{grid-template-columns:repeat(6,minmax(0,1fr));margin-top:18px}.metric{padding:18px 16px;background:rgba(255,252,247,.9);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 30px rgba(25,39,36,.06)}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;margin-top:10px;font:700 clamp(28px,3vw,42px)/1 "Cormorant Garamond",serif;color:#123c35}.metric small{display:block;margin-top:10px;color:#3c4f4c;font-size:12px;line-height:1.6}
+        .metric-grid{grid-template-columns:repeat(6,minmax(0,1fr));margin-top:18px}.metric{padding:18px 16px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 30px rgba(31,52,88,.05)}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;margin-top:10px;font:800 clamp(28px,3vw,42px)/1 "Manrope","Noto Sans SC",sans-serif;color:var(--text)}.metric small{display:block;margin-top:10px;color:#3c4f4c;font-size:12px;line-height:1.6}
         .dash{grid-template-columns:repeat(12,minmax(0,1fr));margin-top:18px}.span-8{grid-column:span 8}.span-5{grid-column:span 5}.span-4{grid-column:span 4}.span-3{grid-column:span 3}.desc{margin-top:6px;line-height:1.7}.switch{display:flex;gap:8px;flex-wrap:wrap}.chip{border:0;padding:8px 12px;border-radius:var(--radius);background:rgba(15,140,121,.08);color:#16574e;font-size:12px;font-weight:700;cursor:pointer}.chip.active{background:#166f61;color:#fffaf0}
         .chart{width:100%;height:320px}.chart.small{height:280px}.source{background:rgba(15,140,121,.08);color:#16574e;margin-top:4px}
         .case{display:block}.case-row{display:flex;justify-content:space-between;gap:12px}.case h4,.alert h4,.action h4{margin:0;font-size:15px;font-weight:700}.case p,.alert p,.action p{margin:8px 0 0;font-size:13px;line-height:1.8;color:#30413f}
@@ -59,7 +59,7 @@
 <div class="shell">
     <header class="topbar">
         <div class="brand">
-            <div class="badge">SP</div>
+            <div class="badge">DM</div>
             <div>
                 <h1>皮肤病智能诊断决策大屏</h1>
                 <p>把图像分类、智能问诊、RAG 检索与知识图谱放到同一张业务驾驶舱里</p>
@@ -111,7 +111,7 @@
             <div>
                 <div class="hero-tag">系统总览 / 实时业务态势</div>
                 <h2>把诊断、问诊、知识与解释放到同一张大屏里</h2>
-                <p>这里不是通用统计模板，而是专门服务于皮肤病智能诊断系统的总控台。它把图像分类结果、AI 问诊会话、RAG 参考依据、知识图谱路径和高风险提醒聚合到一个入口里，既适合答辩展示，也适合系统联调和后续运营。</p>
+                <p>大屏用于统一查看图像分类结果、问诊会话、知识检索、图谱关系和风险提醒，帮助企业用户集中掌握平台运行状态与业务分布。</p>
                 <div class="hero-actions">
                     <a class="primary" href="/diagnose_skin/">开始图像诊断</a>
                     <a class="ghost" href="/agent/">进入智能问诊工作台</a>
@@ -140,7 +140,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="note">当前累计保存 <strong>{{ total_conversations }}</strong> 个问诊会话、<strong>{{ total_messages }}</strong> 条消息记录。页面会优先展示真实会话数据；当某一类业务数据尚未沉淀充分时，会自动补充演示态指标，保证界面始终完整可讲。</div>
+            <div class="note">当前累计保存 <strong>{{ total_conversations }}</strong> 个问诊会话、<strong>{{ total_messages }}</strong> 条消息记录。页面优先展示真实业务数据，并持续同步平台运行状态与关键变化。</div>
         </aside>
     </section>
 
@@ -169,15 +169,15 @@
         <article class="card span-4">
             <div class="head">
                 <div>
-                    <h3>系统预警与答辩提示</h3>
-                    <div class="desc">让老师或运维一眼看到系统当下最值得关注的信息。</div>
+                    <h3>系统预警与运行提示</h3>
+                    <div class="desc">集中查看当前最值得关注的风险项、状态项和待处理信息。</div>
                 </div>
             </div>
             <div class="list">
                 {% for item in alerts %}
                     <div class="alert {{ item.level }}"><div><h4>{{ item.title }}</h4><p>{{ item.detail }}</p></div></div>
                 {% empty %}
-                    <div class="alert low"><div><h4>系统状态平稳</h4><p>当前没有需要特别处理的异常，大屏适合直接用于展示端到端能力闭环。</p></div></div>
+                    <div class="alert low"><div><h4>系统状态平稳</h4><p>当前没有需要特别处理的异常，可持续用于日常监控与运行查看。</p></div></div>
                 {% endfor %}
             </div>
             <div class="tags"><span>图像分类可下钻到具体病例</span><span>问诊回复保留历史上下文</span><span>知识图谱可解释诊断依据</span></div>

@@ -1,5 +1,5 @@
 .env
 __pycache__/
 *.pyc
-/agent_project
-/agent_study
+*.pth
+

@@ -1,115 +1,589 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block css %}
+{% block body_class %}page-mask{% endblock %}
 
+{% block css %}
+<style>
+    .mask-shell {
+        width: min(1360px, calc(100% - 32px));
+        margin: 0 auto;
+        display: grid;
+        gap: 18px;
+    }
+
+    .mask-hero,
+    .mask-panel,
+    .mask-stage,
+    .mask-note {
+        border-radius: 30px;
+        border: 1px solid rgba(19, 52, 50, 0.10);
+        box-shadow: 0 24px 72px rgba(20, 39, 36, 0.10);
+        overflow: hidden;
+    }
+
+    .mask-hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 18px;
+        padding: 30px;
+        color: #fffaf4;
+        background:
+            linear-gradient(135deg, rgba(8, 41, 43, 0.94), rgba(15, 88, 79, 0.72)),
+            url("{% static 'img/mask_man.png' %}") center/cover no-repeat;
+    }
+
+    .mask-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 14% 18%, rgba(255, 245, 230, 0.16), transparent 18%),
+            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: auto, 26px 26px, 26px 26px;
+        opacity: 0.34;
+        pointer-events: none;
+    }
+
+    .mask-hero > *,
+    .mask-note > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-kicker,
+    .hero-chip,
+    .panel-kicker,
+    .result-label {
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .hero-kicker,
+    .hero-chip,
+    .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .hero-kicker {
+        padding: 9px 14px;
+        background: rgba(255, 248, 237, 0.12);
+        border: 1px solid rgba(255, 248, 237, 0.18);
+    }
+
+    .mask-copy h1 {
+        margin: 18px 0 14px;
+        max-width: 12ch;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(46px, 5vw, 80px);
+        line-height: 0.92;
+        color: #fffdf8;
+    }
+
+    .mask-copy p {
+        margin: 0;
+        max-width: 60ch;
+        color: rgba(255, 248, 237, 0.86);
+        font-size: 15px;
+        line-height: 1.92;
+    }
+
+    .hero-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .hero-chip {
+        min-height: 38px;
+        padding: 0 14px;
+        background: rgba(255, 248, 237, 0.10);
+        border: 1px solid rgba(255, 248, 237, 0.16);
+        color: #fffaf4;
+    }
+
+    .hero-side {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+    }
+
+    .mask-note {
+        padding: 18px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 248, 237, 0.14);
+        background: rgba(255, 248, 237, 0.10);
+        backdrop-filter: blur(12px);
+    }
+
+    .mask-note strong {
+        display: block;
+        color: #fffdf8;
+        font-size: 17px;
+        line-height: 1.55;
+    }
+
+    .mask-note p {
+        margin: 8px 0 0;
+        color: rgba(255, 248, 237, 0.76);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .mask-workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+        gap: 18px;
+    }
+
+    .mask-panel {
+        background: rgba(255, 252, 247, 0.90);
+        backdrop-filter: blur(14px);
+    }
+
+    .panel-head {
+        padding: 18px 20px 16px;
+        border-bottom: 1px solid rgba(19, 52, 50, 0.10);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .panel-kicker {
+        padding: 7px 11px;
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+        margin-bottom: 10px;
+    }
+
+    .panel-head h2,
+    .panel-head h3 {
+        margin: 0;
+        color: #183532;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #5c6f6b;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .stage-grid {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .mask-stage {
+        min-height: 430px;
+        padding: 18px;
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 243, 235, 0.90));
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: 14px;
+        position: relative;
+    }
+
+    .stage-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .stage-top strong {
+        color: #183532;
+        font-size: 16px;
+    }
+
+    .stage-top span {
+        color: #647773;
+        font-size: 12px;
+    }
+
+    .preview-box {
+        min-height: 310px;
+        border-radius: 24px;
+        border: 1px dashed rgba(18, 125, 114, 0.20);
+        background:
+            radial-gradient(circle at top left, rgba(18, 125, 114, 0.08), transparent 18%),
+            rgba(255, 255, 255, 0.82);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        overflow: hidden;
+    }
+
+    .preview-box img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 18px;
+    }
+
+    .stage-placeholder {
+        text-align: center;
+        color: #60736f;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .stage-placeholder strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #173432;
+        font-size: 16px;
+    }
+
+    .stage-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .stage-actions button,
+    .stage-actions label {
+        min-height: 46px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .stage-actions label,
+    .stage-actions .primary-btn {
+        background: linear-gradient(135deg, #127d72, #d97653);
+        color: #fffdf8;
+        box-shadow: 0 18px 36px rgba(18, 125, 114, 0.20);
+    }
+
+    .stage-actions .secondary-btn {
+        border: 1px solid rgba(18, 125, 114, 0.16);
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+    }
+
+    .stage-actions label:hover,
+    .stage-actions button:hover {
+        transform: translateY(-1px);
+    }
+
+    #uploadImage {
+        display: none;
+    }
+
+    .status-board {
+        padding: 18px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .status-card {
+        padding: 16px;
+        border-radius: 22px;
+        border: 1px solid rgba(19, 52, 50, 0.10);
+        background: rgba(255, 255, 255, 0.84);
+    }
+
+    .status-card h4 {
+        margin: 0 0 8px;
+        color: #173432;
+        font-size: 15px;
+    }
+
+    .status-card p,
+    .status-card li {
+        margin: 0;
+        color: #60736f;
+        font-size: 13px;
+        line-height: 1.82;
+    }
+
+    .status-card ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .result-label {
+        display: inline-flex;
+        width: fit-content;
+        min-height: 34px;
+        padding: 0 12px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .stage-status {
+        padding: 0 20px 20px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .status-chip {
+        min-height: 38px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-text {
+        color: #60736f;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 1120px) {
+        .mask-hero,
+        .mask-workspace,
+        .stage-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .mask-shell {
+            width: min(100% - 20px, 1360px);
+        }
+
+        .mask-hero,
+        .mask-panel,
+        .mask-stage {
+            border-radius: 24px;
+        }
+
+        .stage-grid,
+        .status-board {
+            padding: 18px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-
-    <div class="container" style="margin-bottom: 100px;">
-        <div class="container ">
-            <div class="row justify-content-evenly">
-                <div class="col-sm-5">
-                    <div class="card" style="width: 35rem; height: 420px">
-                        <div class="card-body">
-                            <img id="image" src="{% static '/img/hong4.png' %}" class="rounded card-img-top d-block" alt="输入图片"
-                                 style="height: 380px">
-                        </div>
-                    </div>
-                    <label for="formFile" class="form-label">请选择一张图片</label>
-                    <form method="post" id="imgform" enctype="multipart/form-data" action="/mask/upload/">
-                        <div class="input-group">
-                            <input type="file" class="form-control" id="uploadImage"
-                                   aria-describedby="inputGroupFileAddon" aria-label="Upload"
-                                   onchange="selectImage(this);">
-                            <button class="btn btn-outline-info" type="button" onclick="gosubmit()" id="imgbtn">上传
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-sm-5">
-                    <div class="card" style="width: 35rem; height: 420px">
-                        <div class="card-body">
-                            <img src="{% static '/img/phone.png'%}" class="rounded mx-auto d-block"
-                                 id="outputImage"
-                                 alt="输出图片" style="height: 380px; width: 32rem;">
-                        </div>
-                    </div>
-                    <label for="formFile" class="form-label">结果展示</label>
-
-                    <div class="input-group">
-                        <button class="btn btn-outline-info " type="button" onclick="FlushImg();">检测
-                        </button>
-                    </div>
-
-
-                </div>
+<div class="mask-shell">
+    <section class="mask-hero">
+        <div class="mask-copy">
+            <div class="hero-kicker">Mask Detection Lab</div>
+            <h1>让口罩识别流程具备统一的业务工作区体验</h1>
+            <p>
+                页面围绕上传图像、执行检测和查看结果三个步骤组织，减少分散操作，让识别流程更清晰、更适合实际使用。
+            </p>
+            <div class="hero-chips">
+                <div class="hero-chip">YOLO 检测流程</div>
+                <div class="hero-chip">输入输出并排展示</div>
+                <div class="hero-chip">操作状态可见</div>
             </div>
         </div>
-    </div>
 
+        <aside class="hero-side">
+            <article class="mask-note">
+                <strong>推荐使用流程</strong>
+                <p>先上传包含人脸的图片，再执行检测，系统会在输出区展示识别后的结果图。</p>
+            </article>
+            <article class="mask-note">
+                <strong>页面目标更清晰</strong>
+                <p>旧版分散的卡片和按钮被收拢为单一操作流，减少用户理解成本。</p>
+            </article>
+            <article class="mask-note">
+                <strong>结果可直接查看</strong>
+                <p>输入图、检测结果和当前状态在同一工作区内同步呈现，便于处理与复核。</p>
+            </article>
+        </aside>
+    </section>
 
+    <section class="mask-workspace">
+        <section class="mask-panel">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-kicker">Detection Workspace</div>
+                    <h2>口罩识别工作区</h2>
+                    <p>上传图像后即可完成推理，并在右侧查看标注后的结果图。</p>
+                </div>
+            </div>
+
+            <div class="stage-grid">
+                <article class="mask-stage">
+                    <div class="stage-top">
+                        <div>
+                            <strong>输入图像</strong>
+                            <span>待检测原图</span>
+                        </div>
+                        <span class="result-label">Input</span>
+                    </div>
+                    <div class="preview-box">
+                        <img id="image" src="{% static '/img/hong4.png' %}" alt="输入图片">
+                    </div>
+                    <div class="stage-actions">
+                        <label for="uploadImage">选择图片</label>
+                        <input type="file" id="uploadImage" onchange="selectImage(this);">
+                        <button class="primary-btn" type="button" onclick="gosubmit()" id="imgbtn">上传图片</button>
+                    </div>
+                </article>
+
+                <article class="mask-stage">
+                    <div class="stage-top">
+                        <div>
+                            <strong>检测输出</strong>
+                            <span>YOLO 推理结果</span>
+                        </div>
+                        <span class="result-label">Output</span>
+                    </div>
+                    <div class="preview-box">
+                        <img src="{% static '/img/phone.png' %}" id="outputImage" alt="输出图片">
+                    </div>
+                    <div class="stage-actions">
+                        <button class="primary-btn" type="button" onclick="FlushImg();" id="detectBtn">开始检测</button>
+                        <button class="secondary-btn" type="button" onclick="resetMaskWorkspace()">重置画面</button>
+                    </div>
+                </article>
+            </div>
+
+            <div class="stage-status">
+                <div class="status-chip" id="workflowState">等待上传</div>
+                <div class="status-text" id="workflowMessage">上传图像后即可执行检测，结果将展示在右侧。</div>
+            </div>
+        </section>
+
+        <aside class="mask-panel">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-kicker">Notes</div>
+                    <h3>处理说明</h3>
+                    <p>统一查看操作步骤、当前状态和使用边界。</p>
+                </div>
+            </div>
+            <div class="status-board">
+                <article class="status-card">
+                    <h4>操作步骤</h4>
+                    <ul>
+                        <li>上传带有人脸的样本图</li>
+                        <li>点击“上传图片”写入检测输入目录</li>
+                        <li>点击“开始检测”读取推理输出</li>
+                    </ul>
+                </article>
+                <article class="status-card">
+                    <h4>业务价值</h4>
+                    <p>这个页面可以快速验证口罩识别结果，并与其他视觉识别模块保持一致的处理方式。</p>
+                </article>
+                <article class="status-card">
+                    <h4>注意事项</h4>
+                    <p>若环境中缺失 YOLO 或 Torch 依赖，接口会返回后端错误信息，页面会同步提示。</p>
+                </article>
+            </div>
+        </aside>
+    </section>
+</div>
 {% endblock %}
 
 {% block js %}
+<script>
+    let image = '';
 
-    <script type="text/javascript">
-        var image = '';
+    function setWorkflow(state, message) {
+        document.getElementById('workflowState').textContent = state;
+        document.getElementById('workflowMessage').textContent = message;
+    }
 
-        function selectImage(file) {
-            if (!file.files || !file.files[0]) {
-                alert("未选择任何文件")
-                return;
-            }
-            var reader = new FileReader();
-            reader.onload = function (evt) {
-                document.getElementById('image').src = evt.target.result;
-                image = evt.target.result;
-            }
-            reader.readAsDataURL(file.files[0]);
+    function selectImage(file) {
+        if (!file.files || !file.files[0]) {
+            alert('未选择任何文件');
+            return;
         }
-    </script>
-    <script type="text/javascript">
-        function gosubmit() {
-            var formdata = new FormData();
-            //formdata.append('name', 'uploadImage');
-            formdata.append('uploadImage', $('#uploadImage').get(0).files[0]);
-            //formdata.append('recid', str);
-            $.ajax({
-                url: '/mask/upload/',
-                type: 'post',
-                contentType: false,
-                data: formdata,
-                processData: false,
-                success: function (info) {
-                    if (info.status) {
-                        alert("上传成功");
-                    } else {
-                        alert("上传失败");
-                    }
-                    console.log(info)
 
-                },
-                error: function (err) {
-                    console.log(err)
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+            document.getElementById('image').src = evt.target.result;
+            image = evt.target.result;
+            setWorkflow('已选择图片', '当前图片已载入预览区，可以继续上传到检测目录。');
+        };
+        reader.readAsDataURL(file.files[0]);
+    }
+
+    function gosubmit() {
+        const uploadFile = $('#uploadImage').get(0).files[0];
+        if (!uploadFile) {
+            alert('请先选择一张图片');
+            return;
+        }
+
+        const formdata = new FormData();
+        formdata.append('uploadImage', uploadFile);
+        setWorkflow('上传中', '正在将图片发送到后端检测输入目录...');
+
+        $.ajax({
+            url: '/mask/upload/',
+            type: 'post',
+            contentType: false,
+            data: formdata,
+            processData: false,
+            success: function (info) {
+                if (info.status) {
+                    setWorkflow('上传完成', '图片已上传成功，现在可以开始检测。');
+                } else {
+                    setWorkflow('上传失败', info.message || '后端未成功处理上传。');
+                    alert(info.message || '上传失败');
                 }
-            });
-        }
-    </script>
-    <script>
-        function FlushImg() {
-            $.ajax({
-                url: "/mask/img/",
-                type: 'GET',
-                dataType: '',
-                success: function (data) {
-                    console.log(data);
-                    $('#outputImage').attr('src', "data:image/png;base64," + data)
+            },
+            error: function () {
+                setWorkflow('上传失败', '网络请求失败，请稍后重试。');
+                alert('上传失败');
+            }
+        });
+    }
 
-                    {#var obj = document.getElementById("outputImage");#}
-                    {#obj.src = "data:image/png;base64," + data;#}
-                },
-            })
-        }
-    </script>
+    function FlushImg() {
+        setWorkflow('检测中', '正在读取推理结果并更新右侧输出图像...');
+
+        $.ajax({
+            url: '/mask/img/',
+            type: 'GET',
+            success: function (data) {
+                $('#outputImage').attr('src', 'data:image/png;base64,' + data);
+                setWorkflow('检测完成', '已成功刷新检测结果，右侧展示的是最新输出图。');
+            },
+            error: function () {
+                setWorkflow('检测失败', '暂时无法读取检测结果，请确认模型推理是否执行成功。');
+                alert('检测失败');
+            }
+        });
+    }
+
+    function resetMaskWorkspace() {
+        $('#uploadImage').val('');
+        $('#image').attr('src', "{% static '/img/hong4.png' %}");
+        $('#outputImage').attr('src', "{% static '/img/phone.png' %}");
+        image = '';
+        setWorkflow('等待上传', '上传图像后即可执行检测，结果将展示在右侧。');
+    }
+</script>
 {% endblock %}

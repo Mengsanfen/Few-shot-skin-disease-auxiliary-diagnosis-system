@@ -1,160 +1,670 @@
-<!DOCTYPE html>
-<html lang="cn">
 {% extends 'layout.html' %}
 {% load static %}
+{% block body_class %}page-ai-chat{% endblock %}
+
 {% block css %}
 <style>
-    /* 聊天容器样式 */
-    .chat-container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        background: rgba(159, 159, 159, 0.07);
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0 0 20px rgba(205, 205, 205, 0.88);
+    .spark-shell {
+        width: min(1360px, calc(100% - 32px));
+        margin: 0 auto;
+        display: grid;
+        gap: 18px;
     }
 
-    /* 聊天消息区域 */
-    .chat-messages {
-        height: 60vh;
-        overflow-y: auto;
-        padding: 20px;
-        background: rgba(44, 139, 45, 0.16);
-        border-radius: 10px;
-        margin-bottom: 20px;
+    .spark-hero,
+    .spark-panel,
+    .spark-note {
+        border-radius: 30px;
+        border: 1px solid rgba(19, 52, 50, 0.10);
+        box-shadow: 0 24px 72px rgba(20, 39, 36, 0.10);
+        overflow: hidden;
     }
 
-    /* 消息气泡 */
-    .message {
-        margin: 15px 0;
+    .spark-hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        gap: 18px;
+        padding: 30px;
+        color: #fffaf4;
+        background:
+            linear-gradient(135deg, rgba(8, 41, 43, 0.94), rgba(15, 88, 79, 0.70)),
+            url("{% static 'img/agent2.jpg' %}") center/cover no-repeat;
+    }
+
+    .spark-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 14% 18%, rgba(255, 245, 230, 0.16), transparent 18%),
+            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: auto, 26px 26px, 26px 26px;
+        opacity: 0.36;
+        pointer-events: none;
+    }
+
+    .spark-hero > *,
+    .spark-note > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .spark-kicker,
+    .spark-chip,
+    .panel-kicker,
+    .message-role {
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .spark-kicker,
+    .spark-chip,
+    .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .spark-kicker {
+        padding: 9px 14px;
+        background: rgba(255, 248, 237, 0.12);
+        border: 1px solid rgba(255, 248, 237, 0.18);
+    }
+
+    .spark-copy h1 {
+        margin: 18px 0 14px;
+        max-width: 12ch;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(46px, 5vw, 80px);
+        line-height: 0.92;
+        color: #fffdf8;
+    }
+
+    .spark-copy p {
+        margin: 0;
+        max-width: 60ch;
+        color: rgba(255, 248, 237, 0.86);
+        font-size: 15px;
+        line-height: 1.92;
+    }
+
+    .spark-actions {
         display: flex;
-        align-items: start;
-        gap: 50px;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
     }
 
-    .user-message {
+    .spark-actions a {
+        min-height: 48px;
+        padding: 0 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .spark-primary {
+        background: #fff7eb;
+        color: #153632;
+    }
+
+    .spark-secondary {
+        background: rgba(255, 248, 237, 0.10);
+        border: 1px solid rgba(255, 248, 237, 0.18);
+        color: #fffaf4;
+    }
+
+    .spark-metrics {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+    }
+
+    .spark-note {
+        padding: 20px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 248, 237, 0.14);
+        background: rgba(255, 248, 237, 0.10);
+        backdrop-filter: blur(12px);
+    }
+
+    .spark-note strong {
+        display: block;
+        font-size: 17px;
+        line-height: 1.6;
+        color: #fffdf8;
+    }
+
+    .spark-note p {
+        margin: 8px 0 0;
+        color: rgba(255, 248, 237, 0.74);
+        font-size: 13px;
+        line-height: 1.82;
+    }
+
+    .spark-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: stretch;
+    }
+
+    .spark-panel {
+        background: rgba(255, 252, 247, 0.90);
+        backdrop-filter: blur(14px);
+    }
+
+    .panel-head {
+        padding: 18px 20px 16px;
+        border-bottom: 1px solid rgba(19, 52, 50, 0.10);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .panel-kicker {
+        padding: 7px 11px;
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+        margin-bottom: 10px;
+    }
+
+    .panel-head h2,
+    .panel-head h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #183532;
+        font-weight: 700;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #5c6f6b;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .chat-layout {
+        display: grid;
+        grid-template-rows: minmax(520px, 62vh) auto;
+    }
+
+    .chat-messages {
+        padding: 22px;
+        overflow-y: auto;
+        background:
+            radial-gradient(circle at top left, rgba(18, 125, 114, 0.08), transparent 22%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(247, 243, 235, 0.84));
+    }
+
+    .chat-empty {
+        max-width: 720px;
+        margin: 38px auto;
+        padding: 28px;
+        text-align: center;
+        border-radius: 28px;
+        border: 1px dashed rgba(18, 125, 114, 0.18);
+        background: rgba(255, 255, 255, 0.76);
+        color: #5d706c;
+    }
+
+    .chat-empty img {
+        width: 110px;
+        height: 110px;
+        object-fit: contain;
+        margin-bottom: 16px;
+    }
+
+    .chat-empty h2 {
+        margin: 0 0 10px;
+        color: #173432;
+        font-size: 30px;
+    }
+
+    .chat-empty p {
+        margin: 0;
+        line-height: 1.9;
+    }
+
+    .message {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 18px;
+    }
+
+    .message.user-message {
         justify-content: flex-end;
     }
 
-    .bot-message {
-        justify-content: flex-start;
+    .message.user-message .message-avatar {
+        order: 2;
+        background: rgba(217, 118, 83, 0.12);
+        color: #9b4c37;
     }
 
     .message-content {
-        max-width: 70%;
-        padding: 15px 20px;
-        border-radius: 15px;
-        position: relative;
+        max-width: min(760px, 84%);
+        padding: 16px 18px;
+        border-radius: 24px;
+        border: 1px solid rgba(18, 125, 114, 0.10);
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 18px 34px rgba(20, 39, 36, 0.06);
     }
 
     .user-message .message-content {
-        background: rgba(255, 255, 255, 0.84);
-        box-shadow: 0 0 20px rgba(125, 125, 125, 0.45);
-        color: #101010;
+        background: rgba(255, 246, 241, 0.96);
+        border-color: rgba(217, 118, 83, 0.12);
     }
 
-    .bot-message .message-content {
-        background: rgba(111, 148, 138, 0.38);
-        box-shadow: 0 0 20px rgba(125, 125, 125, 0.45);
+    .message-avatar {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 auto;
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        background: rgba(18, 125, 114, 0.12);
+        color: #0f675d;
     }
 
-    /* 输入区域 */
+    .message-role {
+        margin-bottom: 10px;
+        color: #6a7c78;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .message-text {
+        color: #223f3c;
+        font-size: 14px;
+        line-height: 1.86;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .chat-composer {
+        padding: 18px;
+        border-top: 1px solid rgba(19, 52, 50, 0.10);
+        background: rgba(255, 252, 247, 0.94);
+    }
+
     .input-container {
-        display: flex;
-        gap: 10px;
-        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: end;
     }
 
     #user-input {
-        flex-grow: 1;
-        padding: 15px 20px;
-        background: rgba(107, 58, 58, 0.05);
-        border: 1px solid var(--tech-blue);
-        border-radius: 30px;
-        color: #000000;
-        font-size: 16px;
+        width: 100%;
+        min-height: 116px;
+        resize: vertical;
+        padding: 16px 18px;
+        border-radius: 24px;
+        border: 1px solid rgba(18, 125, 114, 0.14);
+        background: rgba(255, 255, 255, 0.92);
+        color: #183532;
+        font-size: 14px;
+        line-height: 1.75;
+        outline: none;
+    }
+
+    #user-input:focus {
+        border-color: rgba(18, 125, 114, 0.34);
+        box-shadow: 0 0 0 5px rgba(18, 125, 114, 0.10);
     }
 
     #send-btn {
-        padding: 15px 30px;
-        background: var(--gradient-bg);
-        border: none;
-        border-radius: 30px;
-        color: #000000;
+        min-width: 132px;
+        min-height: 52px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #127d72, #d97653);
+        color: #fffdf8;
+        font-size: 14px;
+        font-weight: 700;
         cursor: pointer;
-        transition: transform 0.3s;
+        box-shadow: 0 18px 36px rgba(18, 125, 114, 0.20);
+        transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
     }
 
     #send-btn:hover {
-        transform: scale(1.05);
+        transform: translateY(-1px);
+        box-shadow: 0 22px 44px rgba(18, 125, 114, 0.24);
     }
 
-    /* 加载状态 */
+    #send-btn:disabled {
+        opacity: 0.6;
+        cursor: wait;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .composer-footer {
+        margin-top: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .composer-hint {
+        color: #60736f;
+        font-size: 13px;
+        line-height: 1.75;
+    }
+
     .typing-indicator {
         display: none;
-        padding: 10px;
-        color: var(--tech-blue);
+        align-items: center;
+        gap: 10px;
+        color: #0f675d;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .typing-indicator.active {
+        display: inline-flex;
+    }
+
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #127d72;
+        animation: typingPulse 1s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .tips-stack {
+        padding: 18px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .tips-card {
+        padding: 16px;
+        border-radius: 22px;
+        border: 1px solid rgba(19, 52, 50, 0.10);
+        background: rgba(255, 255, 255, 0.84);
+    }
+
+    .tips-card h4 {
+        margin: 0 0 8px;
+        color: #173432;
+        font-size: 15px;
+    }
+
+    .tips-card p {
+        margin: 0;
+        color: #60736f;
+        font-size: 13px;
+        line-height: 1.82;
+    }
+
+    .tips-card button {
+        width: 100%;
+        margin-top: 12px;
+        min-height: 42px;
+        border-radius: 16px;
+        border: 1px solid rgba(18, 125, 114, 0.16);
+        background: rgba(18, 125, 114, 0.08);
+        color: #0f675d;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 180ms ease, transform 180ms ease;
+    }
+
+    .tips-card button:hover {
+        background: rgba(18, 125, 114, 0.12);
+        transform: translateY(-1px);
+    }
+
+    @keyframes typingPulse {
+        0%, 100% {
+            opacity: 0.36;
+            transform: scale(0.85);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+
+    @media (max-width: 1120px) {
+        .spark-hero,
+        .spark-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .spark-shell {
+            width: min(100% - 20px, 1360px);
+        }
+
+        .spark-hero,
+        .spark-panel {
+            border-radius: 24px;
+        }
+
+        .chat-messages {
+            padding: 18px;
+        }
+
+        .input-container {
+            grid-template-columns: 1fr;
+        }
+
+        #send-btn {
+            width: 100%;
+        }
+
+        .message-content {
+            max-width: 90%;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="chat-container">
-    <div class="chat-messages" id="chat-messages">
-        <!-- 初始欢迎消息 -->
-        <div class="message bot-message">
-            <div class="message-content">
-                <p>欢迎使用 皮肤病智能诊断助手！🤖💡
-我是 SkinProto 系统旗下的皮肤病智能诊断助手，基于SFEPT原型网络算法，致力于为您提供专业、精准的皮肤病初步诊断和医学科普。无论是皮肤症状解析、就诊建议，还是皮肤病科普，我都能为您提供可靠的信息支持。
-🩺 请告诉我您的皮肤健康疑问，我将竭诚为您解答！
-⚠️ 温馨提示：本服务仅供参考，不能替代医生的专业诊断。如有紧急情况，请及时就医！</p>
+<div class="spark-shell">
+    <section class="spark-hero">
+        <div class="spark-copy">
+            <div class="spark-kicker">Spark Medical Assistant</div>
+            <h1>更轻量的 AI 医疗问答入口</h1>
+            <p>
+                这个页面保留了讯飞 Spark 的流式对话体验，但视觉上已经和 DermoAI 其他核心页面统一。
+                现在它更像一个专业医疗 AI 控台，而不是单纯的测试聊天框。
+            </p>
+            <div class="spark-actions">
+                <a class="spark-primary" href="/agent/">进入高级问诊工作台</a>
+                <a class="spark-secondary" href="/medical/">查看知识库</a>
             </div>
         </div>
-    </div>
-    
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="描述您的症状（例如：头痛、发烧等）...">
-        <button id="send-btn">发送</button>
-    </div>
-    <div class="typing-indicator" id="typing-indicator">AI正在思考...</div>
+
+        <div class="spark-metrics">
+            <article class="spark-note">
+                <strong>适合快速咨询</strong>
+                <p>适用于轻量问题咨询和即时回复场景，保持更简洁的问答流程。</p>
+            </article>
+            <article class="spark-note">
+                <strong>建议输入更完整的症状上下文</strong>
+                <p>尽量补充部位、持续时间、颜色变化、是否瘙痒疼痛，以及是否有渗出或近期诱因。</p>
+            </article>
+            <article class="spark-note">
+                <strong>安全边界保持明确</strong>
+                <p>页面保留辅助咨询定位，仍不替代线下问诊和医生面诊。</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="spark-grid">
+        <section class="spark-panel chat-layout">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-kicker">Conversation</div>
+                    <h2>AI 问答流</h2>
+                    <p>支持流式响应、实时滚动和更清晰的消息层级。</p>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-empty" id="chat-empty">
+                    <img src="{% static 'img/AIchat1.png' %}" alt="AI assistant">
+                    <h2>开始一次轻量问答</h2>
+                    <p>你可以先描述症状、困扰或就医疑问，系统会以流式方式逐步返回建议内容。</p>
+                </div>
+            </div>
+
+            <div class="chat-composer">
+                <div class="input-container">
+                    <textarea id="user-input" placeholder="例如：脸部反复泛红并伴有轻微刺痛两周，洗脸后更明显，最近护肤品有更换。"></textarea>
+                    <button id="send-btn" type="button">发送问题</button>
+                </div>
+                <div class="composer-footer">
+                    <div class="composer-hint">Enter 发送，Shift + Enter 换行。建议一次描述清楚症状背景。</div>
+                    <div class="typing-indicator" id="typing-indicator">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        AI 正在生成回答
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="spark-panel">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-kicker">Prompts</div>
+                    <h3>快速起手</h3>
+                    <p>点击即可填入常见咨询问题，快速开始一次问答。</p>
+                </div>
+            </div>
+            <div class="tips-stack">
+                <article class="tips-card">
+                    <h4>症状描述</h4>
+                    <p>“手背起红斑并发痒一周，洗手液接触后加重，是否像湿疹？”</p>
+                    <button type="button" data-prompt="手背起红斑并发痒一周，洗手液接触后加重，是否像湿疹？">填入这个问题</button>
+                </article>
+                <article class="tips-card">
+                    <h4>检查建议</h4>
+                    <p>“脸上反复长痘并且发炎，平时需要做哪些检查，护理重点是什么？”</p>
+                    <button type="button" data-prompt="脸上反复长痘并且发炎，平时需要做哪些检查，护理重点是什么？">填入这个问题</button>
+                </article>
+                <article class="tips-card">
+                    <h4>风险提示</h4>
+                    <p>“一颗色素痣最近边缘不规则、颜色变深，这种情况应该尽快就医吗？”</p>
+                    <button type="button" data-prompt="一颗色素痣最近边缘不规则、颜色变深，这种情况应该尽快就医吗？">填入这个问题</button>
+                </article>
+            </div>
+        </aside>
+    </section>
 </div>
 {% endblock %}
 
 {% block js %}
 <script>
     const chatMessages = document.getElementById('chat-messages');
+    const chatEmpty = document.getElementById('chat-empty');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
     const typingIndicator = document.getElementById('typing-indicator');
 
-    // 添加消息到聊天框
-    function addMessage(content, isUser) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        
-        const pElem = document.createElement('p');
-        pElem.innerHTML = formatContent(content);
-        
-        contentDiv.appendChild(pElem);
-        messageDiv.appendChild(contentDiv);
-        chatMessages.appendChild(messageDiv);
-        
-        // 自动滚动到最新消息
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+    function escapeHtml(value) {
+        return (value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
-    // 处理用户输入
+    function formatContent(content) {
+        const safe = escapeHtml(content);
+        return safe
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+    }
+
+    function iconSvg(type) {
+        if (type === 'user') {
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+        }
+        return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 4h10a3 3 0 0 1 3 3v6a5 5 0 0 1-5 5h-1.2L10 21v-3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    }
+
+    function hideEmptyState() {
+        if (chatEmpty) {
+            chatEmpty.style.display = 'none';
+        }
+    }
+
+    function addMessage(content, isUser) {
+        hideEmptyState();
+        const wrapper = document.createElement('div');
+        wrapper.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        wrapper.innerHTML = `
+            <div class="message-avatar">${iconSvg(isUser ? 'user' : 'bot')}</div>
+            <div class="message-content">
+                <div class="message-role">${isUser ? 'User Input' : 'Spark Response'}</div>
+                <div class="message-text">${formatContent(content)}</div>
+            </div>
+        `;
+        chatMessages.appendChild(wrapper);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return wrapper.querySelector('.message-text');
+    }
+
+    function setTyping(active) {
+        typingIndicator.classList.toggle('active', active);
+        sendBtn.disabled = active;
+    }
+
     async function handleSend() {
         const query = userInput.value.trim();
-        if (!query) return;
-    
+        if (!query || sendBtn.disabled) return;
+
         userInput.value = '';
         addMessage(query, true);
-        typingIndicator.style.display = 'block';
-    
+        setTyping(true);
+
+        let botTarget = null;
+
         try {
             const response = await fetch('/ai-chat/process/', {
                 method: 'POST',
@@ -164,105 +674,64 @@
                 },
                 body: JSON.stringify({ message: query })
             });
-    
+
+            if (!response.ok || !response.body) {
+                throw new Error('请求失败，请稍后重试');
+            }
+
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
-            let lastMessageElem = null;
-    
+            let fullResponse = '';
+
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
-    
+
                 buffer += decoder.decode(value, { stream: true });
                 const chunks = buffer.split('\n\n');
                 buffer = chunks.pop() || '';
-    
+
                 for (const chunk of chunks) {
-                    const match = chunk.match(/data: ({.*})/);
-                    if (match) {
-                        try {
-                            const data = JSON.parse(match[1]);
-                            if (data.error) {
-                                addMessage(`错误：${data.error}`, false);
-                                return;
-                            }
-    
-                            // 创建或更新消息
-                            if (!lastMessageElem) {
-                                lastMessageElem = createNewMessageElement(data.response);
-                            } else {
-                                updateMessageElement(lastMessageElem, data.response);
-                            }
-                        } catch (e) {
-                            console.error('解析错误:', e);
-                        }
+                    const match = chunk.match(/data:\s*(\{.*\})/);
+                    if (!match) continue;
+
+                    const data = JSON.parse(match[1]);
+                    if (data.error) {
+                        throw new Error(data.error);
                     }
+
+                    if (!botTarget) {
+                        botTarget = addMessage('', false);
+                    }
+
+                    fullResponse += data.response || '';
+                    botTarget.innerHTML = formatContent(fullResponse);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
             }
         } catch (error) {
             addMessage(`请求失败：${error.message}`, false);
         } finally {
-            typingIndicator.style.display = 'none';
+            setTyping(false);
+            userInput.focus();
         }
     }
-    
-    // 创建新消息元素
-    function createNewMessageElement(content) {
-        const messageId = 'msg-' + Date.now();
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message bot-message';
-        messageDiv.id = messageId;
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        
-        const pElem = document.createElement('p');
-        pElem.innerHTML = formatContent(content);
-        
-        contentDiv.appendChild(pElem);
-        messageDiv.appendChild(contentDiv);
-        chatMessages.appendChild(messageDiv);
-        
-        // 自动滚动
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        
-        return pElem; // 返回p元素用于后续更新
-    }
-    
-    // 更新已有消息元素
-    function updateMessageElement(targetElem, newContent) {
-        targetElem.innerHTML += formatContent(newContent);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    
-    // 格式化内容（处理加粗等Markdown语法）
-    function formatContent(content) {
-        // 处理加粗语法（**xxx** → <strong>xxx</strong>）
-        content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        // 处理换行（\n → <br>）
-        content = content.replace(/\n/g, '<br>');
-        
-        // 防止XSS攻击（仅允许安全标签）
-        const allowedTags = { 
-            'strong': true, 
-            'br': true, 
-            'em': true, 
-            'p': true 
-        };
-        
-        return content.replace(/</g, '&lt;').replace(/>/g, '&gt;') // 先转义所有标签
-                     .replace(/&lt;(strong|br|em|p)&gt;/g, '<$1>') // 放行允许的标签
-                     .replace(/&lt;\/(strong|br|em|p)&gt;/g, '</$1>');
-    }
 
-    // 事件监听
     sendBtn.addEventListener('click', handleSend);
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleSend();
+
+    userInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            handleSend();
+        }
+    });
+
+    document.querySelectorAll('[data-prompt]').forEach((button) => {
+        button.addEventListener('click', () => {
+            userInput.value = button.dataset.prompt || '';
+            userInput.focus();
+        });
     });
 </script>
-    
 {% endblock %}
-</html>
