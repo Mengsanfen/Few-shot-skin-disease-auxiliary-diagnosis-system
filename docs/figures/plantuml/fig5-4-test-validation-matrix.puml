@@ -1,0 +1,31 @@
+@startuml
+skinparam shadowing false
+skinparam roundcorner 16
+skinparam rectangle {
+  FontName Microsoft YaHei
+}
+rectangle "测试验证矩阵" {
+  rectangle "功能链路
+首页导航 / 问诊 / 图像分类" as t1 #DBEAFE
+  rectangle "算法推理
+Swin特征 / 原型校正 / 置信度" as t2 #FFEDD5
+  rectangle "知识增强
+知识检索 / 文档切片 / 引用回传" as t3 #EDE9FE
+  rectangle "数据沉淀
+会话消息 / 图谱路径 / 统计指标" as t4 #EEF2FF
+  rectangle "异常兜底
+无API / 无模型 / 空输入" as t5 #FEF3C7
+  rectangle "部署迁移
+运行设备 / 环境配置 / 模型路径" as t6 #DCFCE7
+  rectangle "界面体验
+对比度 / 响应式 / 操作反馈" as t7 #CCFBF1
+  rectangle "安全边界
+风险提示 / 非替代诊断 / 日志追溯" as t8 #FEE2E2
+}
+t1 -[hidden]right- t2
+t2 -[hidden]right- t3
+t3 -[hidden]right- t4
+t4 -[hidden]right- t5
+t6 -[hidden]right- t7
+t7 -[hidden]right- t8
+@enduml

@@ -68,6 +68,7 @@ def chat_message(request):
         content=rag_result["answer"],
         references=rag_result.get("references", []),
         graph_paths=rag_result.get("graph_paths", []),
+        graph_payload=rag_result.get("graph_payload", {}),
         model_used=rag_result.get("model_used", ""),
     )
 
@@ -79,7 +80,7 @@ def chat_message(request):
             "conversation": _conversation_payload(conversation),
             "user_message": _message_payload(user_message),
             "assistant_message": _message_payload(assistant_message),
-            "graph": _graph_payload(rag_result.get("graph_paths", [])),
+            "graph": rag_result.get("graph_payload") or _graph_payload(rag_result.get("graph_paths", [])),
             "references": rag_result.get("references", []),
         }
     )
@@ -135,6 +136,7 @@ def chat_message_stream(request):
                     content=assistant_text,
                     references=item.get("references", []),
                     graph_paths=item.get("graph_paths", []),
+                    graph_payload=item.get("graph_payload", {}),
                     model_used=item.get("model_used", ""),
                 )
                 _refresh_conversation(conversation, message, item)
@@ -143,7 +145,7 @@ def chat_message_stream(request):
                         "type": "done",
                         "conversation": _conversation_payload(conversation),
                         "assistant_message": _message_payload(assistant_message),
-                        "graph": _graph_payload(item.get("graph_paths", [])),
+                        "graph": item.get("graph_payload") or _graph_payload(item.get("graph_paths", [])),
                         "references": item.get("references", []),
                     }
                 )
@@ -162,6 +164,7 @@ def chat_message_stream(request):
                 content=fallback["answer"],
                 references=[],
                 graph_paths=[],
+                graph_payload={},
                 model_used=fallback["model_used"],
             )
             _refresh_conversation(conversation, message, fallback)
@@ -233,7 +236,7 @@ def graph_query(request):
         return JsonResponse({"status": False, "message": "请输入疾病、症状或检查关键词"}, status=400)
 
     retrieved = medical_rag_engine.retrieve(query)
-    graph = medical_rag_engine.build_graph(retrieved)
+    graph = medical_rag_engine.build_graph(retrieved, query)
     references = [
         {
             "source": item.source,
@@ -241,13 +244,15 @@ def graph_query(request):
             "symptoms": item.symptoms,
             "check_items": item.check_items,
             "advice": item.advice,
+            "retrieval_mode": item.retrieval_mode,
+            "source_type": item.source_type,
         }
         for item in retrieved
     ]
     return JsonResponse(
         {
             "status": True,
-            "graph": _graph_payload([edge.as_path() for edge in graph[:16]]),
+            "graph": graph.to_payload(),
             "references": references,
         }
     )
@@ -322,6 +327,7 @@ def _message_payload(message):
         "content": message.content,
         "references": message.references,
         "graph_paths": message.graph_paths,
+        "graph_payload": message.graph_payload,
         "model_used": message.model_used,
         "created_at": message.created_at.strftime("%H:%M"),
     }

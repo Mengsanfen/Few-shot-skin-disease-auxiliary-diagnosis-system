@@ -48,6 +48,52 @@
         border-left: 4px solid var(--diag-green);
         padding: 1.2rem;
         border-radius: 8px;
+        color: #1f3146;
+    }
+    .dataset-metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+    .dataset-metric {
+        padding: 0.9rem;
+        border-radius: 18px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        background: rgba(255, 255, 255, 0.86);
+    }
+    .dataset-metric span {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .dataset-metric strong {
+        display: block;
+        margin-top: 0.2rem;
+        color: #0f1f35;
+        font-size: 28px;
+        line-height: 1.1;
+    }
+    .class-chip-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-top: 1rem;
+    }
+    .class-chip {
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        padding: 0.5rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid rgba(19, 138, 115, 0.14);
+        background: rgba(255, 255, 255, 0.9);
+        color: #20324a;
+        font-size: 12px;
+        font-weight: 700;
+        word-break: break-word;
     }
     .gradient-btn {
         background: linear-gradient(135deg, var(--diag-green), #1b7e92);
@@ -213,6 +259,9 @@
         .diag-points {
             grid-template-columns: 1fr;
         }
+        .dataset-metrics {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
@@ -287,8 +336,8 @@
                     <small class="text-muted">
                         <i class="bi bi-info-circle me-1"></i>
                         本系统基于 <strong>SFEPT</strong> (Semantic Feature Enhanced Prototypical Transformer) 算法，
-                        结合 Swin Transformer 特征提取、Bias Diminishing 原型修正和 BERT 语义增强技术，
-                        实现小样本皮肤病图像的精准分类。
+                        结合 Swin Transformer 特征提取、支持集原型计算和 Bias Diminishing 原型修正，
+                        实现少样本皮肤病图像分类推理。
                     </small>
                 </div>
             </div>
@@ -353,73 +402,35 @@
                     <div id="predictionsList" class="list-group list-group-flush"></div>
                 </div>
 
-                <!-- 皮肤病分类说明 -->
+                <!-- 数据集与支持集说明 -->
                 <div class="instruction-box mt-4">
                     <h6 class="text-primary mb-3">
                         <i class="bi bi-diagram-3 me-2"></i>
-                        支持诊断的皮肤病类型
+                        模型数据范围与当前支持集
                     </h6>
-                    <div class="row row-cols-1 row-cols-md-2 g-3">
-                        <div class="col">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-info me-2">常见</span>
-                                    <div class="d-flex flex-column">
-                                        <span>湿疹 Eczema</span>
-                                    </div>
-                                </li>
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-warning me-2">常见</span>
-                                    <div class="d-flex flex-column">
-                                        <span>银屑病 Psoriasis</span>
-                                    </div>
-                                </li>
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-danger me-2">常见</span>
-                                    <div class="d-flex flex-column">
-                                        <span>痤疮 Acne</span>
-                                    </div>
-                                </li>
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-purple me-2">色素</span>
-                                    <div class="d-flex flex-column">
-                                        <span>白癜风 Vitiligo</span>
-                                    </div>
-                                </li>
-                            </ul>
+                    <div class="dataset-metrics">
+                        <div class="dataset-metric">
+                            <span>{{ skin_dataset_name|default:"SD-198" }} 原始类别</span>
+                            <strong>{{ skin_dataset_class_count|default:"198" }}</strong>
                         </div>
-                        <div class="col">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-success me-2">过敏</span>
-                                    <div class="d-flex flex-column">
-                                        <span>荨麻疹 Urticaria</span>
-                                    </div>
-                                </li>
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-secondary me-2">炎症</span>
-                                    <div class="d-flex flex-column">
-                                        <span>皮炎 Dermatitis</span>
-                                    </div>
-                                </li>
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-pink me-2">警惕</span>
-                                    <div class="d-flex flex-column">
-                                        <span>黑色素瘤 Melanoma</span>
-                                    </div>
-                                </li>
-                                <li class="mb-2 d-flex align-items-center">
-                                    <span class="badge bg-orange me-2">正常</span>
-                                    <div class="d-flex flex-column">
-                                        <span>健康皮肤 Normal</span>
-                                    </div>
-                                </li>
-                            </ul>
+                        <div class="dataset-metric">
+                            <span>当前推理支持集</span>
+                            <strong>{{ skin_support_class_count|default:"60" }}</strong>
                         </div>
                     </div>
-                    <p class="text-muted small mt-3 mb-0">
+                    <div class="class-chip-cloud" aria-label="当前支持集代表类别">
+                        {% for class_name in skin_class_preview %}
+                            <span class="class-chip">{{ class_name }}</span>
+                        {% empty %}
+                            <span class="class-chip">等待读取模型类别配置</span>
+                        {% endfor %}
+                    </div>
+                    <p class="text-muted small mt-3 mb-1">
+                        数据源：{{ skin_dataset_path|default:"D:/AI/FSL_skin/data/CUB/sd-198/images" }}
+                    </p>
+                    <p class="text-muted small mb-0">
                         <i class="bi bi-exclamation-triangle me-1"></i>
-                        本系统仅供参考，不能替代专业医生的诊断。如有疑虑请及时就医。
+                        输出为图像分类辅助结果，不能替代专业医生诊断；如出现快速扩大、破溃出血或剧烈疼痛，请及时就医。
                     </p>
                 </div>
             </div>
@@ -429,11 +440,13 @@
 {% endblock %}
 
 {% block js %}
+{{ skin_class_preview|json_script:"skin-class-preview-data" }}
 <script>
 // ============================================================================
 // 全局变量
 // ============================================================================
 let selectedFile = null;  // 当前选择的文件
+const skinClassPreview = JSON.parse(document.getElementById('skin-class-preview-data')?.textContent || '[]');
 
 // ============================================================================
 // 文件预览功能
@@ -695,10 +708,13 @@ function simulateAnalysis() {
         showLoading(false);
 
         // 生成模拟数据
+        const fallbackClasses = ['Acne_Vulgaris', 'Vitiligo', 'Allergic_Contact_Dermatitis', 'Basal_Cell_Carcinoma'];
+        const availableClasses = skinClassPreview.length ? skinClassPreview : fallbackClasses;
+        const randomIndex = Math.floor(Math.random() * availableClasses.length);
         const mockData = {
             status: true,
-            predicted_class: Math.floor(Math.random() * 8),
-            predicted_class_name: ['湿疹', '银屑病', '痤疮', '白癜风', '荨麻疹', '皮炎', '黑色素瘤', '正常皮肤'][Math.floor(Math.random() * 8)],
+            predicted_class: randomIndex,
+            predicted_class_name: availableClasses[randomIndex],
             confidence: Math.random() * 0.4 + 0.6,
             tips: '这是模拟诊断结果，实际使用时请确保后端服务正常运行。'
         };

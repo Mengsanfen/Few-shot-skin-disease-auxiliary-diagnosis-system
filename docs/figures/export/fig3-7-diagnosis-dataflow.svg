@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#334155"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="0" y="0" width="1600" height="18" fill="#2563EB"/>
+<rect x="0" y="18" width="1600" height="6" fill="#0F766E"/>
+<text x="64" y="78" font-family="Microsoft YaHei, Arial" font-size="38" font-weight="700" fill="#0F172A">DermoAI 辅助诊断闭环数据流图</text>
+<line x1="330" y1="465" x2="470" y2="465" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="760" y1="465" x2="900" y2="250" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="615" y1="550" x2="1055" y2="610" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1055" y1="330" x2="1442" y2="380" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1210" y1="690" x2="1325" y2="465" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1442" y1="550" x2="802" y2="790" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="615" y1="550" x2="802" y2="790" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="80" y="390" width="250" height="150" rx="24" fill="#DBEAFE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="205" y="450" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="205" dy="0">用户输入</tspan><tspan x="205" dy="30">症状文本 / 皮肤图像</tspan></text>
+<rect x="470" y="380" width="290" height="170" rx="24" fill="#CCFBF1" stroke="#CBD5E1" stroke-width="2"/>
+<text x="615" y="450" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="615" dy="0">应用业务编排</tspan><tspan x="615" dy="30">会话管理与文件接收</tspan></text>
+<rect x="900" y="170" width="310" height="160" rx="24" fill="#EDE9FE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1055" y="235" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1055" dy="0">RAG证据增强</tspan><tspan x="1055" dy="30">结构化知识 + 文档切片</tspan></text>
+<rect x="900" y="610" width="310" height="160" rx="24" fill="#FFEDD5" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1055" y="675" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1055" dy="0">图像智能识别</tspan><tspan x="1055" dy="30">类别、置信度与候选结果</tspan></text>
+<rect x="1325" y="380" width="235" height="170" rx="24" fill="#DCFCE7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1442" y="450" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1442" dy="0">辅助报告生成</tspan><tspan x="1442" dy="30">解释 / 建议 / 风险提示</tspan></text>
+<rect x="655" y="790" width="295" height="110" rx="24" fill="#EEF2FF" stroke="#CBD5E1" stroke-width="2"/>
+<text x="802" y="830" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="802" dy="0">结果沉淀</tspan><tspan x="802" dy="30">消息 / 引用 / 统计</tspan></text>
+</svg>

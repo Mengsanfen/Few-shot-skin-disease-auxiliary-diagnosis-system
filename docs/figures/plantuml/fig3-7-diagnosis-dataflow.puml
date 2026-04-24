@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam roundcorner 18
+skinparam rectangle {
+  FontName Microsoft YaHei
+}
+rectangle "用户输入
+症状文本 / 皮肤图像" as input #DBEAFE
+rectangle "应用业务编排
+会话管理与文件接收" as django #CCFBF1
+rectangle "RAGGraph证据增强
+结构化知识 + 文档切片" as rag #EDE9FE
+rectangle "图像智能识别
+类别、置信度与候选结果" as sfept #FFEDD5
+rectangle "辅助报告生成
+解释 / 建议 / 风险提示" as report #DCFCE7
+database "结果沉淀
+消息 / 引用 / 图谱 / 统计" as store #EEF2FF
+input --> django
+django --> rag
+django --> sfept
+rag --> report
+sfept --> report
+report --> store
+django --> store
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 14
+title 图2-3 RAG 智能问诊时序图
+
+actor "用户" as user
+boundary "问诊页面" as page
+control "问诊业务服务" as service
+control "证据增强引擎" as rag
+database "结构化医学知识" as mk
+database "医学文档片段" as kc
+control "大模型生成服务" as llm
+database "会话与消息记录" as conv
+
+user -> page : 输入症状描述
+page -> service : 发送问诊请求
+service -> conv : 保存用户消息
+service -> rag : 组织问题与历史上下文
+rag -> mk : 检索结构化医学知识
+rag -> kc : 检索文档切片
+rag -> rag : 构建证据图谱与生成上下文
+rag -> llm : 调用大模型生成回复
+llm --> rag : 分段返回文本
+rag --> service : 返回流式回答
+service -> conv : 保存回答、引用依据和图谱路径
+service --> page : 流式响应与证据数据
+page --> user : 展示建议、依据和图谱
+@enduml

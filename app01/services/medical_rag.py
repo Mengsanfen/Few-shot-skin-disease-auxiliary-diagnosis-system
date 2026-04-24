@@ -10,7 +10,8 @@ from typing import Iterable, Iterator, List, Sequence
 from django.conf import settings
 from django.db.models import Q
 
-from app01.models import KnowledgeChunk, MedicalKnowledge
+from app01.models import KnowledgeChunk, KnowledgeEntity, KnowledgeRelation, MedicalKnowledge
+from app01.services.rag_graph import RAGGraphResult, medical_rag_graph_engine
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ class RetrievedKnowledge:
     score: float
     source_type: str = "structured"
     page_label: str = ""
+    retrieval_mode: str = "local"
 
 
 @dataclass(frozen=True)
@@ -109,7 +111,7 @@ class MedicalRAGEngine:
     def answer(self, user_input: str, history: Sequence[dict] | None = None) -> dict:
         prepared = self.prepare_answer(user_input, history)
         retrieved = prepared["retrieved"]
-        graph = prepared["graph"]
+        graph: RAGGraphResult = prepared["graph"]
 
         if not self._llm_ready():
             return self._fallback_answer(user_input, retrieved, graph, "未配置大模型 API，已返回知识库增强建议")
@@ -132,7 +134,8 @@ class MedicalRAGEngine:
             return {
                 "answer": answer,
                 "references": self._references(retrieved),
-                "graph_paths": [edge.as_path() for edge in graph[:8]],
+                "graph_paths": graph.paths[:8],
+                "graph_payload": graph.to_payload(),
                 "model_used": settings.MEDICAL_LLM_MODEL,
                 "fallback": False,
             }
@@ -143,10 +146,11 @@ class MedicalRAGEngine:
     def stream_answer(self, user_input: str, history: Sequence[dict] | None = None) -> Iterator[dict]:
         prepared = self.prepare_answer(user_input, history)
         retrieved = prepared["retrieved"]
-        graph = prepared["graph"]
+        graph: RAGGraphResult = prepared["graph"]
         metadata = {
             "references": self._references(retrieved),
-            "graph_paths": [edge.as_path() for edge in graph[:8]],
+            "graph_paths": graph.paths[:8],
+            "graph_payload": graph.to_payload(),
             "model_used": settings.MEDICAL_LLM_MODEL if self._llm_ready() else "RAG fallback",
         }
 
@@ -184,12 +188,13 @@ class MedicalRAGEngine:
 
             yield {
                 "type": "done",
-                "answer": full_text,
-                "references": metadata["references"],
-                "graph_paths": metadata["graph_paths"],
-                "model_used": metadata["model_used"],
-                "fallback": False,
-            }
+                        "answer": full_text,
+                        "references": metadata["references"],
+                        "graph_paths": metadata["graph_paths"],
+                        "graph_payload": metadata["graph_payload"],
+                        "model_used": metadata["model_used"],
+                        "fallback": False,
+                    }
         except ModuleNotFoundError as exc:
             fallback = self._fallback_answer(user_input, retrieved, graph, f"LangChain 依赖未安装：{exc}")
             for chunk in self._chunk_text(fallback["answer"]):
@@ -205,7 +210,7 @@ class MedicalRAGEngine:
     def prepare_answer(self, user_input: str, history: Sequence[dict] | None = None) -> dict:
         history = history or []
         retrieved = self.retrieve(user_input)
-        graph = self.build_graph(retrieved)
+        graph = self.build_graph(retrieved, user_input)
         return {
             "question": user_input,
             "retrieved": retrieved,
@@ -217,29 +222,33 @@ class MedicalRAGEngine:
 
     def retrieve(self, query: str, limit: int = 5) -> List[RetrievedKnowledge]:
         documents = self._load_documents(query)
+        graph_documents = self._load_graph_documents(query)
+        documents.extend(graph_documents)
         if not documents:
             documents = self._builtin_documents()
 
-        scored = []
+        scored: dict[tuple[str, str, str], RetrievedKnowledge] = {}
         for doc in documents:
             score = self._score(query, doc)
             if score > 0:
                 metadata = doc.metadata
-                scored.append(
-                    RetrievedKnowledge(
-                        source=metadata.get("source", "knowledge"),
-                        disease=metadata.get("disease", "未知"),
-                        symptoms=metadata.get("symptoms", ""),
-                        check_items=metadata.get("check_items", ""),
-                        advice=metadata.get("advice", ""),
-                        score=score,
-                        source_type=metadata.get("source_type", "structured"),
-                        page_label=metadata.get("page_label", ""),
-                    )
+                item = RetrievedKnowledge(
+                    source=metadata.get("source", "knowledge"),
+                    disease=metadata.get("disease", "未知"),
+                    symptoms=metadata.get("symptoms", ""),
+                    check_items=metadata.get("check_items", ""),
+                    advice=metadata.get("advice", ""),
+                    score=score,
+                    source_type=metadata.get("source_type", "structured"),
+                    page_label=metadata.get("page_label", ""),
+                    retrieval_mode=metadata.get("retrieval_mode", "local"),
                 )
+                key = (item.source_type, item.disease, item.symptoms[:80])
+                if key not in scored or item.score > scored[key].score:
+                    scored[key] = item
 
         if not scored:
-            scored = [
+            fallback = [
                 RetrievedKnowledge(
                     source=doc.metadata.get("source", "builtin"),
                     disease=doc.metadata.get("disease", "通用分诊"),
@@ -249,22 +258,16 @@ class MedicalRAGEngine:
                     score=0.1,
                     source_type=doc.metadata.get("source_type", "structured"),
                     page_label=doc.metadata.get("page_label", ""),
+                    retrieval_mode=doc.metadata.get("retrieval_mode", "fallback"),
                 )
                 for doc in self._builtin_documents()[:3]
             ]
+            return fallback
 
-        return sorted(scored, key=lambda item: item.score, reverse=True)[:limit]
+        return sorted(scored.values(), key=lambda item: item.score, reverse=True)[:limit]
 
-    def build_graph(self, retrieved: Sequence[RetrievedKnowledge]) -> List[GraphTriple]:
-        triples: List[GraphTriple] = []
-        for item in retrieved:
-            symptoms = self._split_medical_terms(item.symptoms)[:5]
-            checks = self._split_medical_terms(item.check_items)[:3]
-            advices = self._split_medical_terms(item.advice)[:3]
-            triples.extend(GraphTriple(item.disease, "典型症状", symptom) for symptom in symptoms)
-            triples.extend(GraphTriple(item.disease, "建议检查", check) for check in checks)
-            triples.extend(GraphTriple(item.disease, "处理建议", advice) for advice in advices)
-        return triples
+    def build_graph(self, retrieved: Sequence[RetrievedKnowledge], query: str = "") -> RAGGraphResult:
+        return medical_rag_graph_engine.build(query, retrieved)
 
     def _build_llm(self) -> ChatOpenAI:
         from langchain_openai import ChatOpenAI
@@ -323,10 +326,60 @@ class MedicalRAGEngine:
             chunks = KnowledgeChunk.objects.select_related("document").filter(chunk_condition).order_by("document_id", "chunk_index")[:40] if chunk_condition else []
             documents = [self._record_to_document(record, "database") for record in records]
             documents.extend(self._chunk_to_document(chunk, "document_chunk") for chunk in chunks)
-            return documents or self._builtin_documents()
+            return documents
         except Exception as exc:
-            logger.warning("[MedicalRAGEngine] DB retrieval failed, using builtins: %s", exc)
-            return self._builtin_documents()
+            logger.warning("[MedicalRAGEngine] DB retrieval failed: %s", exc)
+            return []
+
+    def _load_graph_documents(self, query: str) -> List[Document]:
+        """LightRAG-inspired graph expansion: entities and relations join retrieval."""
+        try:
+            keywords = self._keywords(query)
+            if not keywords:
+                return []
+            entity_condition = Q()
+            for keyword in keywords:
+                entity_condition |= Q(name__icontains=keyword) | Q(description__icontains=keyword)
+            entities = list(KnowledgeEntity.objects.filter(entity_condition).order_by("-confidence")[:16])
+            if not entities:
+                return []
+            relations = (
+                KnowledgeRelation.objects.select_related("subject", "object")
+                .filter(Q(subject__in=entities) | Q(object__in=entities))
+                .order_by("-weight", "-created_at")[:48]
+            )
+            documents: list[Document] = []
+            for relation in relations:
+                subject = relation.subject
+                obj = relation.object
+                disease_entity = subject if subject.entity_type == "disease" else obj if obj.entity_type == "disease" else subject
+                relation_label = relation.get_relation_type_display()
+                evidence = relation.evidence_text or f"{subject.name} 与 {obj.name} 存在「{relation_label}」关系。"
+                check_items = obj.name if obj.entity_type == "check" else relation_label
+                advice = obj.name if obj.entity_type == "care" else "该关系来自知识图谱扩展召回，请结合结构化条目和原文证据综合判断。"
+                documents.append(
+                    Document(
+                        page_content=(
+                            f"图谱主题：{disease_entity.name}\n"
+                            f"关系路径：{subject.name} -> {relation_label} -> {obj.name}\n"
+                            f"证据摘要：{evidence}"
+                        ),
+                        metadata={
+                            "source": "knowledge_graph",
+                            "source_type": "graph_relation",
+                            "retrieval_mode": "global_graph",
+                            "disease": disease_entity.name,
+                            "symptoms": evidence,
+                            "check_items": check_items,
+                            "advice": advice,
+                            "page_label": relation.page_label,
+                        },
+                    )
+                )
+            return documents
+        except Exception as exc:
+            logger.warning("[MedicalRAGEngine] graph retrieval failed: %s", exc)
+            return []
 
     def _record_to_document(self, record: MedicalKnowledge, source: str) -> Document:
         return Document(
@@ -339,6 +392,7 @@ class MedicalRAGEngine:
             metadata={
                 "source": source,
                 "source_type": "structured",
+                "retrieval_mode": "local_structured",
                 "disease": record.disease,
                 "symptoms": record.symptoms,
                 "check_items": record.check_items,
@@ -355,7 +409,7 @@ class MedicalRAGEngine:
                     f"建议检查：{item['check_items']}\n"
                     f"处理建议：{item['advice']}"
                 ),
-                metadata={"source": "builtin", "source_type": "structured", **item},
+                metadata={"source": "builtin", "source_type": "structured", "retrieval_mode": "fallback_builtin", **item},
             )
             for item in BUILTIN_KNOWLEDGE
         ]
@@ -368,6 +422,7 @@ class MedicalRAGEngine:
             metadata={
                 "source": source,
                 "source_type": "document_chunk",
+                "retrieval_mode": "local_chunk",
                 "disease": title,
                 "symptoms": chunk.content,
                 "check_items": chunk.page_label or "源文档切片",
@@ -382,6 +437,10 @@ class MedicalRAGEngine:
         score = 0.0
         if metadata.get("disease") and metadata["disease"] in query:
             score += 5
+        if metadata.get("source_type") == "graph_relation":
+            score += 1.4
+        if metadata.get("retrieval_mode") == "global_graph":
+            score += 0.8
         for keyword in self._keywords(query):
             if keyword in text:
                 score += 1 + min(len(keyword), 4) * 0.2
@@ -436,8 +495,18 @@ class MedicalRAGEngine:
             )
         return "\n\n".join(lines) if lines else "无相关证据"
 
-    def _format_graph(self, graph: Sequence[GraphTriple]) -> str:
-        return "\n".join(edge.as_path() for edge in graph[:12]) if graph else "无图谱路径"
+    def _format_graph(self, graph: RAGGraphResult) -> str:
+        if not graph or not graph.routes:
+            return "无图谱路径"
+        route_lines = [
+            f"{route.path}；匹配实体：{'、'.join(route.matched_entities) or '无'}；证据摘要：{route.evidence}"
+            for route in graph.routes[:6]
+        ]
+        edge_lines = [
+            f"{edge.source.split(':', 1)[-1]} -> {edge.relation_label} -> {edge.target.split(':', 1)[-1]}（{edge.score:.2f}）"
+            for edge in graph.edges[:8]
+        ]
+        return "\n".join(route_lines + edge_lines)
 
     def _references(self, retrieved: Sequence[RetrievedKnowledge]) -> List[dict]:
         return [
@@ -449,6 +518,7 @@ class MedicalRAGEngine:
                 "advice": item.advice,
                 "source_type": item.source_type,
                 "page_label": item.page_label,
+                "retrieval_mode": item.retrieval_mode,
             }
             for item in retrieved
         ]
@@ -457,7 +527,7 @@ class MedicalRAGEngine:
         self,
         question: str,
         retrieved: Sequence[RetrievedKnowledge],
-        graph: Sequence[GraphTriple],
+        graph: RAGGraphResult,
         reason: str,
     ) -> dict:
         top = retrieved[0] if retrieved else None
@@ -479,7 +549,8 @@ class MedicalRAGEngine:
         return {
             "answer": answer,
             "references": self._references(retrieved),
-            "graph_paths": [edge.as_path() for edge in graph[:8]],
+            "graph_paths": graph.paths[:8],
+            "graph_payload": graph.to_payload(),
             "model_used": "RAG fallback",
             "fallback": True,
         }

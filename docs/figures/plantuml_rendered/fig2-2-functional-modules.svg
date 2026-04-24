@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#334155"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="0" y="0" width="1600" height="18" fill="#2563EB"/>
+<rect x="0" y="18" width="1600" height="6" fill="#0F766E"/>
+<text x="64" y="78" font-family="Microsoft YaHei, Arial" font-size="38" font-weight="700" fill="#0F172A">DermoAI 核心功能模块图</text>
+<line x1="590" y1="470" x2="340" y2="265" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="590" y1="470" x2="720" y2="215" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1010" y1="470" x2="880" y2="215" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1010" y1="470" x2="1260" y2="270" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="800" y1="550" x2="615" y2="700" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="800" y1="550" x2="1015" y2="700" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="590" y="390" width="420" height="160" rx="24" fill="#DBEAFE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="800" y="455" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="800" dy="0">DermoAI</tspan><tspan x="800" dy="30">皮肤医学智能辅助诊断平台</tspan></text>
+<rect x="80" y="200" width="260" height="130" rx="24" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="2"/>
+<text x="210" y="250" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="210" dy="0">平台总览</tspan><tspan x="210" dy="30">能力导航</tspan></text>
+<rect x="460" y="150" width="260" height="130" rx="24" fill="#F0FDFA" stroke="#CBD5E1" stroke-width="2"/>
+<text x="590" y="200" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="590" dy="0">智能问诊</tspan><tspan x="590" dy="30">证据增强回答</tspan></text>
+<rect x="880" y="150" width="280" height="130" rx="24" fill="#FFF7ED" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1020" y="200" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1020" dy="0">皮肤图像分类</tspan><tspan x="1020" dy="30">少样本智能识别</tspan></text>
+<rect x="1260" y="200" width="270" height="140" rx="24" fill="#F5F3FF" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1395" y="255" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1395" dy="0">医学知识中枢</tspan><tspan x="1395" dy="30">知识维护 / 文档切片</tspan></text>
+<rect x="480" y="700" width="270" height="140" rx="24" fill="#ECFDF5" stroke="#CBD5E1" stroke-width="2"/>
+<text x="615" y="755" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="615" dy="0">数据大屏</tspan><tspan x="615" dy="30">趋势 / 分布 / 风险</tspan></text>
+<rect x="870" y="700" width="290" height="140" rx="24" fill="#FEF3C7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1015" y="755" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1015" dy="0">辅助报告</tspan><tspan x="1015" dy="30">解释 / 建议 / 风险提示</tspan></text>
+</svg>

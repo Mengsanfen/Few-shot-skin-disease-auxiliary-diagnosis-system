@@ -62,11 +62,53 @@
 .graph-search{padding:16px;border-bottom:1px solid var(--line)} .graph-search label{display:block;margin-bottom:8px;color:var(--muted);font-size:13px}
 .graph-search input{width:100%;min-height:46px;border:1px solid rgba(18,125,114,.14);border-radius:18px;padding:0 14px;background:rgba(255,255,255,.88)}
 .graph-actions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
-.graph-view{padding:16px;overflow-y:auto;display:grid;gap:14px}
-.graph-canvas{min-height:280px;border-radius:24px;border:1px solid var(--line);background:radial-gradient(circle at top,rgba(18,125,114,.08),transparent 28%),linear-gradient(180deg,rgba(255,255,255,.9),rgba(244,239,232,.9));position:relative;overflow:hidden}
-.graph-node{position:absolute;max-width:140px;padding:10px 12px;border-radius:18px;border:1px solid rgba(18,125,114,.16);background:rgba(255,255,255,.95);box-shadow:0 14px 28px rgba(20,39,36,.08);color:var(--ink);font-size:12px;line-height:1.45;text-align:center}
-.graph-node.disease{background:linear-gradient(135deg,var(--teal),#15968a);color:#fffdf8;border-color:transparent}
-.graph-line{position:absolute;height:2px;background:rgba(18,125,114,.28);transform-origin:left center}
+.graph-view{padding:16px;overflow-y:auto;display:grid;gap:12px}
+.graph-canvas{min-height:332px;border-radius:28px;border:1px solid rgba(17,24,39,.08);background:
+radial-gradient(circle at 20% 18%,rgba(40,211,181,.18),transparent 28%),
+radial-gradient(circle at 82% 82%,rgba(67,97,238,.16),transparent 26%),
+linear-gradient(180deg,#0f172a 0%,#111827 54%,#0b1220 100%);
+position:relative;overflow:hidden;padding:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 22px 52px rgba(15,23,42,.16)}
+.graph-canvas::before{content:"";position:absolute;inset:0;background:
+linear-gradient(rgba(148,163,184,.08) 1px,transparent 1px),
+linear-gradient(90deg,rgba(148,163,184,.08) 1px,transparent 1px);
+background-size:30px 30px;mask-image:linear-gradient(180deg,rgba(255,255,255,.56),transparent 88%);pointer-events:none}
+.graph-canvas::after{content:"Neo4j-Style Knowledge Graph";position:absolute;left:16px;bottom:12px;color:rgba(203,213,225,.42);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;pointer-events:none}
+.graph-stage{position:absolute;inset:0}
+.graph-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.graph-toolbar{position:absolute;left:14px;top:14px;display:flex;align-items:center;gap:8px;z-index:4}
+.graph-chip{padding:7px 10px;border-radius:999px;background:rgba(15,23,42,.58);border:1px solid rgba(148,163,184,.2);backdrop-filter:blur(10px);color:#cbd5e1;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.graph-chip.live{color:#8bffe7;border-color:rgba(40,211,181,.24)}
+.graph-chip.mode{color:#93c5fd}
+.graph-chip.muted{text-transform:none;letter-spacing:.02em;color:#94a3b8;font-weight:700}
+.graph-node{position:absolute;z-index:3;transform:translate(-50%,-50%);display:grid;place-items:center;border:none;background:transparent;color:#e5eefb;text-align:center;cursor:pointer;transition:transform .22s ease,filter .22s ease}
+.graph-node:hover,.graph-node.active{transform:translate(-50%,-50%) scale(1.05);filter:brightness(1.08)}
+.graph-node-ring{position:absolute;inset:0;border-radius:999px;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 1px rgba(255,255,255,.04) inset}
+.graph-node-core{position:absolute;inset:10px;border-radius:999px;background:var(--node-fill,rgba(59,130,246,.72));box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 0 26px var(--node-glow,rgba(59,130,246,.36))}
+.graph-node.featured .graph-node-core{inset:8px}
+.graph-node-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:calc(100% - 18px);display:grid;gap:3px}
+.graph-node-name{display:block;font-size:12px;line-height:1.25;font-weight:800;color:#f8fafc;word-break:break-word}
+.graph-node-type{display:block;font-size:10px;line-height:1.1;color:rgba(226,232,240,.75)}
+.graph-link{stroke:rgba(148,163,184,.36);stroke-width:1.6;fill:none}
+.graph-link.primary{stroke:rgba(99,102,241,.48)}
+.graph-link.secondary{stroke:rgba(34,211,238,.28)}
+.graph-link.glow{stroke:rgba(110,231,255,.14);stroke-width:7}
+.graph-link-label{fill:#cbd5e1;font-size:10px;font-weight:700}
+.graph-link-pill{fill:rgba(15,23,42,.78);stroke:rgba(148,163,184,.22);stroke-width:1}
+.graph-inspector{position:absolute;right:14px;bottom:14px;z-index:4;width:min(184px,calc(100% - 28px));padding:12px 13px;border-radius:20px;background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.16);backdrop-filter:blur(14px);box-shadow:0 20px 34px rgba(2,6,23,.28)}
+.graph-inspector-kicker{display:block;color:#8bffe7;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.graph-inspector strong{display:block;margin-top:6px;color:#f8fafc;font-size:16px;line-height:1.22}
+.graph-inspector p{margin:6px 0 0;color:#cbd5e1;font-size:12px;line-height:1.55}
+.graph-inspector-meta{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.graph-inspector-meta span{padding:5px 8px;border-radius:999px;background:rgba(30,41,59,.82);color:#cbd5e1;font-size:10px;font-weight:700}
+.graph-empty{position:absolute;inset:22px;display:grid;place-items:center;padding:24px;border-radius:24px;background:rgba(15,23,42,.46);border:1px dashed rgba(148,163,184,.22);color:#cbd5e1;line-height:1.8;text-align:center}
+.graph-empty strong{display:block;color:#f8fafc;font-size:18px;margin-bottom:8px}
+.graph-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.graph-stat,.entity-chip{border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.82)}
+.graph-stat{padding:10px}.graph-stat span{display:block;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.graph-stat strong{display:block;margin-top:5px;color:var(--ink)}
+.entity-row{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:8px}.entity-chip{padding:8px 10px;color:var(--teal-deep);font-size:12px;font-weight:800}
+.route-list{display:grid;gap:10px}
+.route-card{padding:13px;border-radius:20px;border:1px solid rgba(18,125,114,.12);background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(240,253,250,.72))}
+.route-card strong{display:block;color:var(--ink);font-size:14px}.route-card p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.65}.score-track{height:7px;margin-top:10px;border-radius:999px;background:rgba(18,125,114,.1);overflow:hidden}.score-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--teal),var(--copper))}
 .reference-list{display:grid;gap:10px}.reference-item{padding:14px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.88)}.reference-caption{display:block;color:var(--teal-deep);font-size:11px;margin-bottom:8px}.reference-item strong{display:block;color:var(--ink);margin-bottom:6px}.reference-item p{margin:0;color:var(--muted);line-height:1.75;font-size:13px}
 @keyframes pulse{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
@@ -173,6 +215,8 @@
             </div>
             <div class="graph-view">
                 <div class="graph-canvas" id="graphCanvas" aria-label="疾病知识图谱可视化"></div>
+                <div class="graph-meta" id="graphMeta"></div>
+                <div class="route-list" id="routeList"></div>
                 <div class="reference-list" id="referenceList"></div>
             </div>
         </aside>
@@ -198,6 +242,8 @@ const sendBtn = document.getElementById('sendBtn');
 const activeTitle = document.getElementById('activeTitle');
 const conversationList = document.getElementById('conversationList');
 const graphCanvas = document.getElementById('graphCanvas');
+const graphMeta = document.getElementById('graphMeta');
+const routeList = document.getElementById('routeList');
 const referenceList = document.getElementById('referenceList');
 
 if (prefillPrompt) {
@@ -321,7 +367,10 @@ function finalizeStreamingAssistant(row, message) {
 
 function renderEvidence(message) {
     const refs = (message.references || []).slice(0, 4).map(ref => `<li>${escapeHTML(ref.disease)}：${escapeHTML(ref.symptoms || '').slice(0, 86)}</li>`).join('');
-    const paths = (message.graph_paths || []).slice(0, 6).map(path => `<li>${escapeHTML(path)}</li>`).join('');
+    const routes = message.graph_payload && message.graph_payload.routes ? message.graph_payload.routes : [];
+    const paths = routes.length
+        ? routes.slice(0, 6).map(route => `<li>${escapeHTML(route.path)} · ${Math.round((route.score || 0) * 100)}%</li>`).join('')
+        : (message.graph_paths || []).slice(0, 6).map(path => `<li>${escapeHTML(path)}</li>`).join('');
     return `
         <details class="evidence-box">
             <summary>查看 RAG 证据与图谱路径</summary>
@@ -467,7 +516,9 @@ conversationList.addEventListener('click', async event => {
         renderMessages(data.messages);
         const lastAssistant = [...data.messages].reverse().find(message => message.role === 'assistant');
         if (lastAssistant) {
-            lastGraph = pathsToGraph(lastAssistant.graph_paths || []);
+            lastGraph = lastAssistant.graph_payload && lastAssistant.graph_payload.nodes
+                ? lastAssistant.graph_payload
+                : pathsToGraph(lastAssistant.graph_paths || []);
             lastReferences = lastAssistant.references || [];
             renderGraph(lastGraph);
             renderReferences(lastReferences);
@@ -528,8 +579,12 @@ document.getElementById('useLastGraphBtn').addEventListener('click', () => {
     renderReferences(lastReferences);
 });
 
-async function queryGraph() {
-    const query = document.getElementById('graphInput').value.trim();
+async function queryGraph(prefillQuery = '') {
+    const input = document.getElementById('graphInput');
+    if (prefillQuery && !input.value.trim()) {
+        input.value = prefillQuery;
+    }
+    const query = input.value.trim();
     if (!query) {
         renderReferences([{ disease: '请输入关键词', symptoms: '例如：湿疹、红斑、瘙痒、皮肤镜检查。' }]);
         return;
@@ -554,17 +609,19 @@ function pathsToGraph(paths) {
         const [source, relation, target] = parts;
         nodes[source] = nodes[source] || { id: source, label: source, type: 'disease' };
         nodes[target] = nodes[target] || { id: target, label: target, type: relation };
-        edges.push({ source, target, relation });
+        edges.push({ source, target, relation, relation_label: relation, score: .62 });
     });
-    return { nodes: Object.values(nodes), edges, paths };
+    return { nodes: Object.values(nodes), edges, paths, routes: [], query_entities: [], metrics: { node_count: Object.keys(nodes).length, edge_count: edges.length, route_count: 0, avg_score: 0 } };
 }
 
 function renderGraph(graph) {
     const nodes = graph && graph.nodes ? graph.nodes : [];
     const edges = graph && graph.edges ? graph.edges : [];
     graphCanvas.innerHTML = '';
+    renderGraphMeta(graph || {});
+    renderRoutes((graph && graph.routes) || []);
     if (!nodes.length) {
-        graphCanvas.innerHTML = '<div class="empty-state" style="margin:30px 16px;"><h2>等待图谱查询</h2><p>在右侧输入疾病或症状后，这里会展示疾病、症状、检查和建议之间的结构关系。</p></div>';
+        graphCanvas.innerHTML = '<div class="graph-empty"><strong>等待图谱查询</strong>输入疾病、症状或检查项后，这里会展示实体识别、候选疾病路径、证据关系和评分结果。</div>';
         return;
     }
 
@@ -572,18 +629,19 @@ function renderGraph(graph) {
     const width = Math.max(rect.width || 320, 320);
     const height = Math.max(rect.height || 280, 280);
     const centerX = width / 2;
-    const centerY = height / 2;
+    const centerY = height / 2 + 4;
     const disease = nodes.find(node => node.type === 'disease') || nodes[0];
     const positions = {};
-    positions[disease.id] = { x: centerX - 60, y: centerY - 26 };
+    positions[disease.id] = { x: centerX - 70, y: centerY - 28 };
     const others = nodes.filter(node => node.id !== disease.id);
     others.forEach((node, index) => {
-        const angle = (Math.PI * 2 * index) / Math.max(others.length, 1) - Math.PI / 2;
-        const radiusX = Math.min(width * 0.34, 150);
-        const radiusY = Math.min(height * 0.32, 102);
+        const typeOffset = { morphology: -.25, symptom: -.05, body_part: .15, check: .35, care: .55, risk: .75, evidence: .95 }[node.type] || 0;
+        const angle = (Math.PI * 2 * (index + typeOffset)) / Math.max(others.length, 1) - Math.PI / 2;
+        const radiusX = Math.min(width * 0.38, 178);
+        const radiusY = Math.min(height * 0.35, 128);
         positions[node.id] = {
-            x: centerX + Math.cos(angle) * radiusX - 60,
-            y: centerY + Math.sin(angle) * radiusY - 24,
+            x: centerX + Math.cos(angle) * radiusX - 70,
+            y: centerY + Math.sin(angle) * radiusY - 26,
         };
     });
 
@@ -591,29 +649,285 @@ function renderGraph(graph) {
         const from = positions[edge.source];
         const to = positions[edge.target];
         if (!from || !to) return;
-        const x1 = from.x + 64;
-        const y1 = from.y + 24;
-        const x2 = to.x + 64;
-        const y2 = to.y + 24;
+        const x1 = from.x + 72;
+        const y1 = from.y + 26;
+        const x2 = to.x + 72;
+        const y2 = to.y + 26;
         const length = Math.hypot(x2 - x1, y2 - y1);
         const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
         const line = document.createElement('div');
         line.className = 'graph-line';
+        line.style.opacity = String(Math.max(.28, Math.min(edge.score || .55, .92)));
         line.style.width = `${length}px`;
         line.style.left = `${x1}px`;
         line.style.top = `${y1}px`;
         line.style.transform = `rotate(${angle}deg)`;
         graphCanvas.appendChild(line);
+
+        const label = document.createElement('div');
+        label.className = 'graph-edge-label';
+        label.textContent = edge.relation_label || edge.relation || '关联';
+        label.style.left = `${Math.max(8, Math.min(width - 96, (x1 + x2) / 2 - 36))}px`;
+        label.style.top = `${Math.max(8, Math.min(height - 26, (y1 + y2) / 2 - 12))}px`;
+        graphCanvas.appendChild(label);
     });
 
     nodes.forEach(node => {
         const div = document.createElement('div');
         div.className = `graph-node ${node.type}`;
-        div.textContent = node.label;
-        div.style.left = `${Math.max(8, Math.min(width - 148, positions[node.id].x))}px`;
-        div.style.top = `${Math.max(8, Math.min(height - 62, positions[node.id].y))}px`;
+        div.innerHTML = `${escapeHTML(node.label)}${node.score ? `<br><small>${Math.round(node.score * 100)}%</small>` : ''}`;
+        div.title = node.description || node.label || '';
+        div.style.left = `${Math.max(8, Math.min(width - 158, positions[node.id].x))}px`;
+        div.style.top = `${Math.max(8, Math.min(height - 72, positions[node.id].y))}px`;
         graphCanvas.appendChild(div);
     });
+}
+
+function graphTypeMeta(type) {
+    return {
+        disease: { label: 'Disease', fill: 'linear-gradient(135deg,#0f766e,#14b8a6)', glow: 'rgba(45,212,191,.42)' },
+        symptom: { label: 'Symptom', fill: 'linear-gradient(135deg,#2563eb,#60a5fa)', glow: 'rgba(96,165,250,.40)' },
+        morphology: { label: 'Morphology', fill: 'linear-gradient(135deg,#d97706,#f59e0b)', glow: 'rgba(245,158,11,.36)' },
+        body_part: { label: 'Body Part', fill: 'linear-gradient(135deg,#475569,#94a3b8)', glow: 'rgba(148,163,184,.32)' },
+        check: { label: 'Check', fill: 'linear-gradient(135deg,#4338ca,#818cf8)', glow: 'rgba(129,140,248,.38)' },
+        care: { label: 'Care', fill: 'linear-gradient(135deg,#047857,#34d399)', glow: 'rgba(52,211,153,.34)' },
+        risk: { label: 'Risk', fill: 'linear-gradient(135deg,#b91c1c,#f87171)', glow: 'rgba(248,113,113,.40)' },
+        evidence: { label: 'Evidence', fill: 'linear-gradient(135deg,#334155,#64748b)', glow: 'rgba(100,116,139,.34)' },
+        trigger: { label: 'Trigger', fill: 'linear-gradient(135deg,#7c2d12,#fb923c)', glow: 'rgba(251,146,60,.34)' },
+    }[type] || { label: 'Entity', fill: 'linear-gradient(135deg,#1f2937,#475569)', glow: 'rgba(148,163,184,.28)' };
+}
+
+function compactGraph(graph) {
+    const nodes = (graph && graph.nodes) ? [...graph.nodes] : [];
+    const edges = (graph && graph.edges) ? [...graph.edges] : [];
+    if (!nodes.length) return { nodes: [], edges: [], primary: null };
+
+    const primary = [...nodes].sort((a, b) => {
+        const ad = a.type === 'disease' ? 1 : 0;
+        const bd = b.type === 'disease' ? 1 : 0;
+        if (bd !== ad) return bd - ad;
+        return (b.score || 0) - (a.score || 0);
+    })[0];
+
+    const linkedIds = new Set([primary.id]);
+    edges
+        .filter(edge => edge.source === primary.id || edge.target === primary.id)
+        .sort((a, b) => (b.score || 0) - (a.score || 0))
+        .forEach(edge => {
+            linkedIds.add(edge.source);
+            linkedIds.add(edge.target);
+        });
+
+    const rankWeight = { risk: 9, symptom: 8, morphology: 7, check: 6, care: 5, body_part: 4, trigger: 3, evidence: 2, disease: 1 };
+    const visibleNodes = nodes
+        .sort((a, b) => {
+            const aRank = (linkedIds.has(a.id) ? 10 : 0) + (rankWeight[a.type] || 0) + (a.score || 0);
+            const bRank = (linkedIds.has(b.id) ? 10 : 0) + (rankWeight[b.type] || 0) + (b.score || 0);
+            return bRank - aRank;
+        })
+        .slice(0, 9);
+
+    const visibleIds = new Set(visibleNodes.map(node => node.id));
+    const visibleEdges = edges
+        .filter(edge => visibleIds.has(edge.source) && visibleIds.has(edge.target))
+        .sort((a, b) => (b.score || 0) - (a.score || 0))
+        .slice(0, 12);
+
+    return {
+        nodes: visibleNodes,
+        edges: visibleEdges,
+        primary: visibleNodes.find(node => node.id === primary.id) || visibleNodes[0],
+    };
+}
+
+function layoutGraphNodes(nodes, width, height, primaryId) {
+    const positions = {};
+    const centerX = width * 0.48;
+    const centerY = height * 0.52;
+    positions[primaryId] = { x: centerX, y: centerY };
+
+    const others = nodes.filter(node => node.id !== primaryId);
+    const inner = others.slice(0, Math.min(4, others.length));
+    const outer = others.slice(inner.length);
+    const placeRing = (ringNodes, radiusX, radiusY, offset = -Math.PI / 2) => {
+        ringNodes.forEach((node, index) => {
+            const angle = offset + (Math.PI * 2 * index) / Math.max(ringNodes.length, 1);
+            positions[node.id] = {
+                x: centerX + Math.cos(angle) * radiusX,
+                y: centerY + Math.sin(angle) * radiusY,
+            };
+        });
+    };
+    placeRing(inner, Math.min(width * 0.23, 84), Math.min(height * 0.2, 64), -Math.PI / 2);
+    placeRing(outer, Math.min(width * 0.34, 126), Math.min(height * 0.3, 98), -Math.PI / 2 - 0.35);
+    return positions;
+}
+
+function createGraphInspector(node, graph) {
+    const meta = graphTypeMeta(node.type);
+    const neighbors = (graph.edges || []).filter(edge => edge.source === node.id || edge.target === node.id).length;
+    return `
+        <div class="graph-inspector">
+            <span class="graph-inspector-kicker">${escapeHTML(meta.label)}</span>
+            <strong>${escapeHTML(node.label || 'Knowledge Node')}</strong>
+            <p>${escapeHTML(node.description || '围绕当前问诊命中的症状、检查与证据关系生成的知识图谱节点。')}</p>
+            <div class="graph-inspector-meta">
+                <span>Score ${Math.round((node.score || 0) * 100)}%</span>
+                <span>Links ${neighbors}</span>
+                <span>${escapeHTML((graph.metrics && graph.metrics.query_mode) || 'Hybrid')}</span>
+            </div>
+        </div>
+    `;
+}
+
+renderGraph = function(graph) {
+    const compact = compactGraph(graph || {});
+    const nodes = compact.nodes;
+    const edges = compact.edges;
+    graphCanvas.innerHTML = '';
+    renderGraphMeta(graph || {});
+    renderRoutes((graph && graph.routes) || []);
+    if (!nodes.length) {
+        graphCanvas.innerHTML = '<div class="graph-empty"><strong>等待图谱查询</strong>输入疾病、症状或检查项后，这里会展示实体识别、候选疾病路径、证据关系和评分结果。</div>';
+        return;
+    }
+
+    const rect = graphCanvas.getBoundingClientRect();
+    const width = Math.max(rect.width || 320, 320);
+    const height = Math.max(rect.height || 332, 332);
+    const primary = compact.primary || nodes[0];
+    const positions = layoutGraphNodes(nodes, width, height, primary.id);
+    const topEdgeLabels = new Set(edges.slice(0, 4).map(edge => edge.id));
+
+    const stage = document.createElement('div');
+    stage.className = 'graph-stage';
+    stage.innerHTML = `
+        <div class="graph-toolbar">
+            <span class="graph-chip live">live query</span>
+            <span class="graph-chip mode">${escapeHTML((graph.metrics && graph.metrics.query_mode) || 'Hybrid')}</span>
+            <span class="graph-chip muted">${nodes.length} visible / ${(graph.nodes || []).length} total</span>
+        </div>
+        <svg class="graph-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none"></svg>
+        ${createGraphInspector(primary, graph || {})}
+    `;
+    graphCanvas.appendChild(stage);
+
+    const svg = stage.querySelector('.graph-svg');
+    edges.forEach(edge => {
+        const from = positions[edge.source];
+        const to = positions[edge.target];
+        if (!from || !to) return;
+
+        const glow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        glow.setAttribute('x1', from.x);
+        glow.setAttribute('y1', from.y);
+        glow.setAttribute('x2', to.x);
+        glow.setAttribute('y2', to.y);
+        glow.setAttribute('class', 'graph-link glow');
+        svg.appendChild(glow);
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', from.x);
+        line.setAttribute('y1', from.y);
+        line.setAttribute('x2', to.x);
+        line.setAttribute('y2', to.y);
+        line.setAttribute('class', `graph-link ${edge.source === primary.id || edge.target === primary.id ? 'primary' : 'secondary'}`);
+        line.style.opacity = String(Math.max(.45, Math.min(edge.score || .55, .88)));
+        svg.appendChild(line);
+
+        if (topEdgeLabels.has(edge.id)) {
+            const mx = (from.x + to.x) / 2;
+            const my = (from.y + to.y) / 2;
+            const pill = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            pill.setAttribute('x', String(mx - 28));
+            pill.setAttribute('y', String(my - 10));
+            pill.setAttribute('rx', '10');
+            pill.setAttribute('ry', '10');
+            pill.setAttribute('width', '56');
+            pill.setAttribute('height', '18');
+            pill.setAttribute('class', 'graph-link-pill');
+            svg.appendChild(pill);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', String(mx));
+            text.setAttribute('y', String(my + 3));
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('class', 'graph-link-label');
+            text.textContent = (edge.relation_label || edge.relation || '关联').slice(0, 6);
+            svg.appendChild(text);
+        }
+    });
+
+    nodes.forEach(node => {
+        const meta = graphTypeMeta(node.type);
+        const size = node.id === primary.id ? 92 : Math.max(58, Math.min(80, 50 + Math.round((node.score || .4) * 28)));
+        const div = document.createElement('button');
+        div.type = 'button';
+        div.className = `graph-node ${node.type}${node.id === primary.id ? ' featured active' : ''}`;
+        div.style.left = `${positions[node.id].x}px`;
+        div.style.top = `${positions[node.id].y}px`;
+        div.style.width = `${size}px`;
+        div.style.height = `${size}px`;
+        div.style.setProperty('--node-fill', meta.fill);
+        div.style.setProperty('--node-glow', meta.glow);
+        div.title = node.description || node.label || '';
+        div.innerHTML = `
+            <span class="graph-node-ring"></span>
+            <span class="graph-node-core"></span>
+            <span class="graph-node-label">
+                <span class="graph-node-name">${escapeHTML((node.label || '').slice(0, node.id === primary.id ? 12 : 8))}</span>
+                <span class="graph-node-type">${escapeHTML(meta.label)}</span>
+            </span>
+        `;
+        const activateNode = () => {
+            stage.querySelectorAll('.graph-node').forEach(item => item.classList.remove('active'));
+            div.classList.add('active');
+            const oldInspector = stage.querySelector('.graph-inspector');
+            if (oldInspector) oldInspector.remove();
+            stage.insertAdjacentHTML('beforeend', createGraphInspector(node, graph || {}));
+        };
+        div.addEventListener('mouseenter', activateNode);
+        div.addEventListener('click', activateNode);
+        stage.appendChild(div);
+    });
+};
+
+function renderGraphMeta(graph) {
+    const metrics = graph.metrics || {};
+    const entities = graph.query_entities || [];
+    const retrievalModes = graph.retrieval_modes || {};
+    const graphEvidence = metrics.graph_evidence_count || retrievalModes.global_graph || 0;
+    const localEvidence = metrics.local_evidence_count || 0;
+    graphMeta.innerHTML = `
+        <div class="graph-stat"><span>Nodes</span><strong>${metrics.node_count || 0}</strong></div>
+        <div class="graph-stat"><span>Edges</span><strong>${metrics.edge_count || 0}</strong></div>
+        <div class="graph-stat"><span>Graph Evidence</span><strong>${graphEvidence}</strong></div>
+        <div class="graph-stat"><span>Local Evidence</span><strong>${localEvidence}</strong></div>
+        <div class="graph-stat"><span>Avg Score</span><strong>${Math.round((metrics.avg_score || 0) * 100)}%</strong></div>
+        <div class="graph-stat"><span>Mode</span><strong>${escapeHTML(metrics.query_mode || 'Hybrid')}</strong></div>
+        <div class="entity-row">
+            ${entities.length ? entities.slice(0, 8).map(item => `<span class="entity-chip">${escapeHTML(item)}</span>`).join('') : '<span class="entity-chip">等待实体识别</span>'}
+        </div>
+    `;
+}
+
+function renderRoutes(routes) {
+    if (!routes || !routes.length) {
+        routeList.innerHTML = '';
+        return;
+    }
+    routeList.innerHTML = routes.slice(0, 4).map(route => {
+        const percent = Math.round((route.score || 0) * 100);
+        const matched = Array.isArray(route.matched_entities) ? route.matched_entities.join('、') : '';
+        return `
+            <div class="route-card">
+                <strong>${escapeHTML(route.disease || '候选路径')} · ${percent}%</strong>
+                <p>${escapeHTML(route.path || '')}</p>
+                ${matched ? `<p>命中实体：${escapeHTML(matched)}</p>` : ''}
+                <div class="score-track"><div class="score-fill" style="width:${Math.max(4, Math.min(percent, 100))}%"></div></div>
+            </div>
+        `;
+    }).join('');
 }
 
 function renderReferences(references) {
@@ -623,7 +937,7 @@ function renderReferences(references) {
     }
     referenceList.innerHTML = references.slice(0, 5).map(ref => `
         <div class="reference-item">
-            <span class="reference-caption">Retrieved Knowledge</span>
+            <span class="reference-caption">${escapeHTML(ref.retrieval_mode === 'global_graph' ? 'Graph Evidence' : 'Retrieved Knowledge')}</span>
             <strong>${escapeHTML(ref.disease || '参考知识')}</strong>
             <p>${escapeHTML(ref.symptoms || '')}</p>
             ${ref.check_items ? `<p>建议检查：${escapeHTML(ref.check_items)}</p>` : ''}
@@ -635,10 +949,15 @@ function renderReferences(references) {
 renderMessages(currentMessages);
 const lastAssistant = [...currentMessages].reverse().find(message => message.role === 'assistant');
 if (lastAssistant) {
-    lastGraph = pathsToGraph(lastAssistant.graph_paths || []);
+    lastGraph = lastAssistant.graph_payload && lastAssistant.graph_payload.nodes
+        ? lastAssistant.graph_payload
+        : pathsToGraph(lastAssistant.graph_paths || []);
     lastReferences = lastAssistant.references || [];
 }
 renderGraph(lastGraph);
 renderReferences(lastReferences);
+if ((!lastGraph || !(lastGraph.nodes || []).length) && !currentMessages.length) {
+    queryGraph('湿疹 红斑 瘙痒 手背 脱屑');
+}
 </script>
 {% endblock %}

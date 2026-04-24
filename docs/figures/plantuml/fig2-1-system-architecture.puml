@@ -1,0 +1,60 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 14
+skinparam ArrowColor #334155
+skinparam RectangleBorderColor #334155
+skinparam RectangleBackgroundColor #F8FAFC
+skinparam DatabaseBorderColor #334155
+skinparam DatabaseBackgroundColor #EFF6FF
+title 图2-1 DermoAI 系统总体架构图
+
+actor "普通用户" as user
+actor "医生/健康管理人员" as doctor
+actor "平台管理员" as admin
+
+rectangle "浏览器交互层\n页面展示与操作反馈" as frontend
+
+rectangle "Django 应用服务层" as backend {
+  rectangle "首页与平台总览" as portal
+  rectangle "智能问诊服务" as agent
+  rectangle "皮肤图像诊断服务" as skin
+  rectangle "知识中枢服务" as knowledge
+  rectangle "数据大屏服务" as dashboard
+}
+
+rectangle "智能能力层" as ai {
+  rectangle "证据增强问诊" as rag
+  rectangle "大语言模型接口" as llm
+  rectangle "图像智能识别" as sfept
+  rectangle "影像辅助报告生成" as report
+}
+
+database "业务数据库\nSQLite / MySQL" as db
+database "医学知识资产\n结构化知识 / 文档切片" as kdb
+folder "模型权重与支持集\n皮肤病少样本原型资源" as model
+
+cloud "外部服务\nDeepSeek/OpenAI兼容接口" as cloud
+
+user --> frontend
+doctor --> frontend
+admin --> frontend
+frontend --> backend
+
+portal --> db
+agent --> rag
+agent --> llm
+agent --> db
+skin --> sfept
+skin --> report
+knowledge --> kdb
+dashboard --> db
+dashboard --> kdb
+
+rag --> kdb
+llm --> cloud
+report --> cloud
+sfept --> model
+db --> kdb
+@enduml

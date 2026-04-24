@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from app01.models import KnowledgeDocument, MedicalKnowledge
+from app01.models import KnowledgeDocument, KnowledgeEntity, KnowledgeRelation, MedicalKnowledge
 from app01.services.knowledge_ingest import ingest_uploaded_document, safe_document_title
 from app01.services.medical_rag import BUILTIN_KNOWLEDGE, medical_rag_engine
 
@@ -122,8 +122,8 @@ def health(request):
 
 def medical(request):
     query = (request.GET.get("q") or "").strip()
-    entries = _knowledge_queryset(query)[:10]
-    documents = KnowledgeDocument.objects.prefetch_related("chunks").all()[:8]
+    entries = _knowledge_queryset(query)[:12 if query else 8]
+    documents = KnowledgeDocument.objects.prefetch_related("chunks").all()[:10]
     stats = _knowledge_stats()
 
     return render(
@@ -159,7 +159,7 @@ def get_medical(request):
 @csrf_exempt
 def knowledge_list(request):
     query = (request.GET.get("q") or "").strip()
-    entries = _knowledge_queryset(query)[:50]
+    entries = _knowledge_queryset(query)[:50 if query else 12]
     return JsonResponse(
         {
             "status": True,
@@ -264,7 +264,7 @@ def knowledge_retrieve(request):
         return JsonResponse({"status": False, "message": "请输入检索问题或症状描述"}, status=400)
 
     retrieved = medical_rag_engine.retrieve(query)
-    graph = medical_rag_engine.build_graph(retrieved)
+    graph = medical_rag_engine.build_graph(retrieved, query)
     return JsonResponse(
         {
             "status": True,
@@ -279,10 +279,12 @@ def knowledge_retrieve(request):
                     "score": round(item.score, 2),
                     "source_type": item.source_type,
                     "page_label": item.page_label,
+                    "retrieval_mode": item.retrieval_mode,
                 }
                 for item in retrieved
             ],
-            "graph_paths": [edge.as_path() for edge in graph[:12]],
+            "graph": graph.to_payload(),
+            "graph_paths": graph.paths[:12],
         }
     )
 
@@ -413,6 +415,8 @@ def _knowledge_stats():
     builtin = len(BUILTIN_KNOWLEDGE)
     documents = KnowledgeDocument.objects.count()
     chunks = sum(item.total_chunks for item in KnowledgeDocument.objects.only("total_chunks"))
+    entities = KnowledgeEntity.objects.count()
+    relations = KnowledgeRelation.objects.count()
     return {
         "total_entries": total,
         "distinct_diseases": diseases,
@@ -420,6 +424,8 @@ def _knowledge_stats():
         "builtin_templates": builtin,
         "document_total": documents,
         "chunk_total": chunks,
+        "entity_total": entities,
+        "relation_total": relations,
     }
 
 
@@ -427,14 +433,18 @@ def _knowledge_payload(entry, full=False):
     payload = {
         "id": entry.id,
         "disease": entry.disease,
-        "symptoms": entry.symptoms,
-        "check_items": entry.check_items,
-        "advice": entry.advice,
         "symptoms_preview": _preview(entry.symptoms),
         "check_preview": _preview(entry.check_items),
         "advice_preview": _preview(entry.advice),
     }
     if full:
+        payload.update(
+            {
+                "symptoms": entry.symptoms,
+                "check_items": entry.check_items,
+                "advice": entry.advice,
+            }
+        )
         return payload
     return payload
 

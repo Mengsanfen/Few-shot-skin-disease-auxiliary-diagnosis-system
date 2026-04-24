@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#334155"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="0" y="0" width="1600" height="18" fill="#2563EB"/>
+<rect x="0" y="18" width="1600" height="6" fill="#0F766E"/>
+<text x="64" y="78" font-family="Microsoft YaHei, Arial" font-size="38" font-weight="700" fill="#0F172A">DermoAI 核心数据库 E-R 图</text>
+<line x1="300" y1="255" x2="450" y2="250" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="760" y1="250" x2="920" y2="250" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="440" y1="700" x2="920" y2="250" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="880" y1="690" x2="1040" y2="700" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1040" y1="700" x2="1270" y2="250" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="70" y="190" width="230" height="130" rx="24" fill="#DBEAFE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="185" y="240" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="185" dy="0">用户信息表</tspan><tspan x="185" dy="30">账号与联系方式</tspan></text>
+<rect x="450" y="170" width="310" height="160" rx="24" fill="#CCFBF1" stroke="#CBD5E1" stroke-width="2"/>
+<text x="605" y="235" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="605" dy="0">问诊会话表</tspan><tspan x="605" dy="30">会话主题与状态</tspan></text>
+<rect x="920" y="160" width="350" height="180" rx="24" fill="#DCFCE7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1095" y="235" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1095" dy="0">问诊消息表</tspan><tspan x="1095" dy="30">回答内容与证据图谱</tspan></text>
+<rect x="100" y="610" width="340" height="180" rx="24" fill="#EDE9FE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="270" y="685" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="270" dy="0">医学知识表</tspan><tspan x="270" dy="30">疾病、症状、检查、建议</tspan></text>
+<rect x="610" y="610" width="270" height="160" rx="24" fill="#FFEDD5" stroke="#CBD5E1" stroke-width="2"/>
+<text x="745" y="675" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="745" dy="0">知识文档表</tspan><tspan x="745" dy="30">资料来源与入库状态</tspan></text>
+<rect x="1040" y="610" width="330" height="180" rx="24" fill="#FEF3C7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1205" y="685" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1205" dy="0">文档切片表</tspan><tspan x="1205" dy="30">片段内容与来源位置</tspan></text>
+</svg>

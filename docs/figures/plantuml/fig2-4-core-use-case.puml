@@ -1,0 +1,19 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+actor "用户 / 医护人员" as User
+rectangle "DermoAI" {
+  usecase "进入平台总览\n查看能力入口" as UC1
+  usecase "智能问诊\n症状输入与证据回答" as UC2
+  usecase "皮肤图像分类\n上传图片并生成报告" as UC3
+  usecase "知识中枢\n维护医学资料" as UC4
+  usecase "数据大屏\n查看运行统计" as UC5
+}
+User --> UC1
+User --> UC2
+User --> UC3
+UC2 ..> UC4 : 检索证据
+UC3 ..> UC5 : 统计沉淀
+UC4 ..> UC5 : 知识指标
+@enduml

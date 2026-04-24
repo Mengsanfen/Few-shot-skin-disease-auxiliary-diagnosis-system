@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#334155"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="0" y="0" width="1600" height="18" fill="#2563EB"/>
+<rect x="0" y="18" width="1600" height="6" fill="#0F766E"/>
+<text x="64" y="78" font-family="Microsoft YaHei, Arial" font-size="38" font-weight="700" fill="#0F172A">基于 SFEPT 思想的皮肤图像分类推理流程图</text>
+<line x1="260" y1="485" x2="340" y2="485" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="590" y1="485" x2="680" y2="485" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="960" y1="485" x2="1030" y2="275" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="960" y1="485" x2="1030" y2="595" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1155" y1="340" x2="1455" y2="360" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1280" y1="595" x2="1345" y2="435" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1455" y1="510" x2="815" y2="735" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="70" y="430" width="190" height="110" rx="24" fill="#DBEAFE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="165" y="485" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="165" dy="0">上传皮肤图像</tspan></text>
+<rect x="340" y="430" width="250" height="110" rx="24" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+<text x="465" y="470" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="465" dy="0">图像预处理</tspan><tspan x="465" dy="30">尺寸统一与标准化</tspan></text>
+<rect x="680" y="410" width="280" height="150" rx="24" fill="#CCFBF1" stroke="#CBD5E1" stroke-width="2"/>
+<text x="820" y="470" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="820" dy="0">Swin 特征提取</tspan><tspan x="820" dy="30">层次视觉表征</tspan></text>
+<rect x="1030" y="210" width="250" height="130" rx="24" fill="#EDE9FE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1155" y="260" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1155" dy="0">支持集原型</tspan><tspan x="1155" dy="30">少样本类别中心</tspan></text>
+<rect x="1030" y="530" width="250" height="130" rx="24" fill="#DCFCE7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1155" y="580" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1155" dy="0">待测图像表达</tspan><tspan x="1155" dy="30">病灶视觉语义</tspan></text>
+<rect x="1345" y="360" width="220" height="150" rx="24" fill="#FFEDD5" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1455" y="420" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1455" dy="0">原型偏移校正</tspan><tspan x="1455" dy="30">分布对齐与增强</tspan></text>
+<rect x="650" y="735" width="330" height="130" rx="24" fill="#FEF3C7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="815" y="785" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="815" dy="0">距离度量分类</tspan><tspan x="815" dy="30">类别与置信度</tspan></text>
+</svg>

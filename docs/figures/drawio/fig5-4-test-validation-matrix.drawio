@@ -1,0 +1,25 @@
+<mxfile host="app.diagrams.net" modified="2026-04-23T00:00:00.000Z" agent="Codex" version="24.0.0"><diagram id="fig5-4-test-validation-matrix" name="DermoAI 测试验证矩阵图"><mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="t0" value="功能链路
+首页导航
+问诊
+图像分类" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="190" width="230" height="145" as="geometry"/></mxCell><mxCell id="t1" value="算法推理
+Swin特征
+原型校正
+置信度输出" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="385" y="190" width="230" height="145" as="geometry"/></mxCell><mxCell id="t2" value="知识增强
+知识检索
+文档切片
+引用回传" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="690" y="190" width="230" height="145" as="geometry"/></mxCell><mxCell id="t3" value="数据沉淀
+会话消息
+图谱路径
+统计指标" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="995" y="190" width="230" height="145" as="geometry"/></mxCell><mxCell id="t4" value="异常兜底
+无API
+无模型
+空输入" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1300" y="190" width="230" height="145" as="geometry"/></mxCell><mxCell id="t5" value="部署迁移
+CPU/CUDA
+环境变量
+模型路径" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="385" width="230" height="145" as="geometry"/></mxCell><mxCell id="t6" value="界面体验
+对比度
+响应式
+操作反馈" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CCFBF1;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="385" y="385" width="230" height="145" as="geometry"/></mxCell><mxCell id="t7" value="安全边界
+风险提示
+非替代诊断
+日志可追溯" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#CBD5E1;fontColor=#0F172A;fontFamily=Microsoft YaHei;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="690" y="385" width="230" height="145" as="geometry"/></mxCell></root></mxGraphModel></diagram></mxfile>

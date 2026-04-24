@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#334155"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="0" y="0" width="1600" height="18" fill="#2563EB"/>
+<rect x="0" y="18" width="1600" height="6" fill="#0F766E"/>
+<text x="64" y="78" font-family="Microsoft YaHei, Arial" font-size="38" font-weight="700" fill="#0F172A">DermoAI 测试验证矩阵图</text>
+<rect x="80" y="190" width="230" height="145" rx="24" fill="#DBEAFE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="195" y="216" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="195" dy="0">功能链路</tspan><tspan x="195" dy="30">首页导航</tspan><tspan x="195" dy="30">问诊</tspan><tspan x="195" dy="30">图像分类</tspan></text>
+<rect x="385" y="190" width="230" height="145" rx="24" fill="#FFEDD5" stroke="#CBD5E1" stroke-width="2"/>
+<text x="500" y="216" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="500" dy="0">算法推理</tspan><tspan x="500" dy="30">Swin特征</tspan><tspan x="500" dy="30">原型校正</tspan><tspan x="500" dy="30">置信度输出</tspan></text>
+<rect x="690" y="190" width="230" height="145" rx="24" fill="#EDE9FE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="805" y="216" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="805" dy="0">知识增强</tspan><tspan x="805" dy="30">知识检索</tspan><tspan x="805" dy="30">文档切片</tspan><tspan x="805" dy="30">引用回传</tspan></text>
+<rect x="995" y="190" width="230" height="145" rx="24" fill="#EEF2FF" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1110" y="216" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1110" dy="0">数据沉淀</tspan><tspan x="1110" dy="30">会话消息</tspan><tspan x="1110" dy="30">图谱路径</tspan><tspan x="1110" dy="30">统计指标</tspan></text>
+<rect x="1300" y="190" width="230" height="145" rx="24" fill="#FEF3C7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1415" y="216" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1415" dy="0">异常兜底</tspan><tspan x="1415" dy="30">无API</tspan><tspan x="1415" dy="30">无模型</tspan><tspan x="1415" dy="30">空输入</tspan></text>
+<rect x="80" y="385" width="230" height="145" rx="24" fill="#DCFCE7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="195" y="411" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="195" dy="0">部署迁移</tspan><tspan x="195" dy="30">CPU/CUDA</tspan><tspan x="195" dy="30">环境变量</tspan><tspan x="195" dy="30">模型路径</tspan></text>
+<rect x="385" y="385" width="230" height="145" rx="24" fill="#CCFBF1" stroke="#CBD5E1" stroke-width="2"/>
+<text x="500" y="411" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="500" dy="0">界面体验</tspan><tspan x="500" dy="30">对比度</tspan><tspan x="500" dy="30">响应式</tspan><tspan x="500" dy="30">操作反馈</tspan></text>
+<rect x="690" y="385" width="230" height="145" rx="24" fill="#FEE2E2" stroke="#CBD5E1" stroke-width="2"/>
+<text x="805" y="411" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="805" dy="0">安全边界</tspan><tspan x="805" dy="30">风险提示</tspan><tspan x="805" dy="30">非替代诊断</tspan><tspan x="805" dy="30">日志可追溯</tspan></text>
+</svg>

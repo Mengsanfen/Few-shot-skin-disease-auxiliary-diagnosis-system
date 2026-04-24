@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 14
+left to right direction
+title 图2-2 DermoAI 核心功能模块图
+
+actor "用户" as user
+actor "管理员" as admin
+
+rectangle "DermoAI 平台" {
+  usecase "平台总览" as UC1
+  usecase "智能问诊" as UC2
+  usecase "RAG 证据检索" as UC3
+  usecase "知识图谱路径" as UC4
+  usecase "皮肤图像分类" as UC5
+  usecase "影像辅助报告" as UC6
+  usecase "医学知识维护" as UC7
+  usecase "文档上传切片" as UC8
+  usecase "数据大屏监测" as UC9
+}
+
+user --> UC1
+user --> UC2
+user --> UC5
+user --> UC6
+user --> UC9
+
+admin --> UC7
+admin --> UC8
+admin --> UC9
+
+UC2 ..> UC3 : include
+UC2 ..> UC4 : include
+UC5 ..> UC6 : extend
+UC7 ..> UC3 : support
+UC8 ..> UC3 : support
+@enduml

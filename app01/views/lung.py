@@ -8,8 +8,10 @@
 
 import base64
 import io
+import json
 import logging
 import random
+from pathlib import Path
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
@@ -27,6 +29,57 @@ logger = logging.getLogger(__name__)
 # 全局预测器实例（单例模式）
 # ============================================================================
 _predictor = None
+
+
+def _load_skin_dataset_summary() -> dict:
+    """Read lightweight class metadata without booting the inference model."""
+    inference_config = getattr(settings, "AI_INFERENCE", {})
+    fsl_root = Path(inference_config.get("FSL_SKIN_PATH") or "D:/AI/FSL_skin")
+    cub_root = fsl_root / "data" / "CUB"
+    sd198_images_dir = cub_root / "sd-198" / "images"
+    test_config_path = cub_root / "test.json"
+
+    dataset_classes = []
+    if sd198_images_dir.exists():
+        dataset_classes = sorted(
+            item.name for item in sd198_images_dir.iterdir() if item.is_dir()
+        )
+
+    support_classes = []
+    if test_config_path.exists():
+        try:
+            with test_config_path.open("r", encoding="utf-8") as f:
+                support_classes = json.load(f).get("class_names", [])
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.warning("[Views] 读取皮肤病支持集配置失败: %s", exc)
+
+    # Prefer clinically recognizable labels that are actually present in the current support set.
+    priority = [
+        "Acne_Vulgaris",
+        "Vitiligo",
+        "Allergic_Contact_Dermatitis",
+        "Basal_Cell_Carcinoma",
+        "Drug_Eruption",
+        "Keloid",
+        "Impetigo",
+        "Cellulitis",
+        "Benign_Keratosis",
+        "Verruca_Vulgaris",
+        "Cutaneous_T-Cell_Lymphoma",
+        "Erythema_Ab_Igne",
+    ]
+    preview_pool = support_classes or dataset_classes
+    preview = [name for name in priority if name in preview_pool]
+    preview.extend(name for name in preview_pool if name not in preview)
+
+    return {
+        "skin_dataset_name": "SD-198",
+        "skin_dataset_path": str(sd198_images_dir),
+        "skin_dataset_class_count": len(dataset_classes),
+        "skin_support_config_path": str(test_config_path),
+        "skin_support_class_count": len(support_classes),
+        "skin_class_preview": preview[:12],
+    }
 
 def get_predictor():
     """
@@ -62,7 +115,7 @@ def lungkonw(request):
 
 def skin_disease_index(request):
     """皮肤病图像分类系统首页"""
-    return render(request, 'lung_index.html')
+    return render(request, 'lung_index.html', _load_skin_dataset_summary())
 
 
 # 保留旧路由兼容性
@@ -87,7 +140,7 @@ def skin_disease_upload(request):
         JsonResponse: {'status': True/False, 'message': '...'}
     """
     if request.method == 'GET':
-        return render(request, "lung_index.html")
+        return render(request, "lung_index.html", _load_skin_dataset_summary())
 
     try:
         file_object = request.FILES.get('uploadImage')

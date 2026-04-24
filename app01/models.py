@@ -74,6 +74,95 @@ class KnowledgeChunk(models.Model):
         return f"{self.document.title}#{self.chunk_index}"
 
 
+class KnowledgeEntity(models.Model):
+    """医学知识图谱实体。"""
+
+    ENTITY_TYPES = (
+        ("disease", "疾病/主题"),
+        ("symptom", "症状"),
+        ("body_part", "部位"),
+        ("morphology", "皮损形态"),
+        ("trigger", "诱因"),
+        ("check", "检查"),
+        ("risk", "风险信号"),
+        ("care", "护理建议"),
+        ("evidence", "证据来源"),
+    )
+
+    name = models.CharField("实体名称", max_length=120)
+    normalized_name = models.CharField("标准化名称", max_length=140, db_index=True)
+    entity_type = models.CharField("实体类型", max_length=30, choices=ENTITY_TYPES, db_index=True)
+    description = models.TextField("实体描述", blank=True, default="")
+    source = models.CharField("来源", max_length=80, blank=True, default="rag_graph")
+    confidence = models.FloatField("实体置信度", default=0.8)
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        ordering = ["entity_type", "name"]
+        verbose_name = "医学图谱实体"
+        verbose_name_plural = "医学图谱实体"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["normalized_name", "entity_type"],
+                name="unique_knowledge_entity_type_name",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.get_entity_type_display()}：{self.name}"
+
+
+class KnowledgeRelation(models.Model):
+    """医学知识图谱关系，保留证据来源与关系权重。"""
+
+    RELATION_TYPES = (
+        ("HAS_SYMPTOM", "具有症状"),
+        ("LOCATED_AT", "发生部位"),
+        ("HAS_MORPHOLOGY", "皮损形态"),
+        ("TRIGGERED_BY", "相关诱因"),
+        ("NEEDS_CHECK", "建议检查"),
+        ("RISK_SIGNAL", "风险信号"),
+        ("SUGGESTS_CARE", "护理建议"),
+        ("EVIDENCED_BY", "证据来源"),
+        ("DIFFERENTIAL_WITH", "鉴别诊断"),
+    )
+
+    subject = models.ForeignKey(
+        KnowledgeEntity,
+        verbose_name="主体实体",
+        on_delete=models.CASCADE,
+        related_name="outgoing_relations",
+    )
+    relation_type = models.CharField("关系类型", max_length=40, choices=RELATION_TYPES, db_index=True)
+    object = models.ForeignKey(
+        KnowledgeEntity,
+        verbose_name="客体实体",
+        on_delete=models.CASCADE,
+        related_name="incoming_relations",
+    )
+    weight = models.FloatField("关系权重", default=1.0)
+    evidence_text = models.TextField("证据文本", blank=True, default="")
+    evidence_source = models.CharField("证据来源", max_length=160, blank=True, default="")
+    source_type = models.CharField("来源类型", max_length=40, blank=True, default="structured")
+    page_label = models.CharField("页码标签", max_length=40, blank=True, default="")
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+
+    class Meta:
+        ordering = ["-weight", "relation_type"]
+        verbose_name = "医学图谱关系"
+        verbose_name_plural = "医学图谱关系"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["subject", "relation_type", "object", "evidence_source"],
+                name="unique_knowledge_relation_evidence",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.subject.name} -{self.get_relation_type_display()}-> {self.object.name}"
+
+
 class DiagnosisConversation(models.Model):
     """皮肤病智能问诊会话。"""
 
@@ -118,6 +207,7 @@ class DiagnosisMessage(models.Model):
     content = models.TextField("消息内容")
     references = models.JSONField("RAG参考", default=list, blank=True)
     graph_paths = models.JSONField("知识图谱路径", default=list, blank=True)
+    graph_payload = models.JSONField("RAGGraph结构化结果", default=dict, blank=True)
     model_used = models.CharField("使用模型", max_length=80, blank=True, default="")
     created_at = models.DateTimeField("发送时间", auto_now_add=True)
 

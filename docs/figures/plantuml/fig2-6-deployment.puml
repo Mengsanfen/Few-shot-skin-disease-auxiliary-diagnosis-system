@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 14
+title 图2-6 DermoAI 部署结构图
+
+node "客户端浏览器" as client {
+  artifact "Web 页面\nHTML/CSS/JS" as web
+}
+
+node "应用服务器" as server {
+  component "应用服务" as django
+  component "证据增强问诊服务" as rag
+  component "图像智能识别服务" as sfept
+  component "数据可视化接口" as echarts
+  artifact "环境配置" as env
+}
+
+database "SQLite / MySQL" as db
+folder "media 上传文件" as media
+folder "皮肤病模型资源目录" as fsl
+cloud "大模型服务\nDeepSeek兼容接口" as llm
+
+client --> django : HTTP
+django --> rag
+django --> sfept
+django --> echarts
+django --> db
+django --> media
+sfept --> fsl : 模型权重与支持样本
+rag --> db : 知识与会话
+rag --> llm : Chat Completion
+env ..> django : 配置数据库与接口
+env ..> sfept : 配置运行设备
+@enduml

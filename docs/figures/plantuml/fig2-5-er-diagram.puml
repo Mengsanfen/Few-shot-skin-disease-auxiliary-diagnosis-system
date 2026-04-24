@@ -1,0 +1,67 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 13
+title 图2-5 DermoAI 核心数据关系图
+
+entity "用户信息" as User {
+  * 用户编号
+  --
+  账号资料
+  头像信息
+  联系方式
+}
+
+entity "问诊会话" as Conversation {
+  * 会话编号
+  --
+  会话主题
+  会话摘要
+  创建时间
+  更新时间
+}
+
+entity "问诊消息" as Message {
+  * 消息编号
+  --
+  消息角色
+  消息内容
+  引用依据
+  图谱路径
+  生成模型
+}
+
+entity "医学知识" as Knowledge {
+  * 知识编号
+  --
+  疾病名称
+  典型症状
+  检查建议
+  护理建议
+}
+
+entity "知识文档" as Document {
+  * 文档编号
+  --
+  文档标题
+  文件类型
+  入库状态
+  切片数量
+}
+
+entity "文档切片" as Chunk {
+  * 切片编号
+  --
+  切片序号
+  来源页码
+  片段内容
+  文本位置
+}
+
+User ||--o{ Conversation : 发起
+Conversation ||--o{ Message : 包含
+Document ||--o{ Chunk : 切分
+Knowledge ||..o{ Message : 支撑回答
+Chunk ||..o{ Message : 提供依据
+@enduml

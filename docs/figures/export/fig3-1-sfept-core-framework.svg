@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#334155"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="0" y="0" width="1600" height="18" fill="#2563EB"/>
+<rect x="0" y="18" width="1600" height="6" fill="#0F766E"/>
+<text x="64" y="78" font-family="Microsoft YaHei, Arial" font-size="38" font-weight="700" fill="#0F172A">SFEPT 模块核心技术框架图</text>
+<line x1="300" y1="490" x2="390" y2="490" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="640" y1="490" x2="730" y2="280" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="515" y1="600" x2="855" y2="620" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="855" y1="350" x2="1200" y2="380" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="980" y1="690" x2="1080" y2="490" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1320" y1="490" x2="1390" y2="280" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1200" y1="600" x2="1475" y2="620" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1475" y1="350" x2="1475" y2="620" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="70" y="420" width="230" height="140" rx="24" fill="#DBEAFE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="185" y="475" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="185" dy="0">皮肤图像输入</tspan><tspan x="185" dy="30">支持样本与待测图像</tspan></text>
+<rect x="390" y="380" width="250" height="220" rx="24" fill="#CCFBF1" stroke="#CBD5E1" stroke-width="2"/>
+<text x="515" y="475" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="515" dy="0">层次视觉编码</tspan><tspan x="515" dy="30">纹理、颜色与边界</tspan></text>
+<rect x="730" y="210" width="250" height="140" rx="24" fill="#EDE9FE" stroke="#CBD5E1" stroke-width="2"/>
+<text x="855" y="265" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="855" dy="0">类别原型构建</tspan><tspan x="855" dy="30">少样本代表中心</tspan></text>
+<rect x="730" y="620" width="250" height="140" rx="24" fill="#DCFCE7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="855" y="675" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="855" dy="0">待测特征表达</tspan><tspan x="855" dy="30">病灶视觉语义</tspan></text>
+<rect x="1080" y="380" width="240" height="220" rx="24" fill="#FFEDD5" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1200" y="475" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1200" dy="0">原型偏移校正</tspan><tspan x="1200" dy="30">分布对齐与伪标注</tspan></text>
+<rect x="1390" y="210" width="170" height="140" rx="24" fill="#EEF2FF" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1475" y="265" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1475" dy="0">语义增强模块</tspan><tspan x="1475" dy="30">潜在医学先验注入</tspan></text>
+<rect x="1390" y="620" width="170" height="140" rx="24" fill="#FEF3C7" stroke="#CBD5E1" stroke-width="2"/>
+<text x="1475" y="675" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="24" font-weight="700" fill="#0F172A"><tspan x="1475" dy="0">距离度量分类</tspan><tspan x="1475" dy="30">类别、置信度与候选结果</tspan></text>
+</svg>

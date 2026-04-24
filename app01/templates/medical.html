@@ -4,220 +4,367 @@
 
 {% block css %}
 <style>
-    .custom-container { width: 100%; display: block; padding: 0; }
-    .knowledge-shell {
-        --panel: rgba(255, 252, 246, 0.92);
-        --line: rgba(21, 38, 34, 0.08);
-        --text: #152622;
-        --muted: #61716d;
-        --accent: #0d8b76;
-        --accent-soft: rgba(13, 139, 118, 0.10);
-        --warm: #d76f4b;
-        --warm-soft: rgba(215, 111, 75, 0.10);
-        --gold: #c69a4d;
-        --shadow: 0 24px 60px rgba(18, 37, 33, 0.08);
-        --radius: 8px;
-        width: min(1360px, calc(100% - 32px));
-        margin: 0 auto 32px;
-        color: var(--text);
+    .kb-shell {
+        --kb-ink: #102033;
+        --kb-muted: #64748b;
+        --kb-line: rgba(15, 32, 51, 0.10);
+        --kb-panel: rgba(255, 255, 255, 0.92);
+        --kb-blue: #1f6fff;
+        --kb-teal: #138a73;
+        --kb-amber: #c47b2d;
+        --kb-bg: #eef4f8;
+        --kb-radius: 24px;
+        width: min(1480px, calc(100% - 32px));
+        margin: 0 auto 36px;
+        color: var(--kb-ink);
     }
-    .knowledge-shell * { box-sizing: border-box; }
-    .hero {
-        display: grid;
-        grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
+    .kb-shell * { box-sizing: border-box; }
+    .kb-command {
+        position: relative;
+        overflow: hidden;
+        padding: 24px;
+        border-radius: 34px;
+        border: 1px solid rgba(15, 32, 51, 0.08);
+        background:
+            radial-gradient(circle at 12% 18%, rgba(31, 111, 255, 0.16), transparent 30%),
+            radial-gradient(circle at 88% 8%, rgba(19, 138, 115, 0.14), transparent 24%),
+            linear-gradient(135deg, rgba(255,255,255,0.96), rgba(239,247,247,0.92));
+        box-shadow: 0 28px 80px rgba(16, 32, 51, 0.10);
+    }
+    .kb-command::after {
+        content: "";
+        position: absolute;
+        inset: auto 28px 0 28px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(31,111,255,.32), transparent);
+    }
+    .kb-topline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         gap: 18px;
-        padding: 26px;
-        background: linear-gradient(120deg, rgba(18, 62, 54, 0.88), rgba(28, 117, 103, 0.62)), url("{% static 'img/250406/ai.png' %}") center/cover no-repeat;
-        border: 1px solid rgba(255, 248, 236, 0.12);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        color: #fff9ef;
+        margin-bottom: 20px;
     }
-    .eyebrow,.source-chip,.doc-meta span,.entry-id,.status-pill,.action-btn,.ghost-btn {
-        display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius);
+    .kb-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 13px;
+        border-radius: 999px;
+        background: rgba(31,111,255,.09);
+        border: 1px solid rgba(31,111,255,.14);
+        color: #1656c8;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .09em;
+        text-transform: uppercase;
     }
-    .eyebrow { padding: 8px 12px; background: rgba(255,249,239,.12); border: 1px solid rgba(255,249,239,.18); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
-    .hero h1 { margin: 18px 0 12px; font-size: clamp(36px, 4vw, 58px); line-height: .98; font-weight: 700; font-family: "Cormorant Garamond","Times New Roman",serif; }
-    .hero p { margin: 0; max-width: 56ch; font-size: 15px; line-height: 1.9; color: rgba(255,249,239,.88); }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-    .action-btn,.ghost-btn,.btn-soft,.btn-strong,.btn-warm { border: 0; padding: 12px 16px; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; }
-    .action-btn,.btn-strong { background: linear-gradient(135deg, #0d8b76, #157f93); color: #fffdf7; }
-    .ghost-btn { background: rgba(255,249,239,.10); color: #fff9ef; border: 1px solid rgba(255,249,239,.16); text-decoration: none; }
-    .hero-side { display: grid; gap: 12px; align-content: start; }
-    .hero-note { padding: 16px; background: rgba(255,249,239,.10); border: 1px solid rgba(255,249,239,.14); border-radius: var(--radius); }
-    .hero-note span { display: block; font-size: 12px; color: rgba(255,249,239,.72); }
-    .hero-note strong { display: block; margin-top: 8px; font-size: 16px; line-height: 1.6; color: #fff9ef; }
-    .stats-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
-    .stat-card,.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 18px 44px rgba(18, 37, 33, 0.06); backdrop-filter: blur(12px); }
-    .stat-card { padding: 18px 16px; }
-    .stat-card span { display: block; color: var(--muted); font-size: 12px; }
-    .stat-card strong { display: block; margin-top: 10px; font-size: clamp(28px, 3vw, 40px); line-height: 1; color: #103a34; font-family: "Cormorant Garamond","Times New Roman",serif; }
-    .stat-card small { display: block; margin-top: 10px; color: #42534f; font-size: 12px; line-height: 1.6; }
-    .workspace { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(360px, .8fr); gap: 18px; margin-top: 18px; }
-    .panel { padding: 20px; }
-    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
-    .panel-head h3 { margin: 0; font-size: 18px; line-height: 1.3; font-weight: 700; }
-    .panel-head p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
-    .toolbar { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 10px; margin-bottom: 16px; }
-    .field,.textarea,.file-input {
-        width: 100%; border: 1px solid rgba(13,139,118,.14); border-radius: var(--radius);
-        background: rgba(255,255,255,.88); color: var(--text); padding: 12px 14px; font-size: 14px; outline: none;
+    .kb-title h1 {
+        margin: 0;
+        max-width: 760px;
+        font-family: "Aptos Display", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        font-size: clamp(32px, 4.4vw, 64px);
+        line-height: 1.02;
+        letter-spacing: -0.045em;
     }
-    .textarea { min-height: 108px; resize: vertical; line-height: 1.8; }
-    .field:focus,.textarea:focus,.file-input:focus { border-color: rgba(13,139,118,.34); box-shadow: 0 0 0 4px rgba(13,139,118,.08); }
-    .btn-soft { background: var(--accent-soft); color: #0f5d50; }
-    .btn-warm { background: var(--warm-soft); color: #8c4d37; }
-    .list,.doc-list,.reference-list,.path-list,.studio-stack,.form-grid { display: grid; gap: 12px; }
-    .status-banner,.helper,.entry-card,.doc-card,.reference-item,.path-item,.empty-state {
-        border-radius: var(--radius);
+    .kb-title p {
+        margin: 14px 0 0;
+        max-width: 760px;
+        color: #526278;
+        line-height: 1.85;
+        font-size: 15px;
     }
-    .status-banner { display: none; margin-bottom: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.7; }
-    .status-banner.success { display: block; background: rgba(13,139,118,.10); color: #0f5d50; }
-    .status-banner.error { display: block; background: rgba(215,111,75,.10); color: #934c35; }
-    .entry-card,.doc-card,.reference-item,.path-item { padding: 16px; border: 1px solid var(--line); background: #fffdf9; }
-    .entry-card.active { border-color: rgba(13,139,118,.3); box-shadow: 0 14px 32px rgba(13,139,118,.10); }
-    .entry-top,.doc-top,.entry-actions,.doc-actions,.form-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
-    .entry-title,.doc-title,.reference-item h4,.path-item h4 { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.4; }
-    .entry-id { padding: 6px 9px; background: rgba(13,139,118,.08); color: #0f5d50; font-size: 11px; font-weight: 700; }
-    .entry-block span,.doc-meta span { color: var(--muted); font-size: 11px; }
-    .entry-block p,.doc-summary,.reference-item p,.path-item p { margin: 6px 0 0; color: #31433f; font-size: 13px; line-height: 1.75; }
-    .entry-actions button,.doc-actions button { border: 0; padding: 9px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 700; cursor: pointer; }
-    .edit { background: rgba(13,139,118,.10); color: #0f5d50; }
-    .delete { background: rgba(215,111,75,.10); color: #934c35; }
-    .helper { padding: 12px 14px; background: rgba(198,154,77,.10); color: #6a5522; font-size: 12px; line-height: 1.8; }
-    .empty-state { padding: 22px 18px; border: 1px dashed rgba(13,139,118,.18); text-align: center; color: var(--muted); font-size: 13px; line-height: 1.8; }
-    .source-chip { padding: 6px 10px; background: rgba(13,139,118,.08); color: #0f5d50; font-size: 11px; font-weight: 700; }
-    .doc-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .doc-meta span { padding: 6px 9px; background: rgba(13,139,118,.06); border-radius: var(--radius); }
-    .chunk-preview { margin-top: 12px; display: grid; gap: 8px; }
-    .chunk-item { padding: 10px 12px; border-radius: var(--radius); background: rgba(13,139,118,.04); border: 1px solid rgba(13,139,118,.08); }
-    .chunk-item strong { display: block; font-size: 12px; color: #0f5d50; }
-    .chunk-item p { margin: 6px 0 0; font-size: 12px; line-height: 1.75; color: #3a4c48; }
-    .upload-grid { display: grid; gap: 10px; }
-    .path-item { background: rgba(13,139,118,.04); }
-    @media (max-width: 1220px) {
-        .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .workspace, .hero { grid-template-columns: 1fr; }
+    .kb-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .kb-btn {
+        border: 0;
+        border-radius: 16px;
+        min-height: 44px;
+        padding: 0 16px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
-    @media (max-width: 760px) {
-        .knowledge-shell { width: min(100% - 20px, 1360px); }
-        .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .toolbar { grid-template-columns: 1fr; }
-        .hero-actions,.form-actions,.doc-actions,.entry-actions { flex-direction: column; align-items: stretch; }
-        .action-btn,.ghost-btn,.btn-soft,.btn-strong,.btn-warm { width: 100%; }
+    .kb-btn:hover { transform: translateY(-1px); }
+    .kb-primary { background: linear-gradient(135deg, var(--kb-blue), #168fba); color: #fff; box-shadow: 0 14px 32px rgba(31,111,255,.20); }
+    .kb-secondary { background: rgba(255,255,255,.76); color: #18304c; border: 1px solid var(--kb-line); }
+    .kb-danger { background: rgba(207, 78, 47, 0.10); color: #9a3b28; }
+    .kb-searchbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        gap: 10px;
+        margin-top: 22px;
+        padding: 10px;
+        border-radius: 24px;
+        background: rgba(255,255,255,.76);
+        border: 1px solid rgba(15,32,51,.08);
+    }
+    .kb-input, .kb-textarea, .kb-file {
+        width: 100%;
+        border: 1px solid rgba(15,32,51,.10);
+        border-radius: 16px;
+        background: rgba(255,255,255,.92);
+        color: var(--kb-ink);
+        outline: none;
+        padding: 13px 14px;
+        font-size: 14px;
+    }
+    .kb-input:focus, .kb-textarea:focus, .kb-file:focus {
+        border-color: rgba(31,111,255,.38);
+        box-shadow: 0 0 0 4px rgba(31,111,255,.09);
+    }
+    .kb-textarea { min-height: 118px; resize: vertical; line-height: 1.75; }
+    .kb-metrics {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+    }
+    .metric {
+        min-height: 112px;
+        padding: 16px;
+        border-radius: 22px;
+        background: rgba(255,255,255,.70);
+        border: 1px solid rgba(15,32,51,.08);
+    }
+    .metric span { display: block; color: var(--kb-muted); font-size: 12px; font-weight: 700; }
+    .metric strong { display: block; margin-top: 10px; font-size: 34px; line-height: 1; color: #12365e; letter-spacing: -0.04em; }
+    .kb-workspace {
+        display: grid;
+        grid-template-columns: 360px minmax(0, 1fr) 360px;
+        gap: 16px;
+        margin-top: 16px;
+    }
+    .kb-panel {
+        min-height: 260px;
+        border-radius: 28px;
+        border: 1px solid rgba(15,32,51,.08);
+        background: var(--kb-panel);
+        box-shadow: 0 20px 60px rgba(16, 32, 51, 0.08);
+        overflow: hidden;
+    }
+    .panel-head {
+        padding: 18px 18px 14px;
+        border-bottom: 1px solid rgba(15,32,51,.08);
+        background: linear-gradient(180deg, rgba(248,251,253,.96), rgba(255,255,255,.78));
+    }
+    .panel-head h2, .panel-head h3 { margin: 0; font-size: 17px; line-height: 1.3; }
+    .panel-head p { margin: 7px 0 0; color: var(--kb-muted); font-size: 12px; line-height: 1.7; }
+    .kb-list, .doc-list, .side-stack, .detail-body, .form-grid { display: grid; gap: 10px; }
+    .kb-list, .doc-list, .detail-body, .side-stack { padding: 14px; }
+    .kb-index-card, .doc-card, .detail-card, .empty-state, .status-banner {
+        border-radius: 20px;
+        border: 1px solid rgba(15,32,51,.08);
+        background: rgba(255,255,255,.82);
+    }
+    .kb-index-card {
+        width: 100%;
+        text-align: left;
+        padding: 14px;
+        cursor: pointer;
+        transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .kb-index-card:hover, .kb-index-card.active {
+        transform: translateY(-1px);
+        border-color: rgba(31,111,255,.28);
+        box-shadow: 0 12px 30px rgba(31,111,255,.10);
+    }
+    .index-top, .detail-top, .doc-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .index-title, .detail-title, .doc-title { margin: 0; font-size: 16px; line-height: 1.45; }
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: rgba(31,111,255,.09);
+        color: #1656c8;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+    .index-preview, .doc-summary {
+        margin: 10px 0 0;
+        color: #526278;
+        font-size: 12px;
+        line-height: 1.75;
+    }
+    .detail-empty {
+        min-height: 540px;
+        display: grid;
+        place-items: center;
+        padding: 28px;
+        text-align: center;
+        color: var(--kb-muted);
+    }
+    .detail-empty strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #17304d;
+        font-size: 22px;
+    }
+    .detail-card { padding: 18px; }
+    .detail-section { padding: 15px; border-radius: 18px; background: rgba(246,249,252,.82); border: 1px solid rgba(15,32,51,.06); }
+    .detail-section span { display: block; color: var(--kb-muted); font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+    .detail-section p { margin: 8px 0 0; color: #21364f; line-height: 1.85; font-size: 14px; white-space: pre-wrap; }
+    .detail-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .doc-card { padding: 14px; }
+    .doc-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .doc-meta span { padding: 6px 8px; border-radius: 999px; background: rgba(19,138,115,.08); color: #0c6657; font-size: 11px; font-weight: 700; }
+    .doc-chunks { display: none; margin-top: 10px; gap: 8px; }
+    .doc-card.open .doc-chunks { display: grid; }
+    .chunk-item { padding: 10px; border-radius: 15px; background: rgba(246,249,252,.9); border: 1px solid rgba(15,32,51,.06); }
+    .chunk-item strong { display: block; font-size: 12px; color: #17456f; }
+    .chunk-item p { margin: 6px 0 0; color: #526278; font-size: 12px; line-height: 1.65; }
+    .utility-panel { border-radius: 26px; border: 1px solid rgba(15,32,51,.08); background: rgba(255,255,255,.90); overflow: hidden; }
+    .utility-toggle {
+        width: 100%;
+        padding: 15px 16px;
+        border: 0;
+        background: linear-gradient(180deg, rgba(248,251,253,.98), rgba(255,255,255,.86));
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--kb-ink);
+        font-weight: 900;
+        cursor: pointer;
+    }
+    .utility-body { display: none; padding: 14px; border-top: 1px solid rgba(15,32,51,.08); }
+    .utility-panel.open .utility-body { display: block; }
+    .form-grid { gap: 10px; }
+    .status-banner { display: none; padding: 11px 13px; font-size: 13px; line-height: 1.65; }
+    .status-banner.success { display: block; background: rgba(19,138,115,.10); color: #0b5d50; }
+    .status-banner.error { display: block; background: rgba(198, 70, 43, .10); color: #943623; }
+    .empty-state { padding: 24px; color: var(--kb-muted); text-align: center; line-height: 1.8; }
+    .reference-list, .path-list { display: grid; gap: 9px; margin-top: 10px; }
+    .reference-item, .path-item { padding: 12px; border-radius: 16px; background: rgba(246,249,252,.9); border: 1px solid rgba(15,32,51,.06); }
+    .reference-item h4, .path-item h4 { margin: 0 0 6px; font-size: 14px; }
+    .reference-item p, .path-item p { margin: 4px 0; font-size: 12px; line-height: 1.65; color: #526278; }
+    @media (max-width: 1280px) {
+        .kb-workspace { grid-template-columns: 330px minmax(0, 1fr); }
+        .side-stack { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .kb-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 860px) {
+        .kb-shell { width: min(100% - 20px, 1480px); }
+        .kb-workspace, .side-stack, .kb-searchbar { grid-template-columns: 1fr; }
+        .kb-topline { align-items: stretch; flex-direction: column; }
+        .kb-actions { flex-direction: column; }
+        .kb-btn { width: 100%; }
+        .kb-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 520px) {
-        .stats-grid { grid-template-columns: 1fr; }
+        .kb-metrics { grid-template-columns: 1fr; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="knowledge-shell">
-    <section class="hero">
-        <div>
-            <div class="eyebrow">RAG / 文档知识库工作台</div>
-            <h1>支持手工条目，也支持把 PDF 与 TXT 文档自动切分进知识库</h1>
-            <p>你现在可以同时维护结构化疾病知识和非结构化文档知识。上传 pdf 或 txt 后，系统会按医学文本的分段与重叠策略自动切片，保存 chunk 预览，并让这些切片直接参与后续的 RAG 检索。</p>
-            <div class="hero-actions">
-                <button type="button" class="action-btn" id="newEntryButton">新建知识条目</button>
-                <button type="button" class="ghost-btn" id="importBuiltinButton">导入内置知识模板</button>
-                <a class="ghost-btn" href="/agent/">回到智能问诊</a>
+<div class="kb-shell">
+    <section class="kb-command">
+        <div class="kb-topline">
+            <div class="kb-title">
+                <div class="kb-kicker">Enterprise Knowledge Console</div>
+                <h1>DermoAI 医学知识库</h1>
+                <p>知识库默认只展示索引摘要。通过检索或点选索引进入详情，避免把全部医学正文直接摊在页面上。</p>
+            </div>
+            <div class="kb-actions">
+                <button type="button" class="kb-btn kb-primary" id="newEntryButton">新建知识</button>
+                <button type="button" class="kb-btn kb-secondary" id="importBuiltinButton">导入模板</button>
+                <a class="kb-btn kb-secondary" href="/agent/" style="display:inline-flex;align-items:center;text-decoration:none;">进入问诊</a>
             </div>
         </div>
-        <div class="hero-side">
-            <div class="hero-note"><span>知识组织方式</span><strong>结构化条目用于高质量医疗知识，文档切片用于补充论文、指南、说明书与材料。</strong></div>
-            <div class="hero-note"><span>切片策略</span><strong>优先按章节和段落分段，再按医学标点与重叠窗口切分，兼顾语义完整性和检索召回率。</strong></div>
-            <div class="hero-note"><span>当前搜索词</span><strong id="currentSearchLabel">{{ initial_query|default:"未设置，当前显示全部知识条目" }}</strong></div>
+
+        <div class="kb-searchbar">
+            <input id="searchInput" class="kb-input" type="text" value="{{ initial_query }}" placeholder="搜索疾病、症状、检查项或建议，例如：痤疮、瘙痒、伍德灯">
+            <button class="kb-btn kb-primary" type="button" id="searchButton">检索知识</button>
+            <button class="kb-btn kb-secondary" type="button" id="clearSearchButton">最近索引</button>
         </div>
+
+        <section class="kb-metrics">
+            <article class="metric"><span>结构化条目</span><strong id="statTotal">{{ knowledge_stats.total_entries }}</strong></article>
+            <article class="metric"><span>疾病主题</span><strong id="statDisease">{{ knowledge_stats.distinct_diseases }}</strong></article>
+            <article class="metric"><span>症状覆盖</span><strong id="statSymptoms">{{ knowledge_stats.with_symptoms }}</strong></article>
+            <article class="metric"><span>图谱实体</span><strong id="statEntities">{{ knowledge_stats.entity_total }}</strong></article>
+            <article class="metric"><span>图谱关系</span><strong id="statRelations">{{ knowledge_stats.relation_total }}</strong></article>
+            <article class="metric"><span>知识文档</span><strong id="statDocs">{{ knowledge_stats.document_total }}</strong></article>
+            <article class="metric"><span>文档切片</span><strong id="statChunks">{{ knowledge_stats.chunk_total }}</strong></article>
+        </section>
     </section>
 
-    <section class="stats-grid">
-        <article class="stat-card"><span>结构化条目</span><strong id="statTotal">{{ knowledge_stats.total_entries }}</strong><small>直接录入的疾病知识条目</small></article>
-        <article class="stat-card"><span>疾病主题数</span><strong id="statDisease">{{ knowledge_stats.distinct_diseases }}</strong><small>按疾病名称去重后的主题规模</small></article>
-        <article class="stat-card"><span>症状覆盖条目</span><strong id="statSymptoms">{{ knowledge_stats.with_symptoms }}</strong><small>包含症状描述，可被问诊内容命中</small></article>
-        <article class="stat-card"><span>内置模板</span><strong id="statBuiltin">{{ knowledge_stats.builtin_templates }}</strong><small>来自系统预置知识，可一键导入</small></article>
-        <article class="stat-card"><span>知识文档数</span><strong id="statDocs">{{ knowledge_stats.document_total }}</strong><small>已上传并完成处理的原始文档</small></article>
-        <article class="stat-card"><span>切片总数</span><strong id="statChunks">{{ knowledge_stats.chunk_total }}</strong><small>当前全部文档生成的知识 chunk 数量</small></article>
-    </section>
-
-    <section class="workspace">
-        <div class="panel">
+    <section class="kb-workspace">
+        <aside class="kb-panel">
             <div class="panel-head">
-                <div>
-                    <h3>结构化知识条目</h3>
-                    <p>适合录入标准化疾病知识，例如疾病名称、典型症状、建议检查与处理建议。</p>
-                </div>
+                <h2 id="indexTitle">知识索引</h2>
+                <p id="indexSubtitle">{{ initial_query|default:"默认展示最近维护的部分索引，完整内容需点选查看。" }}</p>
             </div>
-
             <div id="listStatus" class="status-banner"></div>
-            <div class="toolbar">
-                <input id="searchInput" class="field" type="text" value="{{ initial_query }}" placeholder="搜索疾病名称、症状、检查项或建议，例如：痤疮、瘙痒、伍德灯">
-                <button class="btn-soft" type="button" id="searchButton">搜索</button>
-                <button class="btn-warm" type="button" id="clearSearchButton">清空</button>
-            </div>
-
             {{ initial_entries|json_script:"initialKnowledgeEntries" }}
-            <div class="list" id="entryList"></div>
-        </div>
+            <div class="kb-list" id="entryList"></div>
+        </aside>
 
-        <div class="studio-stack">
-            <div class="panel">
-                <div class="panel-head">
-                    <div>
-                        <h3>条目编辑器</h3>
-                        <p>新增或修改知识条目后，会立即参与数据库检索。</p>
-                    </div>
-                </div>
-                <div id="formStatus" class="status-banner"></div>
-                <form id="knowledgeForm" class="form-grid">
-                    <input type="hidden" id="entryId">
-                    <input class="field" id="diseaseInput" type="text" placeholder="疾病名称，例如：痤疮、湿疹、白癜风">
-                    <textarea class="textarea" id="symptomsInput" placeholder="典型症状，建议写出部位、皮损形态、持续时间和相关诱因"></textarea>
-                    <textarea class="textarea" id="checkInput" placeholder="建议检查，例如：皮肤镜、伍德灯、真菌镜检、过敏原筛查"></textarea>
-                    <textarea class="textarea" id="adviceInput" placeholder="处理建议，例如：就医科室、护理建议、何时需要线下复诊"></textarea>
-                    <div class="form-actions">
-                        <button type="submit" class="btn-strong">保存条目</button>
-                        <button type="button" class="btn-soft" id="resetFormButton">重置表单</button>
-                    </div>
-                </form>
-                <div class="helper">建议一条结构化知识只围绕一个明确疾病主题来写。症状部分越贴近真实问诊表达，RAG 命中效果通常越稳定。</div>
+        <main class="kb-panel">
+            <div class="panel-head">
+                <h2>知识详情</h2>
+                <p>点击左侧索引后查看完整症状、检查与建议；未选中时不展示正文。</p>
             </div>
+            <div id="detailPane" class="detail-body"></div>
+        </main>
 
-            <div class="panel">
-                <div class="panel-head">
-                    <div>
-                        <h3>文档上传与切片</h3>
-                        <p>支持 pdf 与 txt。上传后系统会自动提取文本、按医学文本分段策略切片并生成预览。</p>
+        <aside class="side-stack">
+            <section class="utility-panel" id="editorPanel">
+                <button type="button" class="utility-toggle" data-panel="editorPanel">
+                    <span>知识编辑器</span><span>展开</span>
+                </button>
+                <div class="utility-body">
+                    <div id="formStatus" class="status-banner"></div>
+                    <form id="knowledgeForm" class="form-grid">
+                        <input type="hidden" id="entryId">
+                        <input class="kb-input" id="diseaseInput" type="text" placeholder="疾病名称">
+                        <textarea class="kb-textarea" id="symptomsInput" placeholder="典型症状"></textarea>
+                        <textarea class="kb-textarea" id="checkInput" placeholder="建议检查"></textarea>
+                        <textarea class="kb-textarea" id="adviceInput" placeholder="处理建议"></textarea>
+                        <button type="submit" class="kb-btn kb-primary">保存知识</button>
+                        <button type="button" class="kb-btn kb-secondary" id="resetFormButton">清空表单</button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="utility-panel open" id="documentPanel">
+                <button type="button" class="utility-toggle" data-panel="documentPanel">
+                    <span>文档索引</span><span>折叠</span>
+                </button>
+                <div class="utility-body">
+                    <div id="docStatus" class="status-banner"></div>
+                    <form id="documentForm" class="form-grid">
+                        <input class="kb-input" id="docTitleInput" type="text" placeholder="文档标题，可选">
+                        <input class="kb-file" id="docFileInput" type="file" accept=".pdf,.txt">
+                        <button type="submit" class="kb-btn kb-primary">上传并切片</button>
+                    </form>
+                    {{ initial_documents|json_script:"initialKnowledgeDocuments" }}
+                    <div class="doc-list" id="documentList"></div>
+                </div>
+            </section>
+
+            <section class="utility-panel" id="retrievePanel">
+                <button type="button" class="utility-toggle" data-panel="retrievePanel">
+                    <span>检索测试</span><span>展开</span>
+                </button>
+                <div class="utility-body">
+                    <div id="retrieveStatus" class="status-banner"></div>
+                    <div class="form-grid">
+                        <textarea class="kb-textarea" id="retrieveInput" placeholder="输入问诊描述，测试 RAG 命中"></textarea>
+                        <button class="kb-btn kb-primary" type="button" id="retrieveButton">测试检索</button>
                     </div>
+                    <div class="reference-list" id="referenceList"></div>
+                    <div class="path-list" id="pathList"></div>
                 </div>
-                <div id="docStatus" class="status-banner"></div>
-                <form id="documentForm" class="upload-grid">
-                    <input class="field" id="docTitleInput" type="text" placeholder="可选：自定义文档标题，不填则默认使用文件名">
-                    <input class="file-input" id="docFileInput" type="file" accept=".pdf,.txt">
-                    <button type="submit" class="btn-strong">上传并自动切片</button>
-                </form>
-
-                {{ initial_documents|json_script:"initialKnowledgeDocuments" }}
-                <div class="doc-list" id="documentList"></div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-head">
-                    <div>
-                        <h3>RAG 检索测试</h3>
-                        <p>输入问诊描述，立即查看命中的结构化条目和文档切片，以及生成的知识图谱路径。</p>
-                    </div>
-                </div>
-                <div id="retrieveStatus" class="status-banner"></div>
-                <div class="form-grid">
-                    <textarea class="textarea" id="retrieveInput" placeholder="例如：脸上反复长痘，红肿还有脓头，最近总想挤，应该注意什么？"></textarea>
-                    <button class="btn-strong" type="button" id="retrieveButton">开始检索测试</button>
-                </div>
-                <div class="reference-list" id="referenceList"><div class="empty-state">这里会显示命中的知识条目和文档切片摘要。</div></div>
-                <div class="path-list" id="pathList"><div class="empty-state">这里会显示根据命中条目生成的知识图谱路径。</div></div>
-            </div>
-        </div>
+            </section>
+        </aside>
     </section>
 </div>
 {% endblock %}
@@ -229,25 +376,35 @@
     let entries = initialEntries;
     let documents = initialDocuments;
     let selectedId = null;
+    let selectedEntry = null;
 
     const entryList = document.getElementById("entryList");
     const documentList = document.getElementById("documentList");
+    const detailPane = document.getElementById("detailPane");
     const entryIdInput = document.getElementById("entryId");
     const diseaseInput = document.getElementById("diseaseInput");
     const symptomsInput = document.getElementById("symptomsInput");
     const checkInput = document.getElementById("checkInput");
     const adviceInput = document.getElementById("adviceInput");
     const searchInput = document.getElementById("searchInput");
-    const currentSearchLabel = document.getElementById("currentSearchLabel");
+    const indexSubtitle = document.getElementById("indexSubtitle");
 
-    function setStatus(elementId, message, tone) {
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char]));
+    }
+
+    function setStatus(elementId, message, tone = "success") {
         const target = document.getElementById(elementId);
         target.className = "status-banner";
-        if (!message) {
-            target.textContent = "";
-            return;
-        }
-        target.classList.add(tone || "success");
+        target.textContent = "";
+        if (!message) return;
+        target.classList.add(tone);
         target.textContent = message;
     }
 
@@ -256,82 +413,114 @@
         document.getElementById("statTotal").textContent = stats.total_entries;
         document.getElementById("statDisease").textContent = stats.distinct_diseases;
         document.getElementById("statSymptoms").textContent = stats.with_symptoms;
-        document.getElementById("statBuiltin").textContent = stats.builtin_templates;
+        document.getElementById("statEntities").textContent = stats.entity_total;
+        document.getElementById("statRelations").textContent = stats.relation_total;
         document.getElementById("statDocs").textContent = stats.document_total;
         document.getElementById("statChunks").textContent = stats.chunk_total;
     }
 
+    function openPanel(panelId) {
+        document.getElementById(panelId)?.classList.add("open");
+    }
+
     function resetForm() {
         selectedId = null;
+        selectedEntry = null;
         entryIdInput.value = "";
         diseaseInput.value = "";
         symptomsInput.value = "";
         checkInput.value = "";
         adviceInput.value = "";
+        setStatus("formStatus", "");
+        openPanel("editorPanel");
         renderEntries();
-        setStatus("formStatus", "", "");
+        renderDetail();
     }
 
     function fillForm(entry) {
         selectedId = entry.id;
+        selectedEntry = entry;
         entryIdInput.value = entry.id;
         diseaseInput.value = entry.disease || "";
         symptomsInput.value = entry.symptoms || "";
         checkInput.value = entry.check_items || "";
         adviceInput.value = entry.advice || "";
+        openPanel("editorPanel");
         renderEntries();
-        setStatus("formStatus", `已载入「${entry.disease}」条目，你现在可以继续编辑。`, "success");
-        window.scrollTo({ top: document.querySelector(".studio-stack").offsetTop - 120, behavior: "smooth" });
+        renderDetail();
     }
 
     function renderEntries() {
         if (!entries.length) {
-            entryList.innerHTML = '<div class="empty-state">当前没有匹配的知识条目。可以清空搜索，或者直接在右侧新建一条。</div>';
+            entryList.innerHTML = '<div class="empty-state">没有匹配索引。请换一个关键词，或新建知识。</div>';
             return;
         }
         entryList.innerHTML = entries.map((entry) => `
-            <article class="entry-card ${selectedId === entry.id ? "active" : ""}">
-                <div class="entry-top">
-                    <h4 class="entry-title">${entry.disease}</h4>
-                    <span class="entry-id">ID ${entry.id}</span>
+            <button class="kb-index-card ${selectedId === entry.id ? "active" : ""}" type="button" data-id="${entry.id}">
+                <div class="index-top">
+                    <h3 class="index-title">${escapeHTML(entry.disease)}</h3>
+                    <span class="tag">#${entry.id}</span>
                 </div>
-                <div class="entry-block"><span>典型症状</span><p>${entry.symptoms_preview}</p></div>
-                <div class="entry-block"><span>建议检查</span><p>${entry.check_preview}</p></div>
-                <div class="entry-block"><span>处理建议</span><p>${entry.advice_preview}</p></div>
-                <div class="entry-actions">
-                    <button class="edit" type="button" data-action="edit" data-id="${entry.id}">编辑</button>
-                    <button class="delete" type="button" data-action="delete" data-id="${entry.id}">删除</button>
+                <p class="index-preview">${escapeHTML(entry.symptoms_preview || "暂无症状摘要")}</p>
+            </button>
+        `).join("");
+    }
+
+    function renderDetail() {
+        if (!selectedEntry) {
+            detailPane.innerHTML = `
+                <div class="detail-empty">
+                    <div>
+                        <strong>选择一条索引查看完整知识</strong>
+                        <p>默认不展开正文，避免知识库页面像文档堆叠。请从左侧搜索或点选一个条目。</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        detailPane.innerHTML = `
+            <article class="detail-card">
+                <div class="detail-top">
+                    <h2 class="detail-title">${escapeHTML(selectedEntry.disease)}</h2>
+                    <span class="tag">结构化知识</span>
+                </div>
+                <div class="detail-actions">
+                    <button class="kb-btn kb-primary" type="button" id="editSelectedButton">编辑当前知识</button>
+                    <button class="kb-btn kb-danger" type="button" id="deleteSelectedButton">删除</button>
                 </div>
             </article>
-        `).join("");
+            <section class="detail-section"><span>典型症状</span><p>${escapeHTML(selectedEntry.symptoms)}</p></section>
+            <section class="detail-section"><span>建议检查</span><p>${escapeHTML(selectedEntry.check_items)}</p></section>
+            <section class="detail-section"><span>处理建议</span><p>${escapeHTML(selectedEntry.advice)}</p></section>
+        `;
+        document.getElementById("editSelectedButton").addEventListener("click", () => fillForm(selectedEntry));
+        document.getElementById("deleteSelectedButton").addEventListener("click", () => deleteEntry(selectedEntry.id));
     }
 
     function renderDocuments() {
         if (!documents.length) {
-            documentList.innerHTML = '<div class="empty-state">当前还没有文档知识。上传一份 pdf 或 txt 后，系统会在这里展示切片结果。</div>';
+            documentList.innerHTML = '<div class="empty-state">暂无文档索引。上传 PDF/TXT 后在此查看状态。</div>';
             return;
         }
         documentList.innerHTML = documents.map((document) => `
-            <article class="doc-card">
+            <article class="doc-card" data-doc-card="${document.id}">
                 <div class="doc-top">
-                    <h4 class="doc-title">${document.title}</h4>
-                    <span class="source-chip">${document.file_type.toUpperCase()}</span>
+                    <h3 class="doc-title">${escapeHTML(document.title)}</h3>
+                    <span class="tag">${escapeHTML((document.file_type || "").toUpperCase())}</span>
                 </div>
-                <div class="doc-summary">状态 ${document.status}，采用 ${document.chunk_strategy} 策略，共 ${document.total_chunks} 个切片、${document.total_chars} 个字符。</div>
+                <p class="doc-summary">${escapeHTML(document.status)} · ${document.total_chunks} 个切片 · ${document.total_chars} 字符</p>
                 <div class="doc-meta">
-                    <span>文件 ${document.file_name || "未命名"}</span>
-                    <span>更新时间 ${document.updated_at}</span>
+                    <span>${escapeHTML(document.file_name || "未命名文件")}</span>
+                    <span>${escapeHTML(document.updated_at)}</span>
                 </div>
-                <div class="chunk-preview">
+                <div class="doc-chunks">
                     ${(document.chunks || []).length ? document.chunks.map((chunk) => `
                         <div class="chunk-item">
-                            <strong>切片 ${chunk.chunk_index}${chunk.page_label ? ` / ${chunk.page_label}` : ""} / 约 ${chunk.token_estimate} token</strong>
-                            <p>${chunk.content_preview}</p>
+                            <strong>切片 ${escapeHTML(chunk.chunk_index)}${chunk.page_label ? " · " + escapeHTML(chunk.page_label) : ""}</strong>
+                            <p>${escapeHTML(chunk.content_preview)}</p>
                         </div>
-                    `).join("") : '<div class="empty-state">当前文档还没有可预览的切片。</div>'}
-                </div>
-                <div class="doc-actions">
-                    <button class="delete" type="button" data-document-action="delete" data-id="${document.id}">删除文档</button>
+                    `).join("") : '<div class="empty-state">暂无可预览切片。</div>'}
+                    <button class="kb-btn kb-danger" type="button" data-document-action="delete" data-id="${document.id}">删除文档</button>
                 </div>
             </article>
         `).join("");
@@ -341,34 +530,35 @@
         const response = await fetch(`/medical/knowledge/list/?q=${encodeURIComponent(query)}`);
         const data = await response.json();
         entries = data.entries || [];
+        selectedId = null;
+        selectedEntry = null;
         renderEntries();
+        renderDetail();
         updateStats(data.stats);
-        currentSearchLabel.textContent = data.query ? `当前正在搜索：${data.query}` : "未设置，当前显示全部知识条目";
-    }
-
-    async function refreshDocuments() {
-        const response = await fetch("/medical/knowledge/documents/");
-        const data = await response.json();
-        documents = data.documents || [];
-        renderDocuments();
-        updateStats(data.stats);
+        indexSubtitle.textContent = data.query ? `检索结果：${data.query}` : "最近维护的索引摘要，点选后查看完整知识。";
     }
 
     async function loadEntry(entryId) {
         const response = await fetch(`/medical/knowledge/${entryId}/`);
         const data = await response.json();
         if (data.status) {
-            fillForm(data.entry);
+            selectedId = data.entry.id;
+            selectedEntry = data.entry;
+            renderEntries();
+            renderDetail();
         }
     }
 
     async function deleteEntry(entryId) {
         if (!confirm("确定删除这条知识吗？删除后将不会再参与 RAG 检索。")) return;
-        const response = await fetch(`/medical/knowledge/${entryId}/delete/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+        const response = await fetch(`/medical/knowledge/${entryId}/delete/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        });
         const data = await response.json();
         if (data.status) {
             setStatus("listStatus", data.message, "success");
-            if (selectedId === entryId) resetForm();
             await refreshList(searchInput.value.trim());
             updateStats(data.stats);
         } else {
@@ -385,21 +575,33 @@
             check_items: checkInput.value.trim(),
             advice: adviceInput.value.trim()
         };
-        const response = await fetch("/medical/knowledge/save/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const response = await fetch("/medical/knowledge/save/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
         const data = await response.json();
         if (data.status) {
             setStatus("formStatus", data.message, "success");
             updateStats(data.stats);
+            selectedId = data.entry.id;
+            selectedEntry = data.entry;
             await refreshList(searchInput.value.trim());
             selectedId = data.entry.id;
-            fillForm(data.entry);
+            selectedEntry = data.entry;
+            renderEntries();
+            renderDetail();
         } else {
             setStatus("formStatus", data.message || "保存失败，请检查输入内容。", "error");
         }
     }
 
     async function importBuiltin() {
-        const response = await fetch("/medical/knowledge/import-builtin/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+        const response = await fetch("/medical/knowledge/import-builtin/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        });
         const data = await response.json();
         if (data.status) {
             setStatus("listStatus", data.message, "success");
@@ -408,6 +610,14 @@
         } else {
             setStatus("listStatus", data.message || "导入失败，请稍后重试。", "error");
         }
+    }
+
+    async function refreshDocuments() {
+        const response = await fetch("/medical/knowledge/documents/");
+        const data = await response.json();
+        documents = data.documents || [];
+        renderDocuments();
+        updateStats(data.stats);
     }
 
     async function uploadDocument(event) {
@@ -436,7 +646,11 @@
 
     async function deleteDocument(documentId) {
         if (!confirm("确定删除这个知识文档以及它的全部切片吗？")) return;
-        const response = await fetch(`/medical/knowledge/documents/${documentId}/delete/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+        const response = await fetch(`/medical/knowledge/documents/${documentId}/delete/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        });
         const data = await response.json();
         if (data.status) {
             setStatus("docStatus", data.message, "success");
@@ -449,27 +663,28 @@
     function renderRetrieveResult(data) {
         const referenceList = document.getElementById("referenceList");
         const pathList = document.getElementById("pathList");
+        const graph = data.graph || {};
+        const metrics = graph.metrics || {};
         if (!data.references || !data.references.length) {
-            referenceList.innerHTML = '<div class="empty-state">当前没有命中知识条目，建议补充症状词或先完善知识库。</div>';
+            referenceList.innerHTML = '<div class="empty-state">没有命中知识。</div>';
         } else {
             referenceList.innerHTML = data.references.map((item) => `
                 <article class="reference-item">
-                    <div class="doc-top">
-                        <h4>${item.disease}</h4>
-                        <span class="source-chip">${item.source_type === "document_chunk" ? "文档切片" : "结构化条目"}</span>
-                    </div>
-                    <p><strong>来源：</strong>${item.source}${item.page_label ? ` / ${item.page_label}` : ""} / 相关度 ${item.score}</p>
-                    <p><strong>内容：</strong>${item.symptoms}</p>
-                    <p><strong>检查：</strong>${item.check_items}</p>
-                    <p><strong>建议：</strong>${item.advice}</p>
+                    <h4>${escapeHTML(item.disease)}</h4>
+                    <p>${escapeHTML(item.retrieval_mode === "global_graph" ? "图谱证据" : item.source_type === "document_chunk" ? "文档切片" : "结构化条目")} · 相关度 ${escapeHTML(item.score)}</p>
+                    <p>${escapeHTML(item.symptoms)}</p>
                 </article>
             `).join("");
         }
-        if (!data.graph_paths || !data.graph_paths.length) {
-            pathList.innerHTML = '<div class="empty-state">当前没有生成知识图谱路径。</div>';
-        } else {
-            pathList.innerHTML = data.graph_paths.map((item) => `<article class="path-item"><h4>知识图谱路径</h4><p>${item}</p></article>`).join("");
-        }
+        pathList.innerHTML = (data.graph_paths || []).length
+            ? `
+                <article class="path-item">
+                    <h4>图谱概览</h4>
+                    <p>Nodes ${escapeHTML(metrics.node_count || 0)} · Edges ${escapeHTML(metrics.edge_count || 0)} · Graph Evidence ${escapeHTML(metrics.graph_evidence_count || 0)} · Local Evidence ${escapeHTML(metrics.local_evidence_count || 0)}</p>
+                </article>
+                ${(data.graph_paths || []).map((item) => `<article class="path-item"><h4>图谱路径</h4><p>${escapeHTML(item)}</p></article>`).join("")}
+            `
+            : '<div class="empty-state">暂无图谱路径。</div>';
     }
 
     async function retrieveTest() {
@@ -481,7 +696,7 @@
         });
         const data = await response.json();
         if (data.status) {
-            setStatus("retrieveStatus", `已完成检索测试：${data.query}`, "success");
+            setStatus("retrieveStatus", `已完成检索：${data.query}`, "success");
             renderRetrieveResult(data);
         } else {
             setStatus("retrieveStatus", data.message || "检索失败，请稍后重试。", "error");
@@ -489,21 +704,26 @@
     }
 
     entryList.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) return;
-        const action = target.dataset.action;
-        const entryId = Number(target.dataset.id);
-        if (!action || !entryId) return;
-        if (action === "edit") loadEntry(entryId);
-        if (action === "delete") deleteEntry(entryId);
+        const card = event.target.closest("[data-id]");
+        if (!card) return;
+        loadEntry(Number(card.dataset.id));
     });
 
     documentList.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) return;
-        const action = target.dataset.documentAction;
-        const documentId = Number(target.dataset.id);
-        if (action === "delete" && documentId) deleteDocument(documentId);
+        const deleteButton = event.target.closest("[data-document-action='delete']");
+        if (deleteButton) {
+            deleteDocument(Number(deleteButton.dataset.id));
+            return;
+        }
+        const card = event.target.closest("[data-doc-card]");
+        if (card) card.classList.toggle("open");
+    });
+
+    document.querySelectorAll(".utility-toggle").forEach((button) => {
+        button.addEventListener("click", () => {
+            const panel = document.getElementById(button.dataset.panel);
+            panel.classList.toggle("open");
+        });
     });
 
     document.getElementById("knowledgeForm").addEventListener("submit", saveEntry);
@@ -512,11 +732,20 @@
     document.getElementById("newEntryButton").addEventListener("click", resetForm);
     document.getElementById("importBuiltinButton").addEventListener("click", importBuiltin);
     document.getElementById("retrieveButton").addEventListener("click", retrieveTest);
-    document.getElementById("searchButton").addEventListener("click", async () => { setStatus("listStatus", "", ""); await refreshList(searchInput.value.trim()); });
-    document.getElementById("clearSearchButton").addEventListener("click", async () => { searchInput.value = ""; setStatus("listStatus", "", ""); await refreshList(""); });
-    searchInput.addEventListener("keydown", async (event) => { if (event.key === "Enter") { event.preventDefault(); await refreshList(searchInput.value.trim()); } });
+    document.getElementById("searchButton").addEventListener("click", () => refreshList(searchInput.value.trim()));
+    document.getElementById("clearSearchButton").addEventListener("click", () => {
+        searchInput.value = "";
+        refreshList("");
+    });
+    searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            refreshList(searchInput.value.trim());
+        }
+    });
 
     renderEntries();
     renderDocuments();
+    renderDetail();
 </script>
 {% endblock %}

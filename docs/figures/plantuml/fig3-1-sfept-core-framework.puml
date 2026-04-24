@@ -1,0 +1,30 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam roundcorner 16
+skinparam rectangle {
+  FontName Microsoft YaHei
+}
+rectangle "皮肤图像输入
+支持样本与待测图像" as input #DBEAFE
+rectangle "层次视觉编码
+纹理、颜色与边界" as swin #CCFBF1
+rectangle "类别原型构建
+少样本代表中心" as proto #EDE9FE
+rectangle "待测特征表达
+病灶视觉语义" as query #DCFCE7
+rectangle "原型偏移校正
+分布对齐与伪标注" as bias #FFEDD5
+rectangle "语义增强模块
+潜在医学先验注入" as sae #EEF2FF
+rectangle "距离度量分类
+类别、置信度与候选结果" as cls #FEF3C7
+input --> swin
+swin --> proto
+swin --> query
+proto --> bias
+query --> bias
+bias --> sae
+bias --> cls
+sae --> cls
+@enduml

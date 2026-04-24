@@ -1,0 +1,23 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam roundcorner 18
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #CBD5E1
+  FontName Microsoft YaHei
+}
+start
+:上传 PDF/TXT;
+:文本抽取
+识别正文内容;
+:文本规范化
+换行 / 空白 / 段落;
+:医学语义切片
+保留上下文连续性;
+:知识片段入库
+记录来源与位置;
+:参与 RAGGraph 检索
+问诊证据增强;
+stop
+@enduml

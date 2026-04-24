@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 14
+title 图2-4 基于 SFEPT 思想的皮肤图像分类推理流程图
+
+start
+:上传皮肤图像;
+:读取图像并转换为 RGB;
+:尺寸统一与标准化处理;
+fork
+  :加载支持集图像;
+  :Swin Transformer 提取支持集特征;
+  :构建少样本类别原型;
+fork again
+  :Swin Transformer 提取查询图像特征;
+end fork
+:计算支持集与待测图像分布差异;
+:原型偏移校正与语义增强;
+:距离度量得到候选类别;
+:输出类别概率分布;
+:返回预测类别、置信度和 Top 结果;
+:生成规则提示与影像辅助报告;
+stop
+@enduml
